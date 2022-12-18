@@ -1,0 +1,272 @@
+---
+name: Synchronize milestones
+on: # yamllint disable-line rule:truthy
+  milestone:
+    types: [created, closed, opened, edited, deleted]
+  repository_dispatch:
+    types: [sync-milestones]
+
+jobs:
+  app_auth:
+    name: Get Github token from GH application
+    outputs:
+      token: ${{ steps.envrypted_app_auth.outputs.token }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tibdex/github-app-token@021a2405c7f990db57f5eae5397423dcc554159c # tag=1.7.0
+        id: app_auth
+        with:
+          app_id: ${{ secrets.BOT_ID }}
+          private_key: ${{ secrets.BOT_PKEY }}
+      # NOTE: workarround for https://github.com/community/community/discussions/13082
+      - name: Encrypt GH token
+        id: envrypted_app_auth
+        run: |
+          (
+            echo -n "token="
+            gpg --symmetric --batch \
+              --passphrase "${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }}" \
+              --output - \
+              <(echo "${{ steps.app_auth.outputs.token }}") \
+            | base64 -w0
+          ) >> "${GITHUB_OUTPUT}"
+
+  list_milestones:
+    name: List milestones on '${{ github.repository }}'
+    outputs:
+      milestones: ${{ steps.list-milestones.outputs.milestones }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: List existing milestones on '${{ github.repository }}'
+        id: list-milestones
+        run: |
+          (
+            echo -n "milestones="
+            curl -X GET \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/milestones?direction=asc&sort=title" \
+            | jq 'map({title, number, state, description, due_on} | with_entries(select(.value != null)))' --compact-output
+          ) >> "${GITHUB_OUTPUT}"
+
+  # NOTE: jobs used to trigger milestone synchronization on every repositories
+  list_repositories:
+    name: Get '${{ github.repository_owner }}' repositories
+    if: github.event_name != 'repository_dispatch'
+    outputs:
+      repositories: ${{ steps.list_repositories.outputs.repositories }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: List '${{ github.repository_owner }}' repositories
+        id: list_repositories
+        run: |
+          (
+            echo -n "repositories="
+            curl --silent \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                https://api.github.com/orgs/${{ github.repository_owner }}/repos?per_page=100 \
+            | jq '[.[].full_name] | map(select(. != "${{ github.repository }}"))' --compact-output
+          ) >> "${GITHUB_OUTPUT}"
+  trigger-sync-everywhere:
+    name: Trigger synchronization on each '${{ github.repository_owner }}' repositories
+    needs:
+      - app_auth
+      - list_milestones
+      - list_repositories
+    strategy:
+      matrix:
+        repository: ${{ fromJSON(needs.list_repositories.outputs.repositories) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decrypt Github token
+        id: app_auth
+        run: |
+          (
+            echo -n "token="
+            gpg --decrypt --quiet --batch \
+              --passphrase "${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }}" \
+              --output - \
+              <(echo "${{ needs.app_auth.outputs.token }}" | base64 --decode)
+          ) >> "${GITHUB_OUTPUT}"
+      - uses: peter-evans/repository-dispatch@26b39ed245ab8f31526069329e112ab2fb224588 # v2.1.1
+        with:
+          client-payload: '{"milestones":${{needs.list_milestones.outputs.milestones}}}'
+          event-type: sync-milestones
+          repository: ${{ matrix.repository }}
+          token: ${{ steps.app_auth.outputs.token }}
+
+  # NOTE: jobs used to create missing milestones (on `repository_dispatch`)
+  list_missing_milestones:
+    name: List missing milestones
+    if: github.event_name == 'repository_dispatch'
+    needs:
+      - list_milestones
+    outputs:
+      milestones: ${{ steps.list_missing_milestones.outputs.milestones }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: List missing milestones
+        id: list_missing_milestones
+        run: |
+          (
+            echo -n "milestones="
+            (
+              echo '${{ needs.list_milestones.outputs.milestones }}'
+              echo '${{ toJSON(github.event.client_payload) }}' | jq '.milestones' --compact-output
+            ) | jq --slurp '.
+                | (([.[1][].title]) - ([.[0][].title])) as $new
+                | .[1]
+                | map(
+                  select(.title as $title | $new | any(. == $title))
+                  | del(.number)
+                )
+            '  --compact-output
+          ) >> "${GITHUB_OUTPUT}"
+  add_milestones:
+    name: Create missing milestones `${{ matrix.milestone.title }}`
+    if: ${{ needs.list_missing_milestones.outputs.milestones != '[]' }}
+    needs:
+      - app_auth
+      - list_missing_milestones
+    concurrency:
+      group: sync-milestone-${{ matrix.milestone.title }}
+    strategy:
+      matrix:
+        milestone: ${{ fromJSON(needs.list_missing_milestones.outputs.milestones) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decrypt Github token
+        id: app_auth
+        run: |
+          (
+            echo -n "token="
+            gpg --decrypt --quiet --batch \
+              --passphrase "${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }}" \
+              --output - \
+              <(echo "${{ needs.app_auth.outputs.token }}" | base64 --decode)
+          ) >> "${GITHUB_OUTPUT}"
+      - name: Create missing milestones `${{ matrix.milestone.title }}`
+        run: |
+          curl --silent -X POST \
+            -H "Authorization: Bearer ${{ steps.app_auth.outputs.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/milestones" \
+            -d '${{ toJSON(matrix.milestone) }}'
+
+
+  # NOTE: jobs used to remove missing milestones (on `repository_dispatch`)
+  list_removed_milestones:
+    name: List removed milestones
+    if: github.event_name == 'repository_dispatch'
+    needs:
+      - list_milestones
+    outputs:
+      milestones: ${{ steps.list_removed_milestones.outputs.milestones }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: List removed milestones
+        id: list_removed_milestones
+        run: |
+          (
+            echo -n "milestones="
+            (
+              echo '${{ toJSON(github.event.client_payload) }}' | jq --compact-output '.milestones'
+              echo '${{ needs.list_milestones.outputs.milestones }}'
+            ) | jq --slurp '.
+                | (([.[1][].title]) - ([.[0][].title])) as $new
+                | .[1]
+                | map(
+                  select(.title as $title | $new | any(. == $title))
+                  | {title, number}
+                )
+            ' --compact-output
+          ) >> "${GITHUB_OUTPUT}"
+  remove_milestones:
+    name: Delete removed milestones `${{ matrix.milestone.title }}`
+    if: ${{ needs.list_removed_milestones.outputs.milestones != '[]' }}
+    needs:
+      - app_auth
+      - list_removed_milestones
+    concurrency:
+      group: sync-milestone-${{ matrix.milestone.title }}
+    continue-on-error: true
+    strategy:
+      matrix:
+        milestone: ${{ fromJSON(needs.list_removed_milestones.outputs.milestones) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decrypt Github token
+        id: app_auth
+        run: |
+          (
+            echo -n "token="
+            gpg --decrypt --quiet --batch \
+              --passphrase "${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }}" \
+              --output - \
+              <(echo "${{ needs.app_auth.outputs.token }}" | base64 --decode)
+          ) >> "${GITHUB_OUTPUT}"
+      - name: Delete removed milestones `${{ matrix.milestone.title }}`
+        run: |
+          curl --silent -X DELETE \
+            -H "Authorization: Bearer ${{ steps.app_auth.outputs.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/milestones/${{ matrix.milestone.number }}"
+
+  # NOTE: jobs used to update unsynced milestones (on `repository_dispatch`)
+  list_unsynced_milestones:
+    name: List unsynced milestones
+    if: github.event_name == 'repository_dispatch'
+    needs:
+      - list_milestones
+    outputs:
+      milestones: ${{ steps.list_unsynced_milestones.outputs.milestones }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: List unsynced milestones
+        id: list_unsynced_milestones
+        run: |
+          (
+            echo -n "milestones="
+            (
+              echo '${{ needs.list_milestones.outputs.milestones }}'
+              echo '${{ toJSON(github.event.client_payload) }}' | jq --compact-output '.milestones'
+            ) | jq --slurp '.
+                  | (([.[0][].title]) - (([.[0][].title]) - ([.[1][].title]))) as $common
+                  | map(map(select(.title as $title | $common | any(. == $title))))
+                  | add
+                  | group_by(.title)
+                  | map(select((.[0] | del(.number)) != (.[1] | del(.number))))
+                  | map(.[1] + {number: .[0].number})
+            '  --compact-output
+          ) >> "${GITHUB_OUTPUT}"
+  update_milestones:
+    name: Synchronize unsynced milestones `${{ matrix.milestone.title }}`
+    if: ${{ needs.list_unsynced_milestones.outputs.milestones != '[]' }}
+    needs:
+      - app_auth
+      - list_unsynced_milestones
+    concurrency:
+      group: sync-milestone-${{ matrix.milestone.title }}
+    continue-on-error: true
+    strategy:
+      matrix:
+        milestone: ${{ fromJSON(needs.list_unsynced_milestones.outputs.milestones) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decrypt Github token
+        id: app_auth
+        run: |
+          (
+            echo -n "token="
+            gpg --decrypt --quiet --batch \
+              --passphrase "${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }}" \
+              --output - \
+              <(echo "${{ needs.app_auth.outputs.token }}" | base64 --decode)
+          ) >> "${GITHUB_OUTPUT}"
+      - name: Synchronize unsynced milestones `${{ matrix.milestone.title }}`
+        run: |
+          curl -X PATCH \
+            -H "Authorization: Bearer ${{ steps.app_auth.outputs.token }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/milestones/${{ matrix.milestone.number }}" \
+            -d '${{ toJSON(matrix.milestone) }}'

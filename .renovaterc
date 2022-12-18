@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>belug-apps/renovate-config:default",
+    "github>belug-apps/renovate-config:gitmoji",
+    "github>belug-apps/renovate-config:github-actions(nonOfficeHours)"
+  ]
+}

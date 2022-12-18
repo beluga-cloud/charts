@@ -1,0 +1,10 @@
+---
+name: Security (Github Actions workflows)
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    types: [opened, synchronize]
+    paths: [".github/workflows/**"]
+
+jobs:
+  ci_harden_security:
+    uses: xunleii/github-actions-grimoire/.github/workflows/security.workflows.yaml@0ab2cd93e86642397ecdfb2da1e5b97594ab9905
