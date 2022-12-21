@@ -1,0 +1,26 @@
+---
+name: "💡 Codebase improvement"
+description: Provide your feedback for the existing codebase. Suggest a better solution for algorithms, development tools, etc.
+title: "💡 "
+labels:
+  - "type: enhancement"
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for taking the time to improve Belug-Apps!
+
+  - type: textarea
+    attributes:
+      label: How Belug-Apps can be improved?
+      description: How do you think we can improve Belug-Apps?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
