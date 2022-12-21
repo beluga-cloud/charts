@@ -1,0 +1,61 @@
+---
+name: ✨ Application Request
+description: Suggest an application
+title: "🐛 "
+labels:
+  - "type: enhancement"
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to fill out this application request!
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists about this feature request.
+      options:
+        - label: I have searched the existing issues
+          required: true
+
+  - type: input
+    attributes:
+      label: Name
+      description: What is the name of the application?
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Repo/website URL
+      description: Where can we find this application (website/repository)?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Brief description
+      description: Provide a brief description of what this application does.
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Helm chart URL
+      description: Does a Helm chart already exist? _(This will help us a lot)_
+  
+  - type: textarea
+    attributes:
+      label: Other information
+    
+  - type: checkboxes
+    attributes:
+      label: If the feature request is approved, would you be willing to submit a PR?
+      description: _(Help can be provided if you need assistance submitting a PR)_
+      options:
+        - label: Yes, I would like to submit a PR
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
