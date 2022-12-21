@@ -1,0 +1,74 @@
+---
+name: 🐛 Bug Report
+description: Create a report to help belug-apps to improve
+title: "🐛 "
+labels:
+  - "type: bug"
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to fill out this bug report!
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues
+          required: true
+
+  - type: input
+    attributes:
+      label: Application name
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Application version
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Current behavior
+      description: Describe how the bug manifests.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: Describe what you expect the behavior to be without the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Explain the steps required to duplicate the issue, especially if you are able to provide a sample application.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Related code
+      description: If you are able to illustrate the bug with an example, please provide it here.
+      placeholder: |
+        ```
+        insert short code snippets here
+        ```
+
+  - type: textarea
+    attributes:
+      label: Other information
+      description: List any other information that is relevant to your issue. Related issues, suggestions on how to fix, Stack Overflow links, forum links, etc.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](docs/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
