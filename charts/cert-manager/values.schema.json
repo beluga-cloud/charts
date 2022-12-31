@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "cert-manager": {
+      "type": "object",
+      "properties": {
+        "prometheus": {
+          "title": "Prometheus monitoring",
+          "properties": {
+            "enabled": {
+              "title": "Enable Prometheus monitoring",
+              "type": "boolean",
+              "description": "Enable Prometheus monitoring"
+            },
+            "servicemonitor": {
+              "properties": {
+                "enabled": {
+                  "title": "Enable Prometheus Operator ServiceMonitor monitoring",
+                  "type": "boolean",
+                  "description": "Enable Prometheus Operator ServiceMonitor monitoring"
+                },
+                "prometheusInstance": {
+                  "title": "Prometheus Instance definition",
+                  "type": "string",
+                  "description": "Prometheus Instance definition"
+                }
+              },
+              "type": "object",
+              "required": [
+                "enabled"
+              ]
+            }
+          },
+          "type": "object",
+          "description": "Prometheus monitoring",
+          "required": [
+            "enabled"
+          ]
+        }
+      },
+      "description": "",
+      "required": [
+        "enabled"
+      ],
+      "title": ""
+    }
+  }
+}
