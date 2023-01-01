@@ -1,0 +1,4 @@
+.justfile
+values.overrides.yq
+
+validation/
