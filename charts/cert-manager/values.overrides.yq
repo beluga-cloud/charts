@@ -1,0 +1,19 @@
+.
+| (
+    select(fileIndex == 0)
+    | .cert-manager = {"enabled": true}
+    | .cert-manager.enabled line_comment="# Install cert-manager (disable it to only install issuers)"
+  ) * (
+    {"cert-manager": select(fileIndex == 1)}
+  )
+| .cert-manager.installCRDs = true
+
+| ({"registry": "ghcr.io"}) as $registry
+| .cert-manager.acmesolver.image = $registry * (.cert-manager.acmesolver.image // {})
+| .cert-manager.acmesolver.image.repository = "belug-apps/cert-manager/acmesolver"
+| .cert-manager.image = $registry * .cert-manager.image
+| .cert-manager.image.repository = "belug-apps/cert-manager/controller"
+| .cert-manager.startupapicheck.image = $registry * .cert-manager.startupapicheck.image
+| .cert-manager.startupapicheck.image.repository = "belug-apps/cert-manager/cmctl"
+| .cert-manager.webhook.image = $registry * .cert-manager.webhook.image
+| .cert-manager.webhook.image.repository = "belug-apps/cert-manager/webhook"

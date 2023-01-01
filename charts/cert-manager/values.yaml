@@ -97,7 +97,8 @@ cert-manager:
   # controller pod.
   featureGates: ""
   image:
-    repository: quay.io/jetstack/cert-manager-controller
+    registry: ghcr.io
+    repository: belug-apps/cert-manager/controller
     # You can manage a registry with
     # registry: quay.io
     # repository: jetstack/cert-manager-controller
@@ -334,7 +335,8 @@ cert-manager:
     # Optional additional labels to add to the Webhook Service
     serviceLabels: {}
     image:
-      repository: quay.io/jetstack/cert-manager-webhook
+      registry: ghcr.io
+      repository: belug-apps/cert-manager/webhook
       # You can manage a registry with
       # registry: quay.io
       # repository: jetstack/cert-manager-webhook
@@ -534,7 +536,8 @@ cert-manager:
     # Optional additional labels to add to the startupapicheck Pods
     podLabels: {}
     image:
-      repository: quay.io/jetstack/cert-manager-ctl
+      registry: ghcr.io
+      repository: belug-apps/cert-manager/cmctl
       # You can manage a registry with
       # registry: quay.io
       # repository: jetstack/cert-manager-ctl
@@ -566,3 +569,7 @@ cert-manager:
         helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
       # Automount API credentials for a Service Account.
       automountServiceAccountToken: true
+  acmesolver:
+    image:
+      registry: ghcr.io
+      repository: belug-apps/cert-manager/acmesolver
