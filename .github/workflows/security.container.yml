@@ -1,0 +1,56 @@
+---
+name: Security (Container)
+on: # yamllint disable-line rule:truthy
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - .github/workflows/security.container.yml
+      - images/**/Dockerfile
+  push:
+    branches: [main]
+    paths:
+      - images/**/Dockerfile
+
+jobs:
+  updated_container:
+    name: List updated containers
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        with:
+          fetch-depth: 3
+      - uses: tj-actions/changed-files@1d6e210c970d01a876fbc6155212d068e79ca584 # tag=v32.1.2
+        id: changed-files
+        with:
+          files: |
+            **/Dockerfile
+          json: true
+      - id: set-matrix
+        run: echo "matrix={\"dockerfile\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
+
+  checkov:
+    name: Checkov (${{ matrix.dockerfile }})
+    needs: [updated_container]
+    runs-on: ubuntu-latest
+    if: needs.updated_container.outputs.matrix != '{"dockerfile":[]}'
+    strategy:
+      matrix: ${{ fromJSON(needs.updated_container.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      - uses: actions/setup-python@5ccb29d8773c3f3f653e1705f474dfaa8a06a912 # tag=v4.4.0
+        with:
+          python-version: '3.8'
+          check-latest: true
+
+      - uses: bridgecrewio/checkov-action@a6b06158ca30c135b38291f4fa0da67d188ca8f4
+        with:
+          file: ${{ matrix.dockerfile }}
+          framework: dockerfile
+          skip_check: CKV_DOCKER_2
+      - uses: github/codeql-action/upload-sarif@484236cda4f99dce6f67723e95670437c888dffa # tag=codeql-bundle-20221211
+        if: always()
+        with:
+          category: checkov-helm
+          sarif_file: results.sarif
