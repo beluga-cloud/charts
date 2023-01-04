@@ -23,4 +23,5 @@ LABEL com.github.belug-apps.ci.workflow.url=$BUILD_WORKFLOW_URL
 LABEL com.github.belug-apps.origin.authors="JetStack <www.jetstack.io> & cert-manager community <cert-manager.io>"
 LABEL com.github.belug-apps.origin.licenses="Apache-2.0"
 LABEL com.github.belug-apps.origin.source="https://github.com/cert-manager/cert-manager/blob/master/hack/containers/Containerfile.acmesolver"
-LABEL com.github.belug-apps.security.verify-signature=true
+
+USER 1000
