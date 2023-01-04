@@ -1,0 +1,87 @@
+---
+name: Security (Container)
+on: # yamllint disable-line rule:truthy
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - .github/workflows/security.container.yml
+      - images/**/Dockerfile
+  push:
+    branches: [main]
+    paths:
+      - images/**/Dockerfile
+
+jobs:
+  updated_container:
+    name: List updated containers
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        with:
+          fetch-depth: 3
+      - uses: tj-actions/changed-files@1d6e210c970d01a876fbc6155212d068e79ca584 # tag=v32.1.2
+        id: changed-files
+        with:
+          files: |
+            **/Dockerfile
+          json: true
+      - id: set-matrix
+        run: echo "matrix={\"dockerfile\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
+
+  trivy:
+    name: Trivy scan (${{ matrix.dockerfile }})
+    needs: [updated_container]
+    runs-on: ubuntu-latest
+    if: needs.updated_container.outputs.matrix != '{"dockerfile":[]}'
+    strategy:
+      matrix: ${{ fromJSON(needs.updated_container.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      - uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # tag=v2.1.0
+      - uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325 # tag=v2.2.1
+
+      - uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # tag=v0.8.0
+        with:
+          exit-code: '1'
+          format: sarif
+          hide-progress: false
+          output: trivy-results.sarif
+          scan-ref: ${{ matrix.dockerfile }}
+          scan-type: config
+      - uses: github/codeql-action/upload-sarif@484236cda4f99dce6f67723e95670437c888dffa # tag=codeql-bundle-20221211
+        if: always()
+        with:
+          category: trivy-container-syntax
+          sarif_file: trivy-results.sarif
+
+      - name: Get Dockerfile directory
+        id: dockerfile
+        run: |
+          export CONTEXT=${DOCKERFILE%/*}
+          export IMAGE=${CONTEXT#*/}
+          echo "context=${CONTEXT}" | tee --append "${GITHUB_OUTPUT}"
+          echo "image=${IMAGE}" | tee --append "${GITHUB_OUTPUT}"
+        env:
+          DOCKERFILE: ${{ matrix.dockerfile }}
+      - uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5 # tag=v3.2.0
+        with:
+          context: ${{ steps.dockerfile.outputs.context }}
+          platforms: linux/amd64
+          load: true
+          tags: ${{ steps.dockerfile.outputs.image }}:${{ github.sha }}-trivy
+
+      - uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # tag=v0.8.0
+        with:
+          format: sarif
+          hide-progress: false
+          image-ref: ${{ steps.dockerfile.outputs.image }}:${{ github.sha }}-trivy
+          output: trivy-results.sarif
+          scan-type: image
+      - uses: github/codeql-action/upload-sarif@484236cda4f99dce6f67723e95670437c888dffa # tag=codeql-bundle-20221211
+        if: always()
+        with:
+          category: trivy-container
+          sarif_file: trivy-results.sarif

@@ -1,0 +1,89 @@
+---
+name: Release (Container)
+on: # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+    paths:
+      - images/**/Dockerfile
+
+jobs:
+  updated_container:
+    name: List updated containers
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+        with:
+          fetch-depth: 3
+      - uses: tj-actions/changed-files@1d6e210c970d01a876fbc6155212d068e79ca584 # tag=v32.1.2
+        id: changed-files
+        with:
+          files: |
+            **/Dockerfile
+          json: true
+      - id: set-matrix
+        run: echo "matrix={\"dockerfile\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
+
+  build-and-push-image:
+    name: Build & push container image (${{ matrix.dockerfile }})
+    needs: [updated_container]
+    runs-on: ubuntu-latest
+    if: needs.updated_container.outputs.matrix != '{"dockerfile":[]}'
+    strategy:
+      matrix: ${{ fromJSON(needs.updated_container.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+      - uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # tag=v2.1.0
+      - uses: docker/setup-buildx-action@8c0edbc76e98fa90f69d9a2c020dcb50019dc325 # tag=v2.2.1
+      - uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # tag=v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Dockerfile information
+        id: dockerfile
+        run: |
+          # Extract context and image name from path
+          export CONTEXT=${DOCKERFILE%/*}
+          export IMAGE=${CONTEXT#*/}
+          
+          # Load all Dockerfile ARG as environment and substitute all vars in Dockerfile 
+          # to extract some information
+          source <(grep "^ARG" "${DOCKERFILE}" | sed 's/ARG/export/g')
+          
+          echo "context=${CONTEXT}" | tee --append "${GITHUB_OUTPUT}"
+          echo "image=${IMAGE}" | tee --append "${GITHUB_OUTPUT}"
+          echo "version=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.version | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
+          echo "title=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.title | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
+          echo "description=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.description | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
+          echo "url=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.url | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
+          echo "licenses=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.licenses | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
+        env:
+          DOCKERFILE: ${{ matrix.dockerfile }}
+      - id: meta
+        uses: docker/metadata-action@507c2f2dc502c992ad446e3d7a5dfbe311567a96 # v4.3.0
+        with:
+          images: ghcr.io/${{ steps.dockerfile.outputs.image }}
+          flavor: |
+            latest=false
+          tags: |
+            type=raw,value=${{ steps.dockerfile.outputs.version }}
+          labels: |
+            org.opencontainers.image.title=${{ steps.dockerfile.outputs.title }}
+            org.opencontainers.image.description=${{ steps.dockerfile.outputs.description }}
+            org.opencontainers.image.url=${{ steps.dockerfile.outputs.url }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.github.repository }}/blob/${{ github.sha }}/${{ matrix.dockerfile }}
+            org.opencontainers.image.licenses=${{ steps.dockerfile.outputs.licenses }}
+            com.github.belug-apps.ci.workflow.url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - uses: docker/build-push-action@c56af957549030174b10d6867f20e78cfd7debc5 # tag=v3.2.0
+        with:
+          context: ${{ steps.dockerfile.outputs.context }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          sbom: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
