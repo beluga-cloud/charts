@@ -49,7 +49,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           framework: dockerfile
           skip_check: CKV_DOCKER_2
-      - uses: github/codeql-action/upload-sarif@166d98c19e0ce66bdcce7b1596daabd9a05f1ee1 # tag=codeql-bundle-20221211
+      - uses: github/codeql-action/upload-sarif@42d6d35dd1d831e6064c86b91e4b1c804fd9ce12 # tag=codeql-bundle-20221211
         if: always()
         with:
           category: checkov-helm
