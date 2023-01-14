@@ -1,4 +1,4 @@
-FROM quay.io/jetstack/cert-manager-acmesolver:v1.10.1
+FROM quay.io/jetstack/cert-manager-acmesolver:v1.11.0
 
 ARG BUILD_DATE="01/01/1970T00:00:00.000"
 ARG BUILD_REF="refs/HEAD"
