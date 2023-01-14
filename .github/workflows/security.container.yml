@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
         with:
           fetch-depth: 3
-      - uses: tj-actions/changed-files@1d6e210c970d01a876fbc6155212d068e79ca584 # tag=v32.1.2
+      - uses: tj-actions/changed-files@aa52cfcd81f1a00a6bf1241a8cad6adec4d80638 # v33.0.0
         id: changed-files
         with:
           files: |
