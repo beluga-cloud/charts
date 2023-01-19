@@ -1,0 +1,60 @@
+---
+name: Security (Helm)
+on: # yamllint disable-line rule:truthy
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - .github/workflows/security.helm.yml
+      - charts/**
+  push:
+    branches: [main]
+    paths:
+      - charts/**
+
+jobs:
+  updated_charts:
+    name: List updated charts
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+        with:
+          fetch-depth: 3
+      - uses: tj-actions/changed-files@487675b843e203b5c9a92a07f1ed763d046d7283 # v35.4.1
+        id: changed-files
+        with:
+          dir_names: true
+          dir_names_max_depth: 2
+          files: |
+            charts/**
+          json: true
+      - id: set-matrix
+        run: echo "matrix={\"chart\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
+
+  trivy:
+    name: Trivy scan (${{ matrix.chart }})
+    needs: [updated_charts]
+    runs-on: ubuntu-latest
+    if: needs.updated_charts.outputs.matrix != '{"chart":[]}'
+    strategy:
+      matrix: ${{ fromJSON(needs.updated_charts.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+
+      - uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # tag=v0.8.0
+        with:
+          exit-code: '1'
+          format: sarif
+          hide-progress: false
+          output: trivy-results.sarif
+          scan-ref: ${{ matrix.chart }}
+          scan-type: config
+          skip-dirs: charts # we can't do anything to fix dependencies, so we skip them
+          trivyignores: ${{ matrix.chart }}/.trivyignore
+      - uses: github/codeql-action/upload-sarif@484236cda4f99dce6f67723e95670437c888dffa # tag=codeql-bundle-20221211
+        if: always()
+        with:
+          category: trivy-helm-syntax
+          sarif_file: trivy-results.sarif

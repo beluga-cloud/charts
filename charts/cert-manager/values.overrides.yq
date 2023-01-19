@@ -2,7 +2,7 @@
 | (
     select(fileIndex == 0)
     | .cert-manager = {"enabled": true}
-    | .cert-manager.enabled line_comment="# Install cert-manager (disable it to only install issuers)"
+    | .cert-manager.enabled head_comment="Install cert-manager (disable it to only install issuers)"
   ) * (
     {"cert-manager": select(fileIndex == 1)}
   )
