@@ -1,0 +1,41 @@
+---
+name: Lint (Container)
+on: # yamllint disable-line rule:truthy
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - '**/Dockerfile'
+
+jobs:
+  updated_container:
+    name: List updated containers
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+        with:
+          fetch-depth: 3
+      - uses: tj-actions/changed-files@487675b843e203b5c9a92a07f1ed763d046d7283 # v35.4.1
+        id: changed-files
+        with:
+          files: |
+            **/Dockerfile
+          json: true
+      - id: set-matrix
+        run: echo "matrix={\"dockerfile\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
+
+  hadolint:
+    name: Lint container image (${{ matrix.dockerfile }})
+    needs: [updated_container]
+    runs-on: ubuntu-latest
+    if: needs.updated_container.outputs.matrix != '{"dockerfile":[]}'
+    strategy:
+      matrix: ${{ fromJSON(needs.updated_container.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+
+      - uses: hadolint/hadolint-action@4b5806eb9c6bee4954fc0e0cc3ad6175fc9782c1 # v3.0.0
+        with:
+          dockerfile: ${{ matrix.dockerfile }}

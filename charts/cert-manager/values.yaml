@@ -37,7 +37,7 @@ issuers:
   selfsigned: {}
 # cert-manager deployment
 cert-manager:
-  enabled: true # Install cert-manager (disable it to only install issuers)
+  enabled: true
   # Default values for cert-manager.
   # This is a YAML-formatted file.
   # Declare variables to be passed into your templates.
