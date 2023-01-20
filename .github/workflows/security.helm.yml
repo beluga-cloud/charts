@@ -53,7 +53,7 @@ jobs:
           scan-type: config
           skip-dirs: charts # we can't do anything to fix dependencies, so we skip them
           trivyignores: ${{ matrix.chart }}/.trivyignore
-      - uses: github/codeql-action/upload-sarif@484236cda4f99dce6f67723e95670437c888dffa # tag=codeql-bundle-20221211
+      - uses: github/codeql-action/upload-sarif@421a1b344fb0def373a0794a4051f19f207461ec # tag=codeql-bundle-20221211
         if: always()
         with:
           category: trivy-helm-syntax

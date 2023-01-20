@@ -53,7 +53,7 @@ jobs:
           output: trivy-results.sarif
           scan-ref: ${{ matrix.dockerfile }}
           scan-type: config
-      - uses: github/codeql-action/upload-sarif@60e5868d6e0557854172545a67595658546e98e6 # tag=codeql-bundle-20221211
+      - uses: github/codeql-action/upload-sarif@421a1b344fb0def373a0794a4051f19f207461ec # tag=codeql-bundle-20221211
         if: always()
         with:
           category: trivy-container-syntax
@@ -82,7 +82,7 @@ jobs:
           image-ref: ${{ steps.dockerfile.outputs.image }}:${{ github.sha }}-trivy
           output: trivy-results.sarif
           scan-type: image
-      - uses: github/codeql-action/upload-sarif@60e5868d6e0557854172545a67595658546e98e6 # tag=codeql-bundle-20221211
+      - uses: github/codeql-action/upload-sarif@421a1b344fb0def373a0794a4051f19f207461ec # tag=codeql-bundle-20221211
         if: always()
         with:
           category: trivy-container
