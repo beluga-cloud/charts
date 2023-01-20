@@ -43,20 +43,22 @@ jobs:
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
+      # NOTE: this is used to debug trivy reports
+      - uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # tag=v0.8.0
+        with:
+          exit-code: '1'
+          hide-progress: false
+          scan-ref: ${{ matrix.chart }}
+          scan-type: config
+          skip-dirs: charts # we can't do anything to fix dependencies, so we skip them
+          trivyignores: ${{ matrix.chart }}/.trivyignores
+
       - uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # tag=v0.8.0
         with:
           exit-code: '1'
           format: sarif
           hide-progress: false
           output: trivy-results.sarif
-          scan-ref: ${{ matrix.chart }}
-          scan-type: config
-          skip-dirs: charts # we can't do anything to fix dependencies, so we skip them
-          trivyignores: ${{ matrix.chart }}/.trivyignores
-      - uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # tag=v0.8.0
-        with:
-          exit-code: '1'
-          hide-progress: false
           scan-ref: ${{ matrix.chart }}
           scan-type: config
           skip-dirs: charts # we can't do anything to fix dependencies, so we skip them
