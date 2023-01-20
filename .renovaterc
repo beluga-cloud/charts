@@ -4,5 +4,12 @@
     "github>belug-apps/renovate-config:default",
     "github>belug-apps/renovate-config:gitmoji",
     "github>belug-apps/renovate-config:github-actions(nonOfficeHours)"
+  ],
+  "packageRules": [
+    {
+      "matchFiles": ["(^|/)\\.tool-versions$"],
+      "groupName": "ASDF dependencies",
+      "groupSlug": "asdf-dependencies"
+    }
   ]
 }
