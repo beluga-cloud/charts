@@ -18,7 +18,7 @@
 | .cert-manager.image.tag = $origin.cert-manager.image.tag
 | .cert-manager.startupapicheck.image = $registry * .cert-manager.startupapicheck.image
 | .cert-manager.startupapicheck.image.repository = "belug-apps/cert-manager/cmctl"
-| .cert-manager.startupapicheck.image.tag = $origin.cert-manager.acmesolver.image.tag
+| .cert-manager.startupapicheck.image.tag = $origin.cert-manager.startupapicheck.image.tag
 | .cert-manager.webhook.image = $registry * .cert-manager.webhook.image
 | .cert-manager.webhook.image.repository = "belug-apps/cert-manager/webhook"
-| .cert-manager.webhook.image.tag = $origin.cert-manager.acmesolver.image.tag
+| .cert-manager.webhook.image.tag = $origin.cert-manager.webhook.image.tag
