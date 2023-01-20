@@ -12,6 +12,10 @@
       "matchFiles": ["(^|/)\\.tool-versions$"],
       "groupName": "ASDF dependencies",
       "groupSlug": "asdf-dependencies"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "versioning": "semver"
     }
   ],
   "regexManagers": [
