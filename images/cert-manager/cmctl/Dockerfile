@@ -1,5 +1,5 @@
 # renovate: datasource=github-releases depName=cert-manager/cert-manager
-ARG JETSTACK_CERTMANAGER_VERSION=v1.11.0
+ARG JETSTACK_CERTMANAGER_VERSION=v1.10.1
 FROM quay.io/jetstack/cert-manager-ctl:${JETSTACK_CERTMANAGER_VERSION}
 
 LABEL org.opencontainers.image.authors="Belug-Apps <xunleii@users.noreply.github.com>"
