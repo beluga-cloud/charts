@@ -1,6 +1,7 @@
 apiVersion: v2
 name: cert-manager
-version: 1.10.2
+version: 1.10.3
+# renovate: datasource=docker depName=ghcr.io/belug-apps/cert-manager/controller
 appVersion: v1.10.1
 kubeVersion: ">= 1.20.0-0"
 description: A Helm chart for cert-manager
