@@ -94,8 +94,10 @@ cert-manager:
   #   maxUnavailable: 1
 
   # Comma separated list of feature gates that should be enabled on the
-  # controller pod.
+  # controller pod & webhook pod.
   featureGates: ""
+  # The maximum number of challenges that can be scheduled as 'processing' at once
+  maxConcurrentChallenges: 60
   image:
     registry: ghcr.io
     repository: belug-apps/cert-manager/controller
@@ -139,7 +141,7 @@ cert-manager:
   extraArgs: []
   # When this flag is enabled, secrets will be automatically removed when the certificate resource is deleted
   # - --enable-certificate-owner-ref=true
-  # Use this flag to enabled or disable arbitrary controllers, for example, disable the CertificiateRequests approver
+  # Use this flag to enable or disable arbitrary controllers, for example, disable the CertificiateRequests approver
   # - --controllers=*,-certificaterequests-approver
 
   extraEnv: []
@@ -487,6 +489,22 @@ cert-manager:
       automountServiceAccountToken: true
       # Automounting API credentials for a particular pod
       # automountServiceAccountToken: true
+  acmesolver:
+    image:
+      registry: ghcr.io
+      repository: belug-apps/cert-manager/acmesolver
+      # You can manage a registry with
+      # registry: quay.io
+      # repository: jetstack/cert-manager-acmesolver
+
+      tag: v1.11.0
+  # Override the image tag to deploy by setting this variable.
+  # If no value is set, the chart's appVersion will be used.
+  # tag: canary
+
+  # Setting a digest will override any tag
+  # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
+
   # This startupapicheck is a Helm post-install hook that waits for the webhook
   # endpoints to become available.
   # The check is implemented using a Kubernetes Job- if you are injecting mesh
@@ -572,8 +590,3 @@ cert-manager:
         helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
       # Automount API credentials for a Service Account.
       automountServiceAccountToken: true
-  acmesolver:
-    image:
-      registry: ghcr.io
-      repository: belug-apps/cert-manager/acmesolver
-      tag: v1.11.0
