@@ -551,7 +551,7 @@ cert-manager:
       # Setting a digest will override any tag
       # digest: sha256:0e072dddd1f7f8fc8909a2ca6f65e76c5f0d2fcfb8be47935ae3457e8bbceb20
       pullPolicy: IfNotPresent
-      tag: v1.10.1
+      tag: v1.11.0
     rbac:
       # annotations for the startup API Check job RBAC and PSP resources
       annotations:
