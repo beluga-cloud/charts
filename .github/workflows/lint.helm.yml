@@ -66,11 +66,13 @@ jobs:
         env:
           HELM_CONFIG_HOME: ${{ github.workspace }}/.ct
 
-      - name: Check if values.yaml has been updated
-        run: just update_values
+      - name: Build out the charts/ directory and other depending files
+        run: just build_dependency
         working-directory: ${{ github.workspace }}/${{ matrix.chart }}
+
       - uses: tj-actions/verify-changed-files@a148bdba9d2477a2aca3537bd6bc7a7af54b06f2 # v13
         id: get-diff-values
+        continue-on-error: true
         with:
           files: |
             ${{ matrix.chart }}/values.yaml
@@ -78,13 +80,11 @@ jobs:
         if: steps.get-diff-values.outputs.files_changed == 'true'
         run: |
           # shellcheck disable=SC2016
-          echo '::error file=${{ matrix.chart }}/values.yaml,line=1,title=values.yml not up-to-date::${{ matrix.chart }}/values.yaml must be updated. Please run `just update_values` to update it.'
+          echo '::error file=${{ matrix.chart }}/values.yaml,line=1,title=values.yml not up-to-date::${{ matrix.chart }}/values.yaml must be updated. Please run `just build_dependency` to update it.'
 
-      - name: Check if README.md has been updated
-        run: just update_readme
-        working-directory: ${{ github.workspace }}/${{ matrix.chart }}
       - uses: tj-actions/verify-changed-files@a148bdba9d2477a2aca3537bd6bc7a7af54b06f2 # v13
         id: get-diff-readme
+        continue-on-error: true
         with:
           files: |
             ${{ matrix.chart }}/README.md
@@ -92,21 +92,19 @@ jobs:
         if: steps.get-diff-readme.outputs.files_changed == 'true'
         run: |
           # shellcheck disable=SC2016
-          echo '::error file=${{ matrix.chart }}/README.md,line=1,title=README.md not up-to-date::${{ matrix.chart }}/README.md must be updated. Please run `just update_readme` to update it.'
+          echo '::error file=${{ matrix.chart }}/README.md,line=1,title=README.md not up-to-date::${{ matrix.chart }}/README.md must be updated. Please run `just build_dependency` to update it.'
 
-      - name: Check if validation/manifests.yaml has been updated
-        run: just update_validation
-        working-directory: ${{ github.workspace }}/${{ matrix.chart }}
       - uses: tj-actions/verify-changed-files@a148bdba9d2477a2aca3537bd6bc7a7af54b06f2 # v13
         id: get-diff-validation
+        continue-on-error: true
         with:
           files: |
-            ${{ matrix.chart }}/validation/manifests.yaml
-      - name: Assert that validation/manifests.yaml is up-to-date
+            ${{ matrix.chart }}/validation/*
+      - name: Assert that validation/ is up-to-date
         if: steps.get-diff-validation.outputs.files_changed == 'true'
         run: |
           # shellcheck disable=SC2016
-          echo '::error file=${{ matrix.chart }}/validation/manifests.yaml,line=1,title=validation/manifests.yaml not up-to-date::${{ matrix.chart }}/validation/manifests.yaml must be updated. Please run `just update_validation` to update it.'
+          echo '::error title=validation/ not up-to-date::${{ matrix.chart }}/validation must be updated. Please run `just build_dependency` to update it.'
 
       - name: Exit if a file is not up-to-date
         if: steps.get-diff-values.outputs.files_changed == 'true' || steps.get-diff-readme.outputs.files_changed == 'true' || steps.get-diff-validation.outputs.files_changed == 'true'

@@ -19,4 +19,5 @@ build_validation:
 [no-exit-message]
 ct_pre_install:
   {{ if env_var_or_default("CI", "false") =~ '[Tt]rue' { "" } else { "exit 1 # reason: must only be performed within a CI environment" } }}
+  HELM_CONFIG_HOME=../../.ct helm repo update
   HELM_CONFIG_HOME=../../.ct helm upgrade --install cert-manager jetstack/cert-manager --create-namespace --namespace cert-manager-system --set installCRDs=true

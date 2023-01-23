@@ -1,0 +1,52 @@
+---
+# Source: cert-manager-issuers/templates/cluster-issuer.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: clusterissuer-letsencrypt-acme-credentials
+  namespace: cert-manager-issuers-validation
+  labels: 
+    app.kubernetes.io/version: ""
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: cert-manager-issuers-0.0.1
+    issuer.cert-manager.io/name: letsencrypt
+type: Opaque
+stringData: 
+  api-token: CLOUDFLARE_TOKEN
+---
+# Source: cert-manager-issuers/templates/cluster-issuer.yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: acme-letsencrypt
+  labels: 
+    app.kubernetes.io/version: ""
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: cert-manager-issuers-0.0.1
+spec:
+  acme: 
+    email: user@example.com
+    privateKeySecretRef:
+      name: 'clusterissuer-letsencrypt-acme-credentials-issuer-key'
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            key: api-token
+            name: 'clusterissuer-letsencrypt-acme-credentials'
+      selector:
+        dnsZones:
+        - example.com
+---
+# Source: cert-manager-issuers/templates/cluster-issuer.yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-shared-ss
+  labels: 
+    app.kubernetes.io/version: ""
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: cert-manager-issuers-0.0.1
+spec:
+  selfSigned: {}
