@@ -1,0 +1,45 @@
+# each issuer follows the same structure:
+#  issuer-type:
+#    issuer-name:
+#      metadata:
+#        annotations: {} # (Optional) additional annotations
+#        labels: {} # (Optional) additional labels
+#      spec: {} # Issuer configuration (using the same pattern as used inside the issuer CRD)
+#      NOTE: template are allowed here. However, only two value are provided:
+#      - credentials.name - contains the secret name containing credentials
+#      - credentials.namespace - contains the secret namespace containing credentials
+#      credentials: {} # (Optional) create a secret used to store credentials
+#
+# e.g. cluster issuer configured to used Cloudflare as DNS resolver
+#  acme:
+#    letsencrypt:
+#      spec:
+#        email: user@example.com
+#        server: https://acme-v02.api.letsencrypt.org/directory
+#        solvers:
+#          - selector:
+#              dnsZones: [example.com]
+#            dns01:
+#              cloudflare:
+#                apiTokenSecretRef:
+#                  name: '{{ .credentials.name }}'
+#                  key: api-token
+#        privateKeySecretRef:
+#          name: '{{ .credentials.name }}-issuer-key'
+#      credentials:
+#        api-token: CLOUDFLARE_TOKEN
+issuers:
+  # ACME issuers
+  # ref: https://cert-manager.io/docs/configuration/acme/
+  acme: {}
+  # SelfSigned issuers
+  # ref: https://cert-manager.io/docs/configuration/selfsigned/
+  selfSigned: {}
+
+clusterIssuers:
+  # ACME issuers
+  # ref: https://cert-manager.io/docs/configuration/acme/
+  acme: {}
+  # SelfSigned issuers
+  # ref: https://cert-manager.io/docs/configuration/selfsigned/
+  selfSigned: {}
