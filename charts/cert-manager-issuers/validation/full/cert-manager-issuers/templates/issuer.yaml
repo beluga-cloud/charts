@@ -1,0 +1,95 @@
+---
+# Source: cert-manager-issuers/templates/issuer.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: issuer-letsencrypt-acme-credentials
+  namespace: cert-manager-issuers-validation
+  labels: 
+    app.kubernetes.io/version: ""
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: cert-manager-issuers-0.0.1
+    issuer.cert-manager.io/name: letsencrypt
+type: Opaque
+stringData: 
+  api-token: CLOUDFLARE_TOKEN
+---
+# Source: cert-manager-issuers/templates/issuer.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: issuer-letsencrypt-staging-acme-credentials
+  namespace: default
+  labels: 
+    app.kubernetes.io/version: ""
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: cert-manager-issuers-0.0.1
+    issuer.cert-manager.io/name: letsencrypt-staging
+type: Opaque
+stringData: 
+  api-token: CLOUDFLARE_TOKEN
+---
+# Source: cert-manager-issuers/templates/issuer.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: acme-letsencrypt
+  namespace: cert-manager-issuers-validation
+  labels: 
+    app.kubernetes.io/version: ""
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: cert-manager-issuers-0.0.1
+spec:
+  acme: 
+    email: user@example.com
+    privateKeySecretRef:
+      name: 'issuer-letsencrypt-acme-credentials-issuer-key'
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            key: api-token
+            name: 'issuer-letsencrypt-acme-credentials'
+      selector:
+        dnsZones:
+        - example.com
+---
+# Source: cert-manager-issuers/templates/issuer.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: acme-letsencrypt-staging
+  namespace: default
+  labels: 
+    app.kubernetes.io/version: ""
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: cert-manager-issuers-0.0.1
+spec:
+  acme: 
+    email: user@example.com
+    privateKeySecretRef:
+      name: 'issuer-letsencrypt-staging-acme-credentials-issuer-key'
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            key: api-token
+            name: 'issuer-letsencrypt-staging-acme-credentials'
+      selector:
+        dnsNames:
+        - cm.example.com
+---
+# Source: cert-manager-issuers/templates/issuer.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-default
+  namespace: default
+  labels: 
+    app.kubernetes.io/version: ""
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: cert-manager-issuers-0.0.1
+spec:
+  selfSigned: {}
