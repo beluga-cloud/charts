@@ -1,3 +1,5 @@
 .justfile
+.trivyignores
 ci/
+images/
 validation/
