@@ -1,8 +1,8 @@
 apiVersion: v2
 name: cert-manager-issuers
-version: 0.0.1
-kubeVersion: ">= 1.20.0-0"
 description: Helper for `cert-manager` to manage Issuers and ClusterIssuers via Helm
+version: 1.0.0
+kubeVersion: ">= 1.20.0-0"
 home: https://github.com/cert-manager/cert-manager
 icon: https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo-small.png
 keywords:
