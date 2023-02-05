@@ -1,0 +1,28 @@
+---
+# Source: helm-dashboard/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: helm-dashboard
+  annotations:
+    annotations: enabled
+  labels:
+    app.kubernetes.io/name: helm-dashboard
+    helm.sh/chart: helm-dashboard-1.0.0
+    app.kubernetes.io/instance: helm-dashboard
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec:
+  ingressClassName: "nginx"
+  rules:
+    - host: helm-dashboard.example.com
+      http:
+        paths:
+          - path: /dashboard
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: helm-dashboard
+                port:
+                  number: 8888

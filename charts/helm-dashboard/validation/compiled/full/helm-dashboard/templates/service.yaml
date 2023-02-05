@@ -1,0 +1,26 @@
+---
+# Source: helm-dashboard/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: helm-dashboard
+  annotations:
+    annotations: enabled
+  labels:
+    app.kubernetes.io/name: helm-dashboard
+    helm.sh/chart: helm-dashboard-1.0.0
+    app.kubernetes.io/instance: helm-dashboard
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec:
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 8888
+      targetPort: web
+      nodePort: null
+  selector:
+    app.kubernetes.io/name: helm-dashboard
+    app.kubernetes.io/instance: helm-dashboard
+    podLabels: enabled
