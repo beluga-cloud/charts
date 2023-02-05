@@ -7,6 +7,9 @@ on: # yamllint disable-line rule:truthy
       - .github/workflows/lint.helm.yml
       - charts/**
 
+env:
+  HELM_CONFIG_HOME: ${{ github.workspace }}/e2e/~helm
+
 jobs:
   # Lint all charts using the official chart-testing CLI.
   chart_testing:
@@ -25,8 +28,6 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: ct lint --target-branch ${{ github.event.pull_request.base.ref }}
-        env:
-          HELM_CONFIG_HOME: ${{ github.workspace }}/.ct
 
   updated_charts:
     name: List updated charts
@@ -63,11 +64,9 @@ jobs:
       - name: Build helm dependencies
         run: helm dependencies build
         working-directory: ${{ github.workspace }}/${{ matrix.chart }}
-        env:
-          HELM_CONFIG_HOME: ${{ github.workspace }}/.ct
 
-      - name: Build out the charts/ directory and other depending files
-        run: just build_dependency
+      - name: Build out the charts/ directory with all depending files
+        run: just build-external
         working-directory: ${{ github.workspace }}/${{ matrix.chart }}
 
       - uses: tj-actions/verify-changed-files@9ed3155b72ba709881c967f75611fc5852f773b9 # v13
@@ -80,7 +79,7 @@ jobs:
         if: steps.get-diff-values.outputs.files_changed == 'true'
         run: |
           # shellcheck disable=SC2016
-          echo '::error file=${{ matrix.chart }}/values.yaml,line=1,title=values.yml not up-to-date::${{ matrix.chart }}/values.yaml must be updated. Please run `just build_dependency` to update it.'
+          echo '::error file=${{ matrix.chart }}/values.yaml,line=1,title=values.yml not up-to-date::${{ matrix.chart }}/values.yaml must be updated. Please run `just build-external` to update it.'
 
       - uses: tj-actions/verify-changed-files@9ed3155b72ba709881c967f75611fc5852f773b9 # v13
         id: get-diff-readme
@@ -92,7 +91,7 @@ jobs:
         if: steps.get-diff-readme.outputs.files_changed == 'true'
         run: |
           # shellcheck disable=SC2016
-          echo '::error file=${{ matrix.chart }}/README.md,line=1,title=README.md not up-to-date::${{ matrix.chart }}/README.md must be updated. Please run `just build_dependency` to update it.'
+          echo '::error file=${{ matrix.chart }}/README.md,line=1,title=README.md not up-to-date::${{ matrix.chart }}/README.md must be updated. Please run `just build-external` to update it.'
 
       - uses: tj-actions/verify-changed-files@9ed3155b72ba709881c967f75611fc5852f773b9 # v13
         id: get-diff-validation
@@ -104,7 +103,7 @@ jobs:
         if: steps.get-diff-validation.outputs.files_changed == 'true'
         run: |
           # shellcheck disable=SC2016
-          echo '::error title=validation/ not up-to-date::${{ matrix.chart }}/validation must be updated. Please run `just build_dependency` to update it.'
+          echo '::error title=validation/ not up-to-date::${{ matrix.chart }}/validation must be updated. Please run `just build-external` to update it.'
 
       - name: Exit if a file is not up-to-date
         if: steps.get-diff-values.outputs.files_changed == 'true' || steps.get-diff-readme.outputs.files_changed == 'true' || steps.get-diff-validation.outputs.files_changed == 'true'

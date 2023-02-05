@@ -4,6 +4,9 @@ on: # yamllint disable-line rule:truthy
   push:
     branches: [main]
 
+env:
+  HELM_CONFIG_HOME: ${{ github.workspace }}/e2e/~helm
+
 jobs:
   release:
     name: Release Helm charts
@@ -26,4 +29,3 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_PAGES_BRANCH: gh-helm
-          HELM_CONFIG_HOME: ${{ github.workspace }}/.ct
