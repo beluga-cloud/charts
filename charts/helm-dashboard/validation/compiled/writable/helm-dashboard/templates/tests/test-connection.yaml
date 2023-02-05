@@ -1,0 +1,33 @@
+---
+# Source: helm-dashboard/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "helm-dashboard-test-connection"
+  labels:
+    app.kubernetes.io/name: helm-dashboard
+    helm.sh/chart: helm-dashboard-1.0.0
+    app.kubernetes.io/instance: helm-dashboard
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      args: ['--timeout=5', '-O/dev/null', 'helm-dashboard:8080']
+      command: ['wget']
+      image: busybox:musl
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+  restartPolicy: Never
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
