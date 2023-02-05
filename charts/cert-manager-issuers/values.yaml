@@ -10,7 +10,7 @@
 #      - credentials.namespace - contains the secret namespace containing credentials
 #      credentials: {} # (Optional) create a secret used to store credentials
 #
-# e.g. cluster issuer configured to used Cloudflare as DNS resolver
+# e.g. cluster issuer configured to use Cloudflare as DNS resolver
 #  acme:
 #    letsencrypt:
 #      spec:
