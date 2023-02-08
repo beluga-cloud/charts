@@ -70,7 +70,7 @@ jobs:
         run: just build_dependency
         working-directory: ${{ github.workspace }}/${{ matrix.chart }}
 
-      - uses: tj-actions/verify-changed-files@a148bdba9d2477a2aca3537bd6bc7a7af54b06f2 # v13
+      - uses: tj-actions/verify-changed-files@9ed3155b72ba709881c967f75611fc5852f773b9 # v13
         id: get-diff-values
         continue-on-error: true
         with:
@@ -82,7 +82,7 @@ jobs:
           # shellcheck disable=SC2016
           echo '::error file=${{ matrix.chart }}/values.yaml,line=1,title=values.yml not up-to-date::${{ matrix.chart }}/values.yaml must be updated. Please run `just build_dependency` to update it.'
 
-      - uses: tj-actions/verify-changed-files@a148bdba9d2477a2aca3537bd6bc7a7af54b06f2 # v13
+      - uses: tj-actions/verify-changed-files@9ed3155b72ba709881c967f75611fc5852f773b9 # v13
         id: get-diff-readme
         continue-on-error: true
         with:
@@ -94,7 +94,7 @@ jobs:
           # shellcheck disable=SC2016
           echo '::error file=${{ matrix.chart }}/README.md,line=1,title=README.md not up-to-date::${{ matrix.chart }}/README.md must be updated. Please run `just build_dependency` to update it.'
 
-      - uses: tj-actions/verify-changed-files@a148bdba9d2477a2aca3537bd6bc7a7af54b06f2 # v13
+      - uses: tj-actions/verify-changed-files@9ed3155b72ba709881c967f75611fc5852f773b9 # v13
         id: get-diff-validation
         continue-on-error: true
         with:
