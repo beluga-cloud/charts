@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
           fetch-depth: 3
-      - uses: tj-actions/changed-files@57d9664f8e2aa45f26bcb59095f99aa47ae8e90d # v35.4.4
+      - uses: tj-actions/changed-files@7f2aa19bdcf4a00195671e368091a1e32a694ac5 # v35.5.2
         id: changed-files
         with:
           dir_names: true
@@ -44,7 +44,7 @@ jobs:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       # NOTE: this is used to debug trivy reports
-      - uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # tag=v0.8.0
+      - uses: aquasecurity/trivy-action@8bd2f9fbda2109502356ff8a6a89da55b1ead252 # 0.9.1
         with:
           hide-progress: false
           scan-ref: ${{ matrix.chart }}
@@ -52,7 +52,7 @@ jobs:
           skip-dirs: charts # we can't do anything to fix dependencies, so we skip them
           trivyignores: ${{ matrix.chart }}/.trivyignores
 
-      - uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5 # tag=v0.8.0
+      - uses: aquasecurity/trivy-action@8bd2f9fbda2109502356ff8a6a89da55b1ead252 # 0.9.1
         with:
           exit-code: '1'
           format: sarif
