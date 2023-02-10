@@ -78,12 +78,12 @@ e2e-setup: build-images
 # install all required resources to install and run the application properly
 [private]
 [no-exit-message]
-@e2e-prepare:
+e2e-prepare CLUSTER_NAME=chart_name:
   #!/usr/bin/env bash
   for image in images/*; do
     image_name="{{ container_registry }}/belug-apps/{{ chart_name }}/$(basename "${image}")"
     image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
-    {{exec}} kind load docker-image --name {{ chart_name }} "${image_name}:${image_version}"
+    {{exec}} kind load docker-image --name {{ CLUSTER_NAME }} "${image_name}:${image_version}"
   done
 
 # remove the local environment to run e2e tests locally
