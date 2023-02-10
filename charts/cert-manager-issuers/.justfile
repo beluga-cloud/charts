@@ -69,7 +69,7 @@ e2e-setup: build-images
 # install all required resources to install and run the application properly
 [private]
 [no-exit-message]
-@e2e-prepare:
+@e2e-prepare CLUSTER_NAME=chart_name:
   HELM_CONFIG_HOME=../../e2e/~helm {{exec}} helm repo update
   HELM_CONFIG_HOME=../../e2e/~helm {{exec}} helm upgrade --install cert-manager jetstack/cert-manager --create-namespace --namespace cert-manager-system --set installCRDs=true
 
