@@ -52,7 +52,7 @@ spec:
               - ALL
             readOnlyRootFilesystem: false
             runAsNonRoot: true
-          image: ghcr.io/belug-apps/helm-dashboard/dashboard:0.3.1
+          image: ghcr.io/belug-apps/helm-dashboard/dashboard:1.0.0
           imagePullPolicy: IfNotPresent
           env:
             - name: HELM_CACHE_HOME

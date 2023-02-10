@@ -3,7 +3,7 @@ type: application
 name: helm-dashboard
 description: A GUI Dashboard for Helm by Komodor
 version: 1.0.0
-appVersion: 0.3.1
+appVersion: 1.0.0
 kubeVersion: '>=1.20'
 home: https://github.com/komodorio/helm-dashboard
 icon: https://raw.githubusercontent.com/komodorio/helm-dashboard/main/pkg/dashboard/static/logo.svg
