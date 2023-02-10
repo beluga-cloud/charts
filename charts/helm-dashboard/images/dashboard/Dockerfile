@@ -22,7 +22,7 @@ RUN apk add --update --no-cache python3 \
     && pip3 install --upgrade --no-cache-dir pip setuptools
 
 # renovate: datasource=github-release depName=komodorio/helm-dashboard versioning=semver
-ARG HELM_DASHBOARD_VERSION=v0.3.1
+ARG HELM_DASHBOARD_VERSION=v1.0.0
 # renovate: datasource=github-tags depName=kubernetes/kubectl versioning=semver
 ARG KUBECTL_VERSION=v1.26.1
 # renovate: datasource=github-release depName=aquasecurity/trivy versioning=semver
