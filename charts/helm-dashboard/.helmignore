@@ -3,6 +3,6 @@ images/
 validation/
 
 .justfile
-.trivyignores
+.trivyignore
 README.md
 README.md.gotmpl
