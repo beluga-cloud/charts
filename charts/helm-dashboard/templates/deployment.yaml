@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  {{- with .Values.podAnnotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- with .Values.global.commonLabels }}{{ toYaml . | nindent 4 }}{{ end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+    {{- include "common.labels.matchLabels" . | nindent 6 }}
+    {{- with .Values.podLabels }}{{ toYaml . | nindent 6 }}{{ end }}
+  {{- with .Values.strategy }}
+  strategy: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "common.labels.matchLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}{{ toYaml . | nindent 8 }}{{ end }}
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "common.names.fullname" . }}
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: helm-dashboard
+          securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          {{- if not .Values.image.registry }}
+          {{- $repo := regexSplit "/" (trim .Values.image.repository) 2 }}
+          {{- $_ := set .Values.image "registry" (.Values.global.imageRegistry | default (index $repo 0)) }}
+          {{- $_ = set .Values.image "repository" (trimPrefix "/" (index $repo 1)) }}
+          {{- else if .Values.global.imageRegistry }}
+          {{- $_ := set .Values.image "registry" .Values.global.imageRegistry }}
+          {{- end }}
+          {{- if not .Values.image.tag }}{{ $_ := set .Values.image "tag" .Chart.AppVersion }}{{ end }}
+          image: {{ include "common.images.image" ( dict "imageRoot" .Values.image "global" $) }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: HELM_CACHE_HOME
+              value: /opt/dashboard/helm/cache
+            - name: HELM_CONFIG_HOME
+              value: /opt/dashboard/helm/config
+            - name: HELM_DATA_HOME
+              value: /opt/dashboard/helm/data
+            {{- with .Values.global.debug }}
+            - name: DEBUG
+              value: "1"
+            {{- end }}
+          ports:
+            - name: web
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: web
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: web
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /opt/dashboard/helm
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "common.names.fullname" . }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}

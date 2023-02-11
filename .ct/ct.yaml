@@ -1,3 +1,0 @@
-# chart-testing configuration file
-chart-repos:
-  - charts.jetstack.io=https://charts.jetstack.io
