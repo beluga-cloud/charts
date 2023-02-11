@@ -1,5 +1,7 @@
-.justfile
-.trivyignore
-ci/
+ci
 images/
 validation/
+
+.justfile
+.trivyignore
+README.md.gotmpl
