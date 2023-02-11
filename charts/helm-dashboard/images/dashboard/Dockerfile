@@ -7,36 +7,25 @@ WORKDIR /build
 RUN git clone https://github.com/komodorio/helm-dashboard --branch ${HELM_DASHBOARD_VERSION}
 
 WORKDIR /build/helm-dashboard
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN CGO_ENABLED=0 go build \
     -ldflags "-X main.version=${HELM_DASHBOARD_VERSION} -X main.date=$(date --iso-8601=ns) -X main.commit=$(git rev-parse HEAD)" \
     -o ../dashboard .
 
-FROM docker.io/alpine/helm:3.10.2
+FROM docker.io/alpine/helm:3.10.2 as helm_packager
+FROM docker.io/bitnami/kubectl:1.26.1 as kubectl_packager
+FROM docker.io/aquasec/trivy:0.37.2 as trivy_packager
 
-SHELL ["/bin/ash", "-o", "pipefail", "-c"]
-
-# hadolint ignore=DL3013,DL3018
-RUN apk upgrade --no-cache \
-    && apk add --update --no-cache python3 \
-    && python3 -m ensurepip \
-    && pip3 install --upgrade --no-cache-dir pip setuptools
+FROM docker.io/alpine:3.17.2
 
 # renovate: datasource=github-release depName=komodorio/helm-dashboard versioning=semver
 ARG HELM_DASHBOARD_VERSION=v1.0.0
-# renovate: datasource=github-tags depName=kubernetes/kubectl versioning=semver
-ARG KUBECTL_VERSION=v1.26.1
-# renovate: datasource=github-release depName=aquasecurity/trivy versioning=semver
-ARG TRIVY_VERSION=v0.18.3
 
-RUN curl --output /bin/kubectl --verbose --fail --location "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
-      && chmod +x /bin/kubectl \
-      && kubectl version --client \
-    && curl --silent --fail --location https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
-      | sh -s -- -b /usr/local/bin ${TRIVY_VERSION} \
-      && trivy --version
-
+RUN apk upgrade --no-cache
 COPY --from=builder /build/dashboard /bin/helm-dashboard
+COPY --from=helm_packager /usr/bin/helm /bin/helm
+COPY --from=kubectl_packager /opt/bitnami/kubectl/bin/kubectl /bin/kubectl
+COPY --from=trivy_packager /usr/local/bin/trivy /bin/trivy
+
 USER 65533
 
 EXPOSE 8080
