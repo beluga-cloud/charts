@@ -5,7 +5,11 @@ on: # yamllint disable-line rule:truthy
     types: [opened, synchronize]
     paths:
       - .github/workflows/lint.helm.yml
-      - charts/**
+      # NOTE: only few changes should trigger this pipeline
+      - charts/*/templates/**
+      - charts/*/Chart.[yaml|lock]
+      - charts/*/README.md
+      - charts/*/values.yaml
 
 env:
   HELM_CONFIG_HOME: ${{ github.workspace }}/e2e/~helm

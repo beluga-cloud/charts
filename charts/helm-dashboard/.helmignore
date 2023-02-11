@@ -4,5 +4,4 @@ validation/
 
 .justfile
 .trivyignore
-README.md
 README.md.gotmpl
