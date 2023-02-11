@@ -50,7 +50,8 @@ jobs:
         run: |
           # Extract context and image name from path
           export CONTEXT=${DOCKERFILE%/*}
-          export IMAGE=${CONTEXT#*/}
+          IMAGE=$(awk <<<"${CONTEXT}" -F[/] '{ printf "%s/%s", $2, $4 }')
+          export IMAGE
           
           # Load all Dockerfile ARG as environment and substitute all vars in Dockerfile 
           # to extract some information
