@@ -1,4 +1,4 @@
-FROM docker.io/library/golang:1.19.4 as builder
+FROM docker.io/library/golang:1.20.0 as builder
 
 # renovate: datasource=github-release depName=komodorio/helm-dashboard versioning=semver
 ARG HELM_DASHBOARD_VERSION=v0.3.1
