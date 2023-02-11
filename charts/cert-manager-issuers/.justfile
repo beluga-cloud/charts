@@ -52,6 +52,26 @@ lint-images +IMAGES="all":
 @lint-chart:
   {{exec}} ct lint --charts "${PWD}"
 
+# scan images and chart for missconfiguration or security issues
+[no-exit-message]
+security-scan OPTS="": (security-scan-images OPTS) (security-scan-chart OPTS)
+
+# scan one or multiple images for missconfiguration or security issues
+[no-exit-message]
+security-scan-images OPTS="" +IMAGES="all":
+  #!/usr/bin/env bash
+  for image in {{ if IMAGES == "all" { `echo images/*` } else { IMAGES } }}; do
+    image_name="{{ container_registry }}/belug-apps/{{ chart_name }}/$(basename "${image}")"
+    image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
+    {{exec}} trivy config "${image}/Dockerfile" {{ OPTS }}
+    {{exec}} trivy image "${image_name}:${image_version}" {{ OPTS }}
+  done
+
+# scan current chart for missconfiguration or security issues
+[no-exit-message]
+security-scan-chart OPTS="":
+  {{ exec }} trivy config . {{ OPTS }}
+
 # install and test the current application into a local cluster
 [no-exit-message]
 e2e-run: e2e-setup e2e-prepare && e2e-teardown
