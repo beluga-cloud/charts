@@ -17,7 +17,8 @@ FROM docker.io/alpine/helm:3.10.2
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
 # hadolint ignore=DL3013,DL3018
-RUN apk add --update --no-cache python3 \
+RUN apk upgrade --no-cache \
+    && apk add --update --no-cache python3 \
     && python3 -m ensurepip \
     && pip3 install --upgrade --no-cache-dir pip setuptools
 
