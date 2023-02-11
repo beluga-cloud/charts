@@ -17,8 +17,13 @@ build-external: build-chart build-validation-files build-readme
 
 # build one or multiple images (use relative path from current directory)
 [no-exit-message]
-@build-images +IMAGES="all":
-  # NOTE: no image to build
+build-images +IMAGES="all":
+  #!/usr/bin/env bash
+  for image in {{ if IMAGES == "all" { `echo images/*` } else { IMAGES } }}; do
+    image_name="{{ container_registry }}/belug-apps/{{ chart_name }}/$(basename "${image}")"
+    image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
+    {{exec}} docker build --quiet "${image}" --tag "${image_name}:${image_version}"
+  done
 
 # build out the charts/ directory from the Chart.lock file
 [no-exit-message]
@@ -46,6 +51,10 @@ lint: lint-images lint-chart
 # lint one or multiple images (use relative path from current directory)
 [no-exit-message]
 lint-images +IMAGES="all":
+  #!/usr/bin/env bash
+  for image in {{ if IMAGES == "all" { `echo images/*` } else { IMAGES } }}; do
+    {{exec}} hadolint "${image}/Dockerfile" && echo "No issue found"
+  done
 
 # runs a series of tests to verify that the chart is well-formed
 [no-exit-message]
@@ -69,9 +78,13 @@ e2e-setup: build-images
 # install all required resources to install and run the application properly
 [private]
 [no-exit-message]
-@e2e-prepare CLUSTER_NAME=chart_name:
-  HELM_CONFIG_HOME=../../e2e/~helm {{exec}} helm repo update
-  HELM_CONFIG_HOME=../../e2e/~helm {{exec}} helm upgrade --install cert-manager jetstack/cert-manager --create-namespace --namespace cert-manager-system --set installCRDs=true
+e2e-prepare CLUSTER_NAME=chart_name:
+  #!/usr/bin/env bash
+  for image in images/*; do
+    image_name="{{ container_registry }}/belug-apps/{{ chart_name }}/$(basename "${image}")"
+    image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
+    {{exec}} kind load docker-image --name {{ CLUSTER_NAME }} "${image_name}:${image_version}"
+  done
 
 # remove the local environment to run e2e tests locally
 [private]

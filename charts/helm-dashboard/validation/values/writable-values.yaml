@@ -1,0 +1,4 @@
+ingress:
+  enabled: true
+rbac:
+  allowWriteActions: true
