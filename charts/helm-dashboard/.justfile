@@ -22,7 +22,7 @@ build-images +IMAGES="all":
   for image in {{ if IMAGES == "all" { `echo images/*` } else { IMAGES } }}; do
     image_name="{{ container_registry }}/belug-apps/{{ chart_name }}/$(basename "${image}")"
     image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
-    {{exec}} docker build --quiet "${image}" --tag "${image_name}:${image_version}"
+    {{exec}} docker build "${image}" --tag "${image_name}:${image_version}"
   done
 
 # build out the charts/ directory from the Chart.lock file
