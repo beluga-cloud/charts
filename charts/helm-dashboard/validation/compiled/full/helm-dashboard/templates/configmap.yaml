@@ -3,27 +3,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: helm-dashboard-repositories
+  name: helm-dashboard-repositories-script
 data:
-  repositories.yaml: |
-    apiVersion: ""
-    generated: "0001-01-01T00:00:00Z"
-    repositories:
-    - caFile: ""
-      certFile: ""
-      insecure_skip_tls_verify: false
-      keyFile: ""
-      name: "komodorio"
-      pass_credentials_all: false
-      password: ""
-      url: "https://helm-charts.komodor.io"
-      username: ""
-    - caFile: ""
-      certFile: ""
-      insecure_skip_tls_verify: true
-      keyFile: ""
-      name: "belug-apps"
-      pass_credentials_all: true
-      password: "password"
-      url: "https://belug-apps.github.io/catalog"
-      username: "username"
+  preload-repositories.sh: |
+    #!/bin/env bash
+    helm repo add "komodorio" "https://helm-charts.komodor.io"
+    helm repo add "belug-apps" "https://belug-apps.github.io/catalog" --insecure-skip-tls-verify --username "username" --password "password" --pass-credentials

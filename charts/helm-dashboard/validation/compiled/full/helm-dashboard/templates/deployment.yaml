@@ -102,17 +102,15 @@ spec:
             runAsGroup: 65463
             runAsNonRoot: true
             runAsUser: 65463
-          image: ghcr.io/belug-apps/helm-dashboard/config-preloader:1.0.0
+          image: ghcr.io/belug-apps/helm-dashboard/dashboard:1.0.0
           imagePullPolicy: IfNotPresent
-          args:
-            - /opt/dashboard/default/repositories.yaml
-            - $HELM_CONFIG_HOME/repositories.yaml
+          command: ["/opt/bin/preload-repositories.sh"]
           env:
             - name: HELM_CONFIG_HOME
               value: /opt/dashboard/helm/config
           volumeMounts:
-            - name: repositories
-              mountPath: /opt/dashboard/default
+            - name: preload-script
+              mountPath: /opt/bin
             - name: data
               mountPath: /opt/dashboard/helm
           workingDir: /opt/dashboard
@@ -137,9 +135,10 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: helm-dashboard
-        - name: repositories
+        - name: preload-script
           configMap:
-            name: helm-dashboard-repositories
+            name: helm-dashboard-repositories-script
+            defaultMode: 0744
         - name: cache
           emptyDir: {}
         - name: tempdir

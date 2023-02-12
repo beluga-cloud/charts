@@ -110,11 +110,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `images.dashboard.registry` | helm-dashboard image registry (optional) | `""` |
 | `images.dashboard.repository` | helm-dashboard image repository | `"ghcr.io/belug-apps/helm-dashboard/dashboard"` |
 | `images.dashboard.tag` | helm-dashboard image tag (immutable tags are recommended) | `""` |
-| `images.preloader.digest` | helm-dashboard config preloader image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
-| `images.preloader.pullPolicy` | helm-dashboard config preloader image pull policy | `"IfNotPresent"` |
-| `images.preloader.registry` | helm-dashboard config preloader image registry (optional) | `""` |
-| `images.preloader.repository` | helm-dashboard config preloader image repository | `"ghcr.io/belug-apps/helm-dashboard/config-preloader"` |
-| `images.preloader.tag` | helm-dashboard config preloader image tag (immutable tags are recommended) | `"1.0.0"` |
 | `rbac.allowWriteActions` | allow helm-dashboard to create/edit/delete Kubernetes resources | `false` |
 
 ### Security parameters
