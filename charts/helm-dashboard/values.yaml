@@ -100,6 +100,7 @@ resources:
 
 # -- Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))
 podSecurityContext:
+  fsGroup: 65463
   runAsNonRoot: true
   runAsUser: 65463
   runAsGroup: 65463

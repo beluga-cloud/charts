@@ -5,7 +5,7 @@ metadata:
   name: {{ include "common.names.fullname" . }}-repositories-script
 data:
   preload-repositories.sh: |
-    #!/bin/env bash
+    #!/usr/bin/env sh
 
     {{- range .Values.helm_dashboard.repositories }}
     helm repo add {{ required "repository name is required" .name | quote }} {{ required "repository URL is required" .url | quote }}{{ with .insecure_skip_tls_verify }} --insecure-skip-tls-verify{{end}}{{ with .caFile }} --ca-file {{. | quote}}{{end}}{{ with .certFile }} --cert-file {{. | quote}}{{end}}{{ with .keyFile }} --key-file {{. | quote}}{{end}}{{ with .username }} --username {{. | quote}}{{end}}{{ with .password }} --password {{. | quote}}{{end}}{{ if .pass_credentials_all }} --pass-credentials{{end}}
