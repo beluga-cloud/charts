@@ -6,7 +6,7 @@ metadata:
   name: helm-dashboard
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-1.0.2
+    helm.sh/chart: helm-dashboard-1.1.0
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -23,9 +23,9 @@ spec:
     spec:
       serviceAccountName: helm-dashboard
       securityContext:
-        runAsGroup: 65533
+        runAsGroup: 65463
         runAsNonRoot: true
-        runAsUser: 65533
+        runAsUser: 65463
         seccompProfile:
           type: RuntimeDefault
       containers:
@@ -36,9 +36,9 @@ spec:
               drop:
               - ALL
             readOnlyRootFilesystem: true
-            runAsGroup: 65533
+            runAsGroup: 65463
             runAsNonRoot: true
-            runAsUser: 65533
+            runAsUser: 65463
           image: ghcr.io/belug-apps/helm-dashboard/dashboard:1.0.0
           imagePullPolicy: IfNotPresent
           env:

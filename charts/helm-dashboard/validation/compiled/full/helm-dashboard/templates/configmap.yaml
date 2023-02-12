@@ -1,0 +1,29 @@
+---
+# Source: helm-dashboard/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helm-dashboard-repositories
+data:
+  repositories.yaml: |
+    apiVersion: ""
+    generated: "0001-01-01T00:00:00Z"
+    repositories:
+    - caFile: ""
+      certFile: ""
+      insecure_skip_tls_verify: false
+      keyFile: ""
+      name: "komodorio"
+      pass_credentials_all: false
+      password: ""
+      url: "https://helm-charts.komodor.io"
+      username: ""
+    - caFile: ""
+      certFile: ""
+      insecure_skip_tls_verify: true
+      keyFile: ""
+      name: "belug-apps"
+      pass_credentials_all: true
+      password: "password"
+      url: "https://belug-apps.github.io/catalog"
+      username: "username"

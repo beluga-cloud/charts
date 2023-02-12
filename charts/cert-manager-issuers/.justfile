@@ -28,7 +28,7 @@ build-external: build-chart build-validation-files build-readme
 # generates all resources managed by this chart application to quickly see any changes
 [no-exit-message]
 @build-validation-files:
-  {{exec}} rm --recursive validation/compiled
+  {{exec}} rm --recursive --force validation/compiled
   {{exec}} helm template {{ chart_name }} . --create-namespace --namespace {{ chart_name }}-validation --output-dir validation/compiled/default
   for value in `find validation/values -name '*-values.yaml' -printf '%f\n' | cut -d'-' -f1`; do \
     {{exec}} helm template {{ chart_name }} . --create-namespace --namespace {{ chart_name }}-validation --values validation/values/${value}-values.yaml --output-dir validation/compiled/${value}; \
