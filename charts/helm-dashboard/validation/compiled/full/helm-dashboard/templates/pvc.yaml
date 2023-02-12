@@ -1,30 +1,6 @@
 ---
 # Source: helm-dashboard/templates/pvc.yaml
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: helm-dashboard
-  namespace: "helm-dashboard-validation"
-  annotations:
-    annotations: enabled
-  labels:
-    app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-1.1.1
-    app.kubernetes.io/instance: helm-dashboard
-    app.kubernetes.io/managed-by: Helm
-    commonLabels01: enabled
-    commonLabels02: enabled
-spec:
-  storageClassName: helm-dashboard-volume
-  accessModes:
-    - "ReadWriteOnce"
-  capacity:
-    storage: "20M"
-  hostPath:
-    path: "/tmp/helm-dasboard"
----
-# Source: helm-dashboard/templates/pvc.yaml
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: helm-dashboard
@@ -32,13 +8,13 @@ metadata:
     annotations: enabled
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-1.1.1
+    helm.sh/chart: helm-dashboard-1.2.0
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
     commonLabels02: enabled
 spec:
-  storageClassName: helm-dashboard-volume
+  storageClassName: "standard"
   accessModes:
     - "ReadWriteOnce"
   resources:

@@ -27,17 +27,6 @@ images:
     digest: ""
     # -- helm-dashboard image pull policy
     pullPolicy: IfNotPresent
-  preloader:
-    # -- helm-dashboard config preloader image registry (optional)
-    registry: ""
-    # -- helm-dashboard config preloader image repository
-    repository: ghcr.io/belug-apps/helm-dashboard/config-preloader
-    # -- helm-dashboard config preloader image tag (immutable tags are recommended)
-    tag: 1.0.0
-    # -- helm-dashboard config preloader image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
-    digest: ""
-    # -- helm-dashboard config preloader image pull policy
-    pullPolicy: IfNotPresent
 
 # -- Additional annotations to apply to the pod.
 podAnnotations: {}
@@ -111,6 +100,7 @@ resources:
 
 # -- Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))
 podSecurityContext:
+  fsGroup: 65463
   runAsNonRoot: true
   runAsUser: 65463
   runAsGroup: 65463

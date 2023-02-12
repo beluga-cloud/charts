@@ -6,7 +6,7 @@ metadata:
   name: helm-dashboard
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-1.1.1
+    helm.sh/chart: helm-dashboard-1.2.0
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -23,6 +23,7 @@ spec:
     spec:
       serviceAccountName: helm-dashboard
       securityContext:
+        fsGroup: 65463
         runAsGroup: 65463
         runAsNonRoot: true
         runAsUser: 65463

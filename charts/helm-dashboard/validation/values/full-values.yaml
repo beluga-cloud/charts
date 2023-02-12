@@ -12,7 +12,9 @@ containerSecurityContext:
   allowPrivilegeEscalation: false
   capabilities: {}
   readOnlyRootFilesystem: false
+  runAsGroup: 65534
   runAsNonRoot: true
+  runAsUser: 65534
 global:
   commonLabels:
     commonLabels01: enabled
@@ -59,14 +61,14 @@ persistence:
   annotations:
     annotations: enabled
   enabled: true
-  hostPath: /tmp/helm-dasboard
   size: 20M
-  storageClass: ''
+  storageClass: standard
 podAnnotations:
   podAnnotations: enabled
 podLabels:
   podLabels: enabled
 podSecurityContext:
+  fsGroup: 65534
   runAsGroup: 65534
   runAsNonRoot: true
   runAsUser: 65534
