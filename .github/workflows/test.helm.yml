@@ -39,8 +39,8 @@ jobs:
         run: echo "matrix={\"chart\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
 
   # Test all charts using the official chart-testing CLI.
-  chart_testing:
-    name: Chart testing
+  test:
+    name: Test Helm chart (${{ matrix.chart }})
     needs: [ updated_charts ]
     runs-on: ubuntu-latest
     if: needs.updated_charts.outputs.matrix != '{"chart":[]}'
