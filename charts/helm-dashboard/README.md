@@ -15,7 +15,7 @@
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat)
+  ![Version: 1.0.2](https://img.shields.io/badge/Version-1.0.2-informational?style=flat)
   ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat)
 
 </div>
@@ -116,7 +116,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `containerSecurityContext` | Security context for the helm-dashboard container    ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true}` |
+| `containerSecurityContext` | Security context for the helm-dashboard container    ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65533,"runAsNonRoot":true,"runAsUser":65533}` |
 | `podSecurityContext` | Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"runAsGroup":65533,"runAsNonRoot":true,"runAsUser":65533,"seccompProfile":{"type":"RuntimeDefault"}}` |
 
 ### Deployment/Statefulset parameters

@@ -71,6 +71,10 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /opt/dashboard/helm
+            - name: cache
+              mountPath: /.cache
+            - name: tempdir
+              mountPath: /tmp
       {{- with .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -88,3 +92,7 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
+        - name: cache
+          emptyDir: {}
+        - name: tempdir
+          emptyDir: {}

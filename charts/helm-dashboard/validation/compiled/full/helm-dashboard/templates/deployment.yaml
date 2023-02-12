@@ -8,7 +8,7 @@ metadata:
     podAnnotations: enabled
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-1.0.0
+    helm.sh/chart: helm-dashboard-1.0.2
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
@@ -51,7 +51,9 @@ spec:
               drop:
               - ALL
             readOnlyRootFilesystem: false
+            runAsGroup: 65533
             runAsNonRoot: true
+            runAsUser: 65533
           image: ghcr.io/belug-apps/helm-dashboard/dashboard:1.0.0
           imagePullPolicy: IfNotPresent
           env:
@@ -85,6 +87,10 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /opt/dashboard/helm
+            - name: cache
+              mountPath: /.cache
+            - name: tempdir
+              mountPath: /tmp
       nodeSelector:
         kubernetes.io/os: linux
       affinity:
@@ -106,3 +112,7 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: helm-dashboard
+        - name: cache
+          emptyDir: {}
+        - name: tempdir
+          emptyDir: {}

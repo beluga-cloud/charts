@@ -9,7 +9,7 @@ metadata:
     annotations: enabled
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-1.0.0
+    helm.sh/chart: helm-dashboard-1.0.2
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
@@ -32,7 +32,7 @@ metadata:
     annotations: enabled
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-1.0.0
+    helm.sh/chart: helm-dashboard-1.0.2
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
