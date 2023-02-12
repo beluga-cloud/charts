@@ -89,15 +89,21 @@ spec:
           {{- if not .Values.images.dashboard.tag }}{{ $_ := set .Values.images.dashboard "tag" .Chart.AppVersion }}{{ end }}
           image: {{ include "common.images.image" ( dict "imageRoot" .Values.images.dashboard "global" $) }}
           imagePullPolicy: {{ .Values.images.dashboard.pullPolicy }}
-          command: ["/opt/bin/preload-repositories.sh"]
+          command: ["sh", "-c"]
+          args: ["/opt/bin/preload-repositories.sh"]
           env:
             - name: HELM_CONFIG_HOME
               value: /opt/dashboard/helm/config
           volumeMounts:
             - name: preload-script
-              mountPath: /opt/bin
+              mountPath: /opt/bin/preload-repositories.sh
+              subPath: preload-repositories.sh
             - name: data
               mountPath: /opt/dashboard/helm
+            - name: cache
+              mountPath: /.cache
+            - name: tempdir
+              mountPath: /tmp
           workingDir: /opt/dashboard
       {{- end }}
       {{- with .Values.nodeSelector }}
@@ -121,7 +127,7 @@ spec:
         - name: preload-script
           configMap:
             name: {{ include "common.names.fullname" . }}-repositories-script
-            defaultMode: 0744
+            defaultMode: 0755
         {{- end }}
         - name: cache
           emptyDir: {}
