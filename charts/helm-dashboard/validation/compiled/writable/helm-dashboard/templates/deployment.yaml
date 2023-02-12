@@ -23,6 +23,7 @@ spec:
     spec:
       serviceAccountName: helm-dashboard
       securityContext:
+        fsGroup: 65463
         runAsGroup: 65463
         runAsNonRoot: true
         runAsUser: 65463

@@ -6,6 +6,6 @@ metadata:
   name: helm-dashboard-repositories-script
 data:
   preload-repositories.sh: |
-    #!/bin/env bash
+    #!/usr/bin/env sh
     helm repo add "komodorio" "https://helm-charts.komodor.io"
     helm repo add "belug-apps" "https://belug-apps.github.io/catalog" --insecure-skip-tls-verify --username "username" --password "password" --pass-credentials
