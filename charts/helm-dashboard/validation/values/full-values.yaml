@@ -61,9 +61,8 @@ persistence:
   annotations:
     annotations: enabled
   enabled: true
-  hostPath: /tmp/helm-dasboard
   size: 20M
-  storageClass: ''
+  storageClass: standard
 podAnnotations:
   podAnnotations: enabled
 podLabels:

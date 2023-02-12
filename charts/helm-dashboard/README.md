@@ -117,7 +117,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Key | Description | Default |
 |-----|-------------|---------|
 | `containerSecurityContext` | Security context for the helm-dashboard container    ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463}` |
-| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463,"seccompProfile":{"type":"RuntimeDefault"}}` |
+| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"fsGroup":65463,"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463,"seccompProfile":{"type":"RuntimeDefault"}}` |
 
 ### Deployment/Statefulset parameters
 
