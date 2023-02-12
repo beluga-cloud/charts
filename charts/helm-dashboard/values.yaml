@@ -113,6 +113,8 @@ containerSecurityContext:
     drop:
       - ALL
   readOnlyRootFilesystem: true
+  runAsUser: 65533
+  runAsGroup: 65533
   runAsNonRoot: true
 
 persistence:
