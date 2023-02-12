@@ -79,25 +79,23 @@ spec:
       initContainers:
         - name: repositories-preloader
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-          {{- if not .Values.images.preloader.registry }}
-          {{- $repo := regexSplit "/" (trim .Values.images.preloader.repository) 2 }}
-          {{- $_ := set .Values.images.preloader "registry" (.Values.global.imageRegistry | default (index $repo 0)) }}
-          {{- $_ = set .Values.images.preloader "repository" (trimPrefix "/" (index $repo 1)) }}
+          {{- if not .Values.images.dashboard.registry }}
+          {{- $repo := regexSplit "/" (trim .Values.images.dashboard.repository) 2 }}
+          {{- $_ := set .Values.images.dashboard "registry" (.Values.global.imageRegistry | default (index $repo 0)) }}
+          {{- $_ = set .Values.images.dashboard "repository" (trimPrefix "/" (index $repo 1)) }}
           {{- else if .Values.global.imageRegistry }}
-          {{- $_ := set .Values.images.preloader "registry" .Values.global.imageRegistry }}
+          {{- $_ := set .Values.images.dashboard "registry" .Values.global.imageRegistry }}
           {{- end }}
-          {{- if not .Values.images.preloader.tag }}{{ $_ := set .Values.images.preloader "tag" .Chart.AppVersion }}{{ end }}
-          image: {{ include "common.images.image" ( dict "imageRoot" .Values.images.preloader "global" $) }}
+          {{- if not .Values.images.dashboard.tag }}{{ $_ := set .Values.images.dashboard "tag" .Chart.AppVersion }}{{ end }}
+          image: {{ include "common.images.image" ( dict "imageRoot" .Values.images.dashboard "global" $) }}
           imagePullPolicy: {{ .Values.images.dashboard.pullPolicy }}
-          args:
-            - /opt/dashboard/default/repositories.yaml
-            - $HELM_CONFIG_HOME/repositories.yaml
+          command: ["/opt/bin/preload-repositories.sh"]
           env:
             - name: HELM_CONFIG_HOME
               value: /opt/dashboard/helm/config
           volumeMounts:
-            - name: repositories
-              mountPath: /opt/dashboard/default
+            - name: preload-script
+              mountPath: /opt/bin
             - name: data
               mountPath: /opt/dashboard/helm
           workingDir: /opt/dashboard
@@ -120,9 +118,10 @@ spec:
           emptyDir: {}
         {{- end }}
         {{- if not (empty .Values.helm_dashboard.repositories) }}
-        - name: repositories
+        - name: preload-script
           configMap:
-            name: {{ include "common.names.fullname" . }}-repositories
+            name: {{ include "common.names.fullname" . }}-repositories-script
+            defaultMode: 0744
         {{- end }}
         - name: cache
           emptyDir: {}
