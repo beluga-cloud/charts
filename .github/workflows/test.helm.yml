@@ -31,7 +31,11 @@ jobs:
           dir_names: true
           dir_names_max_depth: 2
           files: |
-            charts/**
+            charts/*/templates/**
+            charts/*/Chart.lock
+            charts/*/Chart.yaml
+            charts/*/README.md
+            charts/*/values.yaml
           json: true
       - id: set-matrix
         run: echo "matrix={\"chart\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
