@@ -1,12 +1,12 @@
-# Created by https://www.toptal.com/developers/gitignore/api/helm
-# Edit at https://www.toptal.com/developers/gitignore?templates=helm
+# Created by https://www.toptal.com/developers/gitignore/api/helm,direnv
+# Edit at https://www.toptal.com/developers/gitignore?templates=helm,direnv
+
+### direnv ###
+.direnv
+.envrc
 
 ### Helm ###
 # Chart dependencies
 **/charts/*.tgz
 
-# End of https://www.toptal.com/developers/gitignore/api/helm
-
-### E2E environment
-# Kubeconfig
-e2e/kubeconfig
+# End of https://www.toptal.com/developers/gitignore/api/helm,direnv
