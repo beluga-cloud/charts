@@ -92,8 +92,9 @@ e2e-run: e2e-setup e2e-prepare && e2e-teardown
 e2e-setup: build-images
   #!/usr/bin/env bash
   if ! (kind get clusters 2> /dev/null | grep "^{{ chart_name }}$" &> /dev/null); then
-    {{exec}} kind create cluster --name {{ chart_name }}
+    {{exec}} kind create cluster --name {{ chart_name }} --wait 120s
   fi
+
 
 # install all required resources to install and run the application properly
 [private]

@@ -8,7 +8,7 @@ metadata:
   labels: 
     app.kubernetes.io/version: "1.11.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-issuers-1.0.1
+    helm.sh/chart: cert-manager-issuers-1.0.3
     issuer.cert-manager.io/name: letsencrypt
 type: Opaque
 stringData: 
@@ -23,7 +23,7 @@ metadata:
   labels: 
     app.kubernetes.io/version: "1.11.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-issuers-1.0.1
+    helm.sh/chart: cert-manager-issuers-1.0.3
     issuer.cert-manager.io/name: letsencrypt-staging
 type: Opaque
 stringData: 
@@ -38,7 +38,7 @@ metadata:
   labels: 
     app.kubernetes.io/version: "1.11.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-issuers-1.0.1
+    helm.sh/chart: cert-manager-issuers-1.0.3
 spec:
   acme: 
     email: user@example.com
@@ -64,7 +64,7 @@ metadata:
   labels: 
     app.kubernetes.io/version: "1.11.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-issuers-1.0.1
+    helm.sh/chart: cert-manager-issuers-1.0.3
 spec:
   acme: 
     email: user@example.com
@@ -90,6 +90,6 @@ metadata:
   labels: 
     app.kubernetes.io/version: "1.11.0"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-issuers-1.0.1
+    helm.sh/chart: cert-manager-issuers-1.0.3
 spec:
   selfSigned: {}
