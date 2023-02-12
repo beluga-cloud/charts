@@ -15,17 +15,29 @@ nameOverride: ""
 # -- String to fully override `common.names.fullname` template
 fullnameOverride: ""
 
-image:
-  # -- helm-dashboard image registry (optional)
-  registry: ""
-  # -- helm-dashboard image repository
-  repository: ghcr.io/belug-apps/helm-dashboard/dashboard
-  # -- helm-dashboard image tag (immutable tags are recommended)
-  tag: ""
-  # -- helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
-  digest: ""
-  # -- Image pull policy
-  pullPolicy: IfNotPresent
+images:
+  dashboard:
+    # -- helm-dashboard image registry (optional)
+    registry: ""
+    # -- helm-dashboard image repository
+    repository: ghcr.io/belug-apps/helm-dashboard/dashboard
+    # -- helm-dashboard image tag (immutable tags are recommended)
+    tag: ""
+    # -- helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
+    digest: ""
+    # -- helm-dashboard image pull policy
+    pullPolicy: IfNotPresent
+  preloader:
+    # -- helm-dashboard config preloader image registry (optional)
+    registry: ""
+    # -- helm-dashboard config preloader image repository
+    repository: ghcr.io/belug-apps/helm-dashboard/config-preloader
+    # -- helm-dashboard config preloader image tag (immutable tags are recommended)
+    tag: ""
+    # -- helm-dashboard config preloader image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
+    digest: ""
+    # -- helm-dashboard config preloader image pull policy
+    pullPolicy: IfNotPresent
 
 # -- Additional annotations to apply to the pod.
 podAnnotations: {}
@@ -100,8 +112,8 @@ resources:
 # -- Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))
 podSecurityContext:
   runAsNonRoot: true
-  runAsUser: 65533
-  runAsGroup: 65533
+  runAsUser: 65463
+  runAsGroup: 65463
   seccompProfile:
     type: RuntimeDefault
 
@@ -113,8 +125,8 @@ containerSecurityContext:
     drop:
       - ALL
   readOnlyRootFilesystem: true
-  runAsUser: 65533
-  runAsGroup: 65533
+  runAsUser: 65463
+  runAsGroup: 65463
   runAsNonRoot: true
 
 persistence:
@@ -193,3 +205,9 @@ networkPolicy:
   ingress: []
   # -- Sets egress policy block. See [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/) documentation.
   egress: []
+
+helm_dashboard:
+  # -- Default helm registries loaded with helm-dashboard
+  repositories: []
+    # - name: belug-apps
+    #   url: https://belug-apps.github.io/catalog

@@ -15,7 +15,7 @@
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 1.0.2](https://img.shields.io/badge/Version-1.0.2-informational?style=flat)
+  ![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat)
   ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat)
 
 </div>
@@ -105,19 +105,24 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `image.digest` | helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
-| `image.pullPolicy` | Image pull policy | `"IfNotPresent"` |
-| `image.registry` | helm-dashboard image registry (optional) | `""` |
-| `image.repository` | helm-dashboard image repository | `"ghcr.io/belug-apps/helm-dashboard/dashboard"` |
-| `image.tag` | helm-dashboard image tag (immutable tags are recommended) | `""` |
+| `images.dashboard.digest` | helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
+| `images.dashboard.pullPolicy` | helm-dashboard image pull policy | `"IfNotPresent"` |
+| `images.dashboard.registry` | helm-dashboard image registry (optional) | `""` |
+| `images.dashboard.repository` | helm-dashboard image repository | `"ghcr.io/belug-apps/helm-dashboard/dashboard"` |
+| `images.dashboard.tag` | helm-dashboard image tag (immutable tags are recommended) | `""` |
+| `images.preloader.digest` | helm-dashboard config preloader image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
+| `images.preloader.pullPolicy` | helm-dashboard config preloader image pull policy | `"IfNotPresent"` |
+| `images.preloader.registry` | helm-dashboard config preloader image registry (optional) | `""` |
+| `images.preloader.repository` | helm-dashboard config preloader image repository | `"ghcr.io/belug-apps/helm-dashboard/config-preloader"` |
+| `images.preloader.tag` | helm-dashboard config preloader image tag (immutable tags are recommended) | `""` |
 | `rbac.allowWriteActions` | allow helm-dashboard to create/edit/delete Kubernetes resources | `false` |
 
 ### Security parameters
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `containerSecurityContext` | Security context for the helm-dashboard container    ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65533,"runAsNonRoot":true,"runAsUser":65533}` |
-| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"runAsGroup":65533,"runAsNonRoot":true,"runAsUser":65533,"seccompProfile":{"type":"RuntimeDefault"}}` |
+| `containerSecurityContext` | Security context for the helm-dashboard container    ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463}` |
+| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463,"seccompProfile":{"type":"RuntimeDefault"}}` |
 
 ### Deployment/Statefulset parameters
 
@@ -179,6 +184,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | Key | Description | Default |
 |-----|-------------|---------|
 | `rbac.create` | Specifies whether RBAC resources should be created | `true` |
+## Other parameters
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `helm_dashboard.repositories` | Default helm registries loaded with helm-dashboard | `[]` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

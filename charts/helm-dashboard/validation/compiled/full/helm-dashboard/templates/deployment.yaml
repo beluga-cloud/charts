@@ -8,7 +8,7 @@ metadata:
     podAnnotations: enabled
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-1.0.2
+    helm.sh/chart: helm-dashboard-1.1.0
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
@@ -51,9 +51,9 @@ spec:
               drop:
               - ALL
             readOnlyRootFilesystem: false
-            runAsGroup: 65533
+            runAsGroup: 65463
             runAsNonRoot: true
-            runAsUser: 65533
+            runAsUser: 65463
           image: ghcr.io/belug-apps/helm-dashboard/dashboard:1.0.0
           imagePullPolicy: IfNotPresent
           env:
@@ -91,6 +91,31 @@ spec:
               mountPath: /.cache
             - name: tempdir
               mountPath: /tmp
+      initContainers:
+        - name: repositories-preloader
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: false
+            runAsGroup: 65463
+            runAsNonRoot: true
+            runAsUser: 65463
+          image: ghcr.io/belug-apps/helm-dashboard/config-preloader:1.0.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - /opt/dashboard/default/repositories.yaml
+            - $HELM_CONFIG_HOME/repositories.yaml
+          env:
+            - name: HELM_CONFIG_HOME
+              value: /opt/dashboard/helm/config
+          volumeMounts:
+            - name: repositories
+              mountPath: /opt/dashboard/default
+            - name: data
+              mountPath: /opt/dashboard/helm
+          workingDir: /opt/dashboard
       nodeSelector:
         kubernetes.io/os: linux
       affinity:
@@ -112,6 +137,9 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: helm-dashboard
+        - name: repositories
+          configMap:
+            name: helm-dashboard-repositories
         - name: cache
           emptyDir: {}
         - name: tempdir

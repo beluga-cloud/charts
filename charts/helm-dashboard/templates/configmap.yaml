@@ -1,0 +1,22 @@
+{{- if not (empty .Values.helm_dashboard.repositories) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "common.names.fullname" . }}-repositories
+data:
+  repositories.yaml: |
+    apiVersion: ""
+    generated: "0001-01-01T00:00:00Z"
+    repositories:
+    {{- range .Values.helm_dashboard.repositories }}
+    - caFile: {{ .caFile | default "" | quote }}
+      certFile: {{ .certFile | default "" | quote }}
+      insecure_skip_tls_verify: {{ .insecure_skip_tls_verify | default false }}
+      keyFile: {{ .keyFile | default "" | quote }}
+      name: {{ required "repository name is required" .name | quote }}
+      pass_credentials_all: {{ .pass_credentials_all | default false }}
+      password: {{ .password | default "" | quote }}
+      url: {{ required "repository URL is required" .url | quote }}
+      username: {{ .username | default "" | quote }}
+    {{- end }}
+{{- end }}
