@@ -6,6 +6,10 @@ on: # yamllint disable-line rule:truthy
     paths:
       - '**/Dockerfile'
 
+concurrency:
+  group: ${{ github.ref }}/container-lint
+  cancel-in-progress: true
+
 jobs:
   updated_container:
     name: List updated containers

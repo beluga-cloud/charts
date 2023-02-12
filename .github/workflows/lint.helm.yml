@@ -11,6 +11,10 @@ on: # yamllint disable-line rule:truthy
       - charts/*/README.md
       - charts/*/values.yaml
 
+concurrency:
+  group: ${{ github.ref }}/helm-lint
+  cancel-in-progress: true
+
 env:
   HELM_CONFIG_HOME: ${{ github.workspace }}/e2e/~helm
 
