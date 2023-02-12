@@ -3,6 +3,13 @@ name: Release (Helm)
 on: # yamllint disable-line rule:truthy
   push:
     branches: [main]
+    paths:
+      # NOTE: only few changes should trigger this pipeline
+      - charts/*/templates/**
+      - charts/*/Chart.lock
+      - charts/*/Chart.yaml
+      - charts/*/README.md
+      - charts/*/values.yaml
 
 env:
   HELM_CONFIG_HOME: ${{ github.workspace }}/e2e/~helm
