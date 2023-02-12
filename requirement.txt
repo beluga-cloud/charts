@@ -1,0 +1,2 @@
+yamale==4.0.4
+yamllint==1.29.0
