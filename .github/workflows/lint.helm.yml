@@ -4,10 +4,10 @@ on: # yamllint disable-line rule:truthy
   pull_request:
     types: [opened, synchronize]
     paths:
-      - .github/workflows/lint.helm.yml
       # NOTE: only few changes should trigger this pipeline
       - charts/*/templates/**
-      - charts/*/Chart.[yaml|lock]
+      - charts/*/Chart.lock
+      - charts/*/Chart.yaml
       - charts/*/README.md
       - charts/*/values.yaml
 
