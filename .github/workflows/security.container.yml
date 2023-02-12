@@ -4,12 +4,15 @@ on: # yamllint disable-line rule:truthy
   pull_request:
     types: [opened, synchronize]
     paths:
-      - .github/workflows/security.container.yml
       - charts/**/Dockerfile
   push:
     branches: [main]
     paths:
       - charts/**/Dockerfile
+
+concurrency:
+  group: ${{ github.ref }}/container-security
+  cancel-in-progress: true
 
 jobs:
   updated_container:

@@ -4,12 +4,15 @@ on: # yamllint disable-line rule:truthy
   pull_request:
     types: [opened, synchronize]
     paths:
-      - .github/workflows/security.helm.yml
       - charts/**
   push:
     branches: [main]
     paths:
       - charts/**
+
+concurrency:
+  group: ${{ github.ref }}/helm-security
+  cancel-in-progress: true
 
 jobs:
   updated_charts:
