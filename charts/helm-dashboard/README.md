@@ -15,7 +15,7 @@
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat)
+  ![Version: 1.1.1](https://img.shields.io/badge/Version-1.1.1-informational?style=flat)
   ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat)
 
 </div>
@@ -114,7 +114,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `images.preloader.pullPolicy` | helm-dashboard config preloader image pull policy | `"IfNotPresent"` |
 | `images.preloader.registry` | helm-dashboard config preloader image registry (optional) | `""` |
 | `images.preloader.repository` | helm-dashboard config preloader image repository | `"ghcr.io/belug-apps/helm-dashboard/config-preloader"` |
-| `images.preloader.tag` | helm-dashboard config preloader image tag (immutable tags are recommended) | `""` |
+| `images.preloader.tag` | helm-dashboard config preloader image tag (immutable tags are recommended) | `"1.0.0"` |
 | `rbac.allowWriteActions` | allow helm-dashboard to create/edit/delete Kubernetes resources | `false` |
 
 ### Security parameters
