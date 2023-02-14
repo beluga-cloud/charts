@@ -5,4 +5,4 @@ helm-docs 1.11.0
 just 1.13.0
 kind 0.17.0
 kubectl 1.26.1
-trivy 0.37.2
+trivy 0.37.3
