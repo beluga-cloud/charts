@@ -13,7 +13,7 @@ build: build-images build-chart
 
 # build out all "external" resources related to the current application (charts, README, ...)
 [no-exit-message]
-build-external: build-chart build-validation-files build-readme
+build-external: build-validation-files build-readme
 
 # build one or multiple images (use relative path from current directory)
 [no-exit-message]
@@ -112,6 +112,13 @@ e2e-prepare CLUSTER_NAME=chart_name:
 [no-exit-message]
 @e2e-teardown:
   {{exec}} kind delete cluster --name {{ chart_name }}
+
+# rebuild all "external" files (or files used for CI validation and packaging)
+# and commit them automatically.
+[no-exit-message]
+git-commit-package +OPTS="": build-external
+  git add validation/ README.md
+  git commit --message ":package: (apps/{{ chart_name }}): rebuild all packaging files" {{ OPTS }}
 
 # (lib only) print a trace of simple commands then run it. If it runs inside
 #            Github Actions, it will also group all outputs inside a block to
