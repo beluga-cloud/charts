@@ -41,7 +41,7 @@ Some of the key capabilities of the tool:
 - Integration with popular problem scanners
 - Easy switch between multiple clusters
 
-[Overview of helm-dashboard](github.com/komodorio/helm-dashboard)
+[Overview of helm-dashboard](https://github.com/komodorio/helm-dashboard)
 
 ## TL;DR
 
@@ -125,6 +125,7 @@ The command removes all the Kubernetes components associated with the chart and 
         (not (has .Key $params))
         (or
           (hasPrefix "image" .Key)
+          (hasPrefix ($.Name | snakecase) .Key)
           (eq .Key "rbac.allowWriteActions")
         )
 }}

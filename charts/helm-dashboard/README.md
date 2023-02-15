@@ -15,7 +15,7 @@
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-informational?style=flat)
+  ![Version: 1.2.1](https://img.shields.io/badge/Version-1.2.1-informational?style=flat)
   ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat)
 
 </div>
@@ -41,7 +41,7 @@ Some of the key capabilities of the tool:
 - Integration with popular problem scanners
 - Easy switch between multiple clusters
 
-[Overview of helm-dashboard](github.com/komodorio/helm-dashboard)
+[Overview of helm-dashboard](https://github.com/komodorio/helm-dashboard)
 
 ## TL;DR
 
@@ -105,6 +105,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Description | Default |
 |-----|-------------|---------|
+| `helm_dashboard.repositories` | Default helm registries loaded with helm-dashboard | `[]` |
 | `images.dashboard.digest` | helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
 | `images.dashboard.pullPolicy` | helm-dashboard image pull policy | `"IfNotPresent"` |
 | `images.dashboard.registry` | helm-dashboard image registry (optional) | `""` |
@@ -179,11 +180,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | Key | Description | Default |
 |-----|-------------|---------|
 | `rbac.create` | Specifies whether RBAC resources should be created | `true` |
-## Other parameters
-
-| Key | Description | Default |
-|-----|-------------|---------|
-| `helm_dashboard.repositories` | Default helm registries loaded with helm-dashboard | `[]` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
