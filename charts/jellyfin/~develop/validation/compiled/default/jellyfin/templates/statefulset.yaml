@@ -6,7 +6,7 @@ metadata:
   name: jellyfin
   labels:
     app.kubernetes.io/name: jellyfin
-    helm.sh/chart: jellyfin-1.0.0
+    helm.sh/chart: jellyfin-1.0.1
     app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/managed-by: Helm
 spec:
