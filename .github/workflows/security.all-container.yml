@@ -1,8 +1,8 @@
 ---
 name: Security (Container)
 on: # yamllint disable-line rule:truthy
-  pull_request:
-    types: [opened, synchronize]
+  push:
+    branches: [main]
     paths:
       - charts/**/Dockerfile
 
@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  updated_container:
-    name: List updated containers
+  list_images:
+    name: List all existing images
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -20,22 +20,22 @@ jobs:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
           fetch-depth: 3
-      - uses: tj-actions/changed-files@d5414fd30b0b7618c815fe7ebe5673720e081937 # v35.5.3
-        id: changed-files
-        with:
-          files: |
-            **/Dockerfile
-          json: true
-      - id: set-matrix
-        run: echo "matrix={\"dockerfile\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
+      - name: List all Dockerfiles
+        id: set-matrix
+        run: |
+          dockerfiles=$(
+            find charts/ -mindepth 1 -name "Dockerfile" | \
+            jq --slurp --raw-input '. | split("\n") | map(select(length > 0))' --compact-output
+          )
+          echo "matrix={\"dockerfile\":${dockerfiles}}" >> "$GITHUB_OUTPUT"
 
   trivy:
     name: Trivy scan (${{ matrix.dockerfile }})
-    needs: [updated_container]
+    needs: [list_images]
     runs-on: ubuntu-latest
-    if: needs.updated_container.outputs.matrix != '{"dockerfile":[]}'
+    if: needs.list_images.outputs.matrix != '{"dockerfile":[]}'
     strategy:
-      matrix: ${{ fromJSON(needs.updated_container.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.list_images.outputs.matrix) }}
       fail-fast: false
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0

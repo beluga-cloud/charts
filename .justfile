@@ -35,6 +35,11 @@ e2e-prepare CLUSTER_NAME="belug-apps":
 @e2e-teardown:
   {{exec}} kind delete cluster --name belug-apps
 
+# generate the UID to use for a specific application
+[no-exit-message]
+@tools-chart-uid APP:
+  echo "UID to use for {{ APP }}: 64$(echo {{ APP }} | sha1hmac | tr --delete '[:alpha:][:space:]-' | head --bytes=3)"
+
 # (lib only) print a trace of simple commands then run it. If it runs inside
 #            Github Actions, it will also group all outputs inside a block to
 #            simplify CI logs.

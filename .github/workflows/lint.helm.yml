@@ -110,12 +110,12 @@ jobs:
         continue-on-error: true
         with:
           files: |
-            ${{ matrix.chart }}/validation/*
+            ${{ matrix.chart }}/~develop/validation/*
       - name: Assert that validation/ is up-to-date
         if: steps.get-diff-validation.outputs.files_changed == 'true'
         run: |
           # shellcheck disable=SC2016
-          echo '::error title=validation/ not up-to-date::${{ matrix.chart }}/validation must be updated. Please run `just build-external` to update it.'
+          echo '::error title=validation/ not up-to-date::${{ matrix.chart }}/~develop/validation must be updated. Please run `just build-external` to update it.'
 
       - name: Exit if a file is not up-to-date
         if: steps.get-diff-values.outputs.files_changed == 'true' || steps.get-diff-readme.outputs.files_changed == 'true' || steps.get-diff-validation.outputs.files_changed == 'true'

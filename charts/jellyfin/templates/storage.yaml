@@ -1,0 +1,22 @@
+{{- if .Values.persistence.config.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "common.names.fullname" $ }}-config
+  labels:
+    {{- include "common.labels.standard" $ | nindent 4 }}
+    {{- with $.Values.global.commonLabels }}{{ toYaml . | nindent 4 }}{{ end }}
+spec: {{ toYaml .Values.persistence.config.volumeClaimSpec | nindent 2 }}
+{{- end }}
+{{- if .Values.persistence.data.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "common.names.fullname" $ }}-data
+  labels:
+    {{- include "common.labels.standard" $ | nindent 4 }}
+    {{- with $.Values.global.commonLabels }}{{ toYaml . | nindent 4 }}{{ end }}
+spec: {{ toYaml .Values.persistence.data.volumeClaimTemplateSpec | nindent 2 }}
+{{- end }}
