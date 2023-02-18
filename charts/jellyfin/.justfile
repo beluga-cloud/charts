@@ -35,14 +35,15 @@ build-images +IMAGES="all":
 
 # generates all resources managed by this chart application to quickly see any changes
 [no-exit-message]
-@build-validation-files:
+build-validation-files:
+  #!/usr/bin/env bash
   {{exec}} rm --recursive --force ~develop/validation/compiled
   {{exec}} helm template {{ chart_name }} . --create-namespace --namespace {{ chart_name }}-validation \
     --output-dir ~develop/validation/compiled/default
-  for value in `find ~develop/validation/values -name '*-values.yaml' -printf '%f\n' | cut -d'-' -f1`; do \
+  for value in ~develop/validation/values/*; do
     {{exec}} helm template {{ chart_name }} . --create-namespace --namespace {{ chart_name }}-validation \
-      --values ~develop/validation/values/${value}-values.yaml \
-      --output-dir ~develop/validation/compiled/${value}; \
+      --values "${value}" \
+      --output-dir "~develop/validation/compiled/$(basename "${value}" | cut -d'-' -f1)"
   done
 
 # generates markdown documentation from requirements and values files
@@ -176,7 +177,7 @@ security-scan-images OPTS="" +IMAGES="all":
 # and commit them automatically.
 [no-exit-message]
 git-commit-package +OPTS="": build-external
-  git add validation/ README.md
+  git add ~develop/validation/ README.md
   git commit --message ":package: (apps/{{ chart_name }}): rebuild all packaging files" {{ OPTS }}
 
 # (lib only) print a trace of simple commands then run it. If it runs inside
