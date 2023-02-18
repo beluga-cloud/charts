@@ -2,11 +2,11 @@ apiVersion: v2
 type: application
 name: jellyfin
 description: Jellyfin is the volunteer-built media solution that puts you in control of your media.
-version: 1.0.1
+version: 1.0.2
 appVersion: 10.8.9
 kubeVersion: '>=1.20'
 home: https://jellyfin.org/
-icon: https://raw.githubusercontent.com/komodorio/helm-dashboard/main/pkg/dashboard/static/logo.svg
+icon: https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg
 keywords:
   - jellyfin
   - media-server
