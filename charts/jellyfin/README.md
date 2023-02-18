@@ -16,7 +16,7 @@
   ](LICENSE)
   <br/>
     ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-    ![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat)
+    ![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat)
     ![AppVersion: 10.8.9](https://img.shields.io/badge/AppVersion-10.8.9-informational?style=flat)
 
 </div>
