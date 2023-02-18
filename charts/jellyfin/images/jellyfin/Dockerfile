@@ -28,7 +28,6 @@ RUN groupadd jellyfin --gid 64710 \
     && apt-get install --assume-yes --no-install-recommends \
       jellyfin="${JELLYFIN_VERSION}*" \
       mesa-va-drivers \
-      intel-media-va-driver \
     && ln -s /usr/share/jellyfin-ffmpeg/ff* /usr/bin \
     && ln -s /usr/share/jellyfin-ffmpeg/vainfo /usr/bin \
     && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* \
