@@ -1,6 +1,6 @@
+~develop/
 ci
 images/
-validation/
 
 .justfile
 .trivyignore

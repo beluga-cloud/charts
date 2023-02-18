@@ -7,6 +7,9 @@ exec := "just _xtrace"
 default:
     @just --list
 
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------- BUILD -----------
+
 # build out all "runtime" resources related to the current application (images, charts)
 [no-exit-message]
 build: build-images build-chart
@@ -33,16 +36,23 @@ build-images +IMAGES="all":
 # generates all resources managed by this chart application to quickly see any changes
 [no-exit-message]
 @build-validation-files:
-  {{exec}} rm --recursive --force validation/compiled
-  {{exec}} helm template {{ chart_name }} . --create-namespace --namespace {{ chart_name }}-validation --output-dir validation/compiled/default
-  for value in `find validation/values -name '*-values.yaml' -printf '%f\n' | cut -d'-' -f1`; do \
-    {{exec}} helm template {{ chart_name }} . --create-namespace --namespace {{ chart_name }}-validation --values validation/values/${value}-values.yaml --output-dir validation/compiled/${value}; \
+  {{exec}} rm --recursive --force ~develop/validation/compiled
+  {{exec}} helm template {{ chart_name }} . --create-namespace --namespace {{ chart_name }}-validation \
+    --output-dir ~develop/validation/compiled/default
+  for value in `find ~develop/validation/values -name '*-values.yaml' -printf '%f\n' | cut -d'-' -f1`; do \
+    {{exec}} helm template {{ chart_name }} . --create-namespace --namespace {{ chart_name }}-validation \
+      --values ~develop/validation/values/${value}-values.yaml \
+      --output-dir ~develop/validation/compiled/${value}; \
   done
 
 # generates markdown documentation from requirements and values files
 [no-exit-message]
 @build-readme:
   {{exec}} helm-docs --badge-style flat
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# ------------ LINT ------------
 
 # lint all "runtime" resources related to the current application (images, charts)
 [no-exit-message]
@@ -61,6 +71,83 @@ lint-images +IMAGES="all":
 @lint-chart:
   {{exec}} ct lint --charts "${PWD}"
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+# --------- E2E TESTS ---------
+
+# install and test the current application into a local cluster
+[no-exit-message]
+e2e-run: e2e-setup e2e-prepare && e2e-teardown
+  ct install --charts ${PWD} --target-branch main --upgrade --debug \
+    --helm-extra-args '--timeout 120s' \
+    --helm-extra-set-args '--set "global.imageRegistry={{ container_registry }}"'
+
+# prepare the local environment to run e2e tests locally
+[private]
+[no-exit-message]
+e2e-setup CLUSTER_NAME=chart_name: build-images
+  #!/usr/bin/env bash
+  if ! (kind get clusters 2> /dev/null | grep "^{{ CLUSTER_NAME }}$" &> /dev/null); then
+    {{exec}} kind create cluster --name {{ CLUSTER_NAME }} --wait 120s
+  fi
+
+# install all required resources to install and run the application properly
+[private]
+[no-exit-message]
+e2e-prepare CLUSTER_NAME=chart_name:
+  #!/usr/bin/env bash
+  for image in images/*; do
+    image_name="{{ container_registry }}/belug-apps/{{ chart_name }}/$(basename "${image}")"
+    image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
+    {{exec}} kind load docker-image --name {{ CLUSTER_NAME }} "${image_name}:${image_version}"
+  done
+
+# remove the local environment to run e2e tests locally
+[private]
+[no-exit-message]
+@e2e-teardown CLUSTER_NAME=chart_name:
+  {{exec}} kind delete cluster --name {{ CLUSTER_NAME }}
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# ----- LOCAL DEVELOPMENT -----
+
+# prepare a local environment to develop and/or debug the application
+[no-exit-message]
+develop +OPTS="": build-images && (e2e-prepare (chart_name + "-dev")) (develop-install OPTS)
+  #!/usr/bin/env bash
+  {{exec}} mkdir --parent /tmp/belugapps-dev/jellyfin/media/
+  if ! (kind get clusters 2> /dev/null | grep "^{{ (chart_name + "-dev") }}$" &> /dev/null); then
+    {{exec}} kind create cluster --name {{ (chart_name + "-dev") }} --wait 120s --config ~develop/environment/kind.yaml
+  fi
+  {{exec}} helm upgrade --install contour bitnami/contour --namespace projectcontour --create-namespace
+
+# install the application on the local environment
+[no-exit-message]
+develop-install +OPTS="":
+  #!/usr/bin/env bash
+  {{exec}} helm upgrade {{ chart_name }}-dev . \
+    --install \
+    --namespace {{ chart_name }} --create-namespace \
+    --values ~develop/environment/values.yaml \
+    --set "containerSecurityContext.runAsUser=$(id --user)" --set "containerSecurityContext.runAsGroup=$(id --group)" \
+    --set "podSecurityContext.runAsUser=$(id --user)" --set "podSecurityContext.runAsGroup=$(id --group)" \
+    --set "global.imageRegistry={{ container_registry }}" \
+     {{ OPTS }}
+
+# reinstall the application on the local environment
+[no-exit-message]
+develop-reinstall +OPTS="": && (develop-install OPTS)
+  helm uninstall {{ chart_name }}-dev --namespace {{ chart_name }}
+
+# stop the local environment
+[no-exit-message]
+develop-teardown: (e2e-teardown (chart_name + "-dev"))
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# ----- SECURITY ANALYSIS -----
+
 # scan images and chart for missconfiguration or security issues
 [no-exit-message]
 security-scan OPTS="": (security-scan-images OPTS) (security-scan-chart OPTS)
@@ -78,40 +165,12 @@ security-scan-images OPTS="" +IMAGES="all":
 
 # scan current chart for missconfiguration or security issues
 [no-exit-message]
-security-scan-chart OPTS="":
+@security-scan-chart OPTS="":
   {{ exec }} trivy config . {{ OPTS }}
 
-# install and test the current application into a local cluster
-[no-exit-message]
-e2e-run: e2e-setup e2e-prepare && e2e-teardown
-  ct install --charts ${PWD} --target-branch main --upgrade --helm-extra-args '--timeout 120s' --helm-extra-set-args '--set "global.imageRegistry={{ container_registry }}"' --debug
 
-# prepare the local environment to run e2e tests locally
-[private]
-[no-exit-message]
-e2e-setup: build-images
-  #!/usr/bin/env bash
-  if ! (kind get clusters 2> /dev/null | grep "^{{ chart_name }}$" &> /dev/null); then
-    {{exec}} kind create cluster --name {{ chart_name }} --wait 120s
-  fi
-
-
-# install all required resources to install and run the application properly
-[private]
-[no-exit-message]
-e2e-prepare CLUSTER_NAME=chart_name:
-  #!/usr/bin/env bash
-  for image in images/*; do
-    image_name="{{ container_registry }}/belug-apps/{{ chart_name }}/$(basename "${image}")"
-    image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
-    {{exec}} kind load docker-image --name {{ CLUSTER_NAME }} "${image_name}:${image_version}"
-  done
-
-# remove the local environment to run e2e tests locally
-[private]
-[no-exit-message]
-@e2e-teardown:
-  {{exec}} kind delete cluster --name {{ chart_name }}
+# ----------------------------------------------------------------------------------------------------------------------
+# ------ TOOLS & LIBRARY ------
 
 # rebuild all "external" files (or files used for CI validation and packaging)
 # and commit them automatically.
