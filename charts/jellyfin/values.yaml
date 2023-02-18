@@ -203,7 +203,7 @@ networkPolicy:
 
 jellyfin:
   # -- Additional device like GPU to mount
-  extra_devices:
+  extra_devices: []
   # - /dev/dri/renderD128
 
   # -- The list of volumes that will be mounted inside jellyfin pod, to `/media`.
