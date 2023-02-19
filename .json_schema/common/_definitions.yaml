@@ -132,42 +132,7 @@ definitions:
           not:
             required:
               - name
-        oneOf:
-          - type: object
-            properties:
-              type:
-                const: ClusterIP
-            not:
-              required:
-                - loadBalancerIP
-                - loadBalancerSourceRanges
-          - type: object
-            properties:
-              type:
-                const: NodePort
-            not:
-              required:
-                - clusterIP
-                - loadBalancerIP
-                - loadBalancerSourceRanges
-          - type: object
-            properties:
-              type:
-                const: LoadBalancer
-            not:
-              required:
-                - clusterIP
-            oneOf:
-              - required:
-                  - loadBalancerIP
-                not:
-                  required:
-                    - loadBalancerSourceRanges
-              - required:
-                  - loadBalancerSourceRanges
-                not:
-                  required:
-                    - loadBalancerIP
+
       ingress:
         description: Ingress that expose the packaged application outside the cluster.
         properties:
