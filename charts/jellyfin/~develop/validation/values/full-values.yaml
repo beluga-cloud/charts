@@ -32,7 +32,7 @@ ingress:
   pathType: ImplementationSpecific
   tls: true
 jellyfin:
-  persistent_transcodes: true
+  persistentTranscodes: true
 networkPolicy:
   allowAllOutbound: false
   allowExternal: false
@@ -66,12 +66,13 @@ podSecurityContext:
   seccompProfile:
     type: Unconfined
 resources:
-  limits:
-    cpu: 2
-    memory: 2Gi
-  requests:
-    cpu: 10m
-    memory: 10Mi
+  jellyfin:
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 10m
+      memory: 10Mi
 service:
   annotations:
     annotations: enabled
