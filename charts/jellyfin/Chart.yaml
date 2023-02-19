@@ -1,7 +1,7 @@
 apiVersion: v2
 type: application
 name: jellyfin
-description: Jellyfin is the volunteer-built media solution that puts you in control of your media.
+description: Your media, your server, your way
 version: 1.0.2
 appVersion: 10.8.9
 kubeVersion: '>=1.20'

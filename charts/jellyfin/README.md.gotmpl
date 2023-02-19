@@ -1,18 +1,17 @@
+{{- define "chart.title" }}{{ .Name | replace "-" " " | title }}{{- end }}
+{{/*{{- define "chart.icon" }}{{ fail "Icon URL not configured" }}{{- end }}*/}}
+{{- define "chart.icon" }}https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg{{- end }}
+{{- define "parameter.description" }}{{ regexReplaceAll "(https?://)([^/]+(?:/[^/]+)?)([^\\s]+)" (.Description | default .AutoDescription) "[$2]($1$2$3)" }}{{- end }}
+
 <!-- markdownlint-disable MD033 -->
-{{- define "parameter.description" }}
-    {{- regexReplaceAll "(https?://)([^/]+(?:/[^/]+)?)([^\\s]+)" (.Description | default .AutoDescription) "[$2]($1$2$3)" }}
-{{- end }}
-{{- define "chart.title" }}
-    {{- .Name | replace "-" " " | title }}
-{{- end }}
 
 <h1 align="center">
-  <a href="https://github.com/belug-apps">
-    <img src="https://github.com/belug-apps/.github/raw/main/assets/logo_400px.png" alt="Logo" width="150" height="150">
+  <a href="{{ template "chart.homepage" . }}">
+    <img src="{{ template "chart.icon" . }}" alt="Logo" width="150" height="150">
   </a>
 </h1>
 
-<h4 align="center">Belug-Apps - Simple and secure Charts for homelab</h4>
+<h4 align="center">{{ template "chart.title" . }} - {{ template "chart.description" . }}</h4>
 
 <div align="center">
   <br/>
@@ -31,11 +30,10 @@
 
 ## [{{ template "chart.title" . }}]({{ template "chart.homepage" . }})
 
-> _Disclaimer: This application has been developed by the [Jellyfin](https://jellyfin.org/) community._
+> _Disclaimer: This application has been developed by the [{{ template "chart.title" . }}]({{ template "chart.homepage" . }}) community._
 
 _Jellyfin_ is the volunteer-built media solution that puts you in control of your media. Stream to any device from
 your own server, with no strings attached.
-<div align="center"><h3>Your media, your server, your way.</h3></div>
 
 Some features of Jellyfin:
 - **Movies**: Enjoy your entire movie collection, easy to browse and with beautiful artwork.
@@ -46,7 +44,7 @@ Some features of Jellyfin:
 - **Photos**: Organize your photos and share memories with your friends and family.
 - **SyncPlay**: Sharing a movie night remotely has never been so easy.
 
-[> Overview of Jellyfin](https://jellyfin.org)
+[> More about {{ template "chart.title" . }}]({{ template "chart.homepage" . }})
 
 ---
 
