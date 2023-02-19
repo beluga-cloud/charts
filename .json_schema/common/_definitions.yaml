@@ -81,8 +81,7 @@ definitions:
 
       # Scheduling properties
       strategy:
-        oneOf:
-          - const: null
+        anyOf:
           - $ref: '#/definitions/io.k8s.api.apps.v1.DaemonSetUpdateStrategy'
           - $ref: '#/definitions/io.k8s.api.apps.v1.DeploymentStrategy'
           - $ref: '#/definitions/io.k8s.api.apps.v1.StatefulSetUpdateStrategy'
