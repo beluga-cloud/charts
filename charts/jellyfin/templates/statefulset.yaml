@@ -59,13 +59,13 @@ spec:
             httpGet: *httpProbe
             periodSeconds: 10
             timeoutSeconds: 10
-          resources: {{- toYaml .Values.resources | nindent 12 }}
+          resources: {{- toYaml .Values.resources.jellyfin | nindent 12 }}
           volumeMounts:
             - name: config
               mountPath: /opt/jellyfin/config
             - name: data
               mountPath: /opt/jellyfin/data
-            {{- if not .Values.jellyfin.persistent_transcodes }}
+            {{- if not .Values.jellyfin.persistentTranscodes }}
             - name: transcodes
               mountPath: /opt/jellyfin/data/transcodes
             {{- end }}
@@ -75,11 +75,11 @@ spec:
               mountPath: /opt/jellyfin/log
             - name: tmpfs
               mountPath: /tmp
-            {{- range .Values.jellyfin.extra_devices }}
+            {{- range .Values.jellyfin.extraDevices }}
             - name: {{ . | trimAll "/" | replace "/" "-" | lower }}
               mountPath: {{ . }}
             {{- end }}
-            {{- range .Values.jellyfin.media_volumes }}
+            {{- range .Values.jellyfin.mediaVolumes }}
             - name: {{ .name }}
               mountPath: /media/{{ .name }}
               readOnly: {{ .readOnly | default true }}
@@ -108,7 +108,7 @@ spec:
           {{- else }}
           emptyDir: { }
           {{- end }}
-        {{- if not .Values.jellyfin.persistent_transcodes }}
+        {{- if not .Values.jellyfin.persistentTranscodes }}
         - name: transcodes
           emptyDir: { }
         {{- end }}
@@ -120,12 +120,12 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 10Mi
-        {{- range .Values.jellyfin.extra_devices }}
+        {{- range .Values.jellyfin.extraDevices }}
         - name: {{ . | trimAll "/" | replace "/" "-" | lower }}
           hostPath:
             path: {{ . }}
         {{- end }}
-        {{- range .Values.jellyfin.media_volumes }}
+        {{- range .Values.jellyfin.mediaVolumes }}
         - name: {{ .name }}
           persistentVolumeClaim:
             claimName: {{ include "common.names.fullname" $ }}-mediavol-{{ .name }}

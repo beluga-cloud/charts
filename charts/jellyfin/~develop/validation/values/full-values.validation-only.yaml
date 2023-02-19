@@ -32,9 +32,9 @@ ingress:
   pathType: ImplementationSpecific
   tls: true
 jellyfin:
-  extra_devices:
+  extraDevices:
   - /dev/dri/renderD128
-  media_volumes:
+  mediaVolumes:
   - name: movies
     readOnly: false
     volumeSpec:
@@ -45,7 +45,7 @@ jellyfin:
       nfs:
         path: /nas/movies
         server: my-nfs-server.example.com
-  persistent_transcodes: true
+  persistentTranscodes: true
 networkPolicy:
   allowAllOutbound: false
   allowExternal: false
@@ -79,16 +79,18 @@ podSecurityContext:
   seccompProfile:
     type: Unconfined
 resources:
-  limits:
-    cpu: 2
-    memory: 2Gi
-  requests:
-    cpu: 10m
-    memory: 10Mi
+  jellyfin:
+    limits:
+      cpu: 2
+      memory: 2Gi
+    requests:
+      cpu: 10m
+      memory: 10Mi
 service:
   annotations:
     annotations: enabled
-  type: ClusterIP
+  type: LoadBalancer
+  loadBalancerIP: 0.0.0.0
   web:
     port: 8888
 strategy:

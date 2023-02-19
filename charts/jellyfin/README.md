@@ -1,12 +1,14 @@
+
+
 <!-- markdownlint-disable MD033 -->
 
 <h1 align="center">
-  <a href="https://github.com/belug-apps">
-    <img src="https://github.com/belug-apps/.github/raw/main/assets/logo_400px.png" alt="Logo" width="150" height="150">
+  <a href="https://jellyfin.org/">
+    <img src="https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg" alt="Logo" width="150" height="150">
   </a>
 </h1>
 
-<h4 align="center">Belug-Apps - Simple and secure Charts for homelab</h4>
+<h4 align="center">Jellyfin - Your media, your server, your way</h4>
 
 <div align="center">
   <br/>
@@ -16,7 +18,7 @@
   ](LICENSE)
   <br/>
     ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-    ![Version: 1.0.2](https://img.shields.io/badge/Version-1.0.2-informational?style=flat)
+    ![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat)
     ![AppVersion: 10.8.9](https://img.shields.io/badge/AppVersion-10.8.9-informational?style=flat)
 
 </div>
@@ -29,7 +31,6 @@
 
 _Jellyfin_ is the volunteer-built media solution that puts you in control of your media. Stream to any device from
 your own server, with no strings attached.
-<div align="center"><h3>Your media, your server, your way.</h3></div>
 
 Some features of Jellyfin:
 - **Movies**: Enjoy your entire movie collection, easy to browse and with beautiful artwork.
@@ -40,7 +41,7 @@ Some features of Jellyfin:
 - **Photos**: Organize your photos and share memories with your friends and family.
 - **SyncPlay**: Sharing a movie night remotely has never been so easy.
 
-[> Overview of Jellyfin](https://jellyfin.org)
+[> More about Jellyfin](https://jellyfin.org/)
 
 ---
 
@@ -111,9 +112,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | `images.jellyfin.registry` | jellyfin image registry (optional) | `""` |
 | `images.jellyfin.repository` | jellyfin image repository | `"ghcr.io/belug-apps/jellyfin/jellyfin"` |
 | `images.jellyfin.tag` | jellyfin image tag (immutable tags are recommended) | `""` |
-| `jellyfin.extra_devices` | Additional device like GPU to mount | `[]` |
-| `jellyfin.media_volumes` | The list of volumes that will be mounted inside jellyfin pod, to `/media`. | `[]` |
-| `jellyfin.persistent_transcodes` | Keep all transcoded files persistent. | `false` |
+| `jellyfin.extraDevices` | Additional device like GPU to mount | `[]` |
+| `jellyfin.mediaVolumes` | The list of volumes that will be mounted inside jellyfin pod, to `/media`. | `[]` |
+| `jellyfin.persistentTranscodes` | Keep all transcoded files persistent. | `false` |
 
 ### Security parameters
 
@@ -130,8 +131,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | `nodeSelector` | Node labels for pod assignment | `{"kubernetes.io/os":"linux"}` |
 | `podAnnotations` | Additional annotations to apply to the pod. | `{}` |
 | `podLabels` | Additional labels to be added to pods. | `{}` |
-| `resources.limits` | The resources limits for the container | `{"cpu":"2","memory":"6Gi"}` |
-| `resources.requests` | The requested resources for the container | `{"cpu":"500m","memory":"512Mi"}` |
+| `resources.jellyfin.limits` | The resources limits for the container | `{"cpu":"2","memory":"6Gi"}` |
+| `resources.jellyfin.requests` | The requested resources for the container | `{"cpu":"500m","memory":"512Mi"}` |
 | `strategy` | Set up update strategy for jellyfin installation. Set to `Recreate` if you use persistent volume    that cannot be mounted by more than one pods to make sure the pods is destroyed first.    ([kubernetes.io/docs](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy)) | `{}` |
 | `tolerations` | Tolerations for pod assignment ([kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#toleration-v1-core)) | `[]` |
 | `topologySpreadConstraints` | Topology Spread Constraints for pod assignment    ([kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#topologyspreadconstraint-v1-core)) | `[]` |
@@ -162,7 +163,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.loadBalancerIP` | LoadBalancer IP if service type is `LoadBalancer` (optional, cloud specific) | `""` |
 | `service.loadBalancerSourceRanges` | Addresses that are allowed when service is `LoadBalancer` | `[]` |
 | `service.type` | Service type | `"ClusterIP"` |
-| `service.web.nodePort` | Specify the nodePort value for the `LoadBalancer` and `NodePort` service types | `""` |
+| `service.web.nodePort` | Specify the nodePort value for the `LoadBalancer` and `NodePort` service types | `0` |
 | `service.web.port` | `web` service port | `8096` |
 
 ### Persistence parameters

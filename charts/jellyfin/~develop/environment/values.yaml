@@ -3,9 +3,9 @@ ingress:
   hostname: jellyfin.7f000001.nip.io
   tls: false
 jellyfin:
-  extra_devices:
+  extraDevices:
   # - /dev/dr/renderD128
-  media_volumes:
+  mediaVolumes:
     - name: media # this volume will be mounted into `/media/movies`
       readOnly: true # is this volume readonly ? (optional, default true)
       volumeSpec: # see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#persistentvolumespec-v1-core
@@ -15,4 +15,4 @@ jellyfin:
           storage: 10Gi
         hostPath:
           path: /media
-  persistent_transcodes: true
+  persistentTranscodes: true

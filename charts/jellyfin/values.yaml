@@ -90,14 +90,15 @@ topologySpreadConstraints: []
 #         app.kubernetes.io/component: dashboard
 
 resources:
-  # -- The requested resources for the container
-  requests:
-    cpu: 500m
-    memory: 512Mi
-  # -- The resources limits for the container
-  limits:
-    cpu: '2'
-    memory: 6Gi
+  jellyfin:
+    # -- The requested resources for the container
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    # -- The resources limits for the container
+    limits:
+      cpu: '2'
+      memory: 6Gi
 
 # -- Security context for the pod (https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
 podSecurityContext:
@@ -163,7 +164,7 @@ service:
     # -- `web` service port
     port: 8096
     # -- Specify the nodePort value for the `LoadBalancer` and `NodePort` service types
-    nodePort: ""
+    nodePort: 0
 
 ingress:
   # -- Enable ingress resource
@@ -203,11 +204,11 @@ networkPolicy:
 
 jellyfin:
   # -- Additional device like GPU to mount
-  extra_devices: []
+  extraDevices: []
   # - /dev/dri/renderD128
 
   # -- The list of volumes that will be mounted inside jellyfin pod, to `/media`.
-  media_volumes: []
+  mediaVolumes: []
   # - name: movies # this volume will be mounted into `/media/movies`
   #   readOnly: false # is this volume readonly ? (optional, default true)
   #   volumeSpec: # see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#persistentvolumespec-v1-core
@@ -220,4 +221,4 @@ jellyfin:
   #       server: my-nfs-server.example.com
 
   # -- Keep all transcoded files persistent.
-  persistent_transcodes: false
+  persistentTranscodes: false
