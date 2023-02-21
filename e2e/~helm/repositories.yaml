@@ -19,3 +19,12 @@ repositories:
   password: ""
   url: https://charts.bitnami.com/bitnami
   username: ""
+- caFile: ""
+  certFile: ""
+  insecure_skip_tls_verify: false
+  keyFile: ""
+  name: cert-manager
+  pass_credentials_all: false
+  password: ""
+  url: https://charts.jetstack.io
+  username: ""

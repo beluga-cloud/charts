@@ -1,0 +1,21 @@
+---
+# Source: actual/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: actual
+  labels:
+    app.kubernetes.io/name: actual
+    helm.sh/chart: actual-1.0.0
+    app.kubernetes.io/instance: actual
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 5006
+      targetPort: web
+      nodePort: 0
+  selector:
+    app.kubernetes.io/name: actual
+    app.kubernetes.io/instance: actual
