@@ -1,7 +1,7 @@
 apiVersion: v2
 type: application
 name: actual
-description: A local-first personal finance system
+description: Enjoy managing your finances
 version: 1.0.0
 appVersion: v23.2.9
 kubeVersion: '>=1.20'

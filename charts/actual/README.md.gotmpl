@@ -32,17 +32,28 @@
 
 > _Disclaimer: This application has been developed by the [{{ template "chart.title" . }}]({{ template "chart.homepage" . }}) community._
 
-_Jellyfin_ is the volunteer-built media solution that puts you in control of your media. Stream to any device from
-your own server, with no strings attached.
+_Actual_ is a super fast privacy-focused app for managing your finances. You own your data, and we will sync it
+across all devices with optional end-to-end encryption.
 
-Some features of Jellyfin:
-- **Movies**: Enjoy your entire movie collection, easy to browse and with beautiful artwork.
-- **Shows**: Watch your favorite shows, automatically sorted by season and ready to binge.
-- **Music**: Listen to music, your artists and your playlists, at home or on the go.
-- **Live TV & DVR**: Watch TV and set automatic recordings to expand your library.
-- **Books**: Read your books, comics, and magazines.
-- **Photos**: Organize your photos and share memories with your friends and family.
-- **SyncPlay**: Sharing a movie night remotely has never been so easy.
+Some features of Actual:
+
+- **Be involved in your financial decisions**: Automated finance tools are great, except when they aren’t. We provide
+    you with tools that are quick to use, but ultimately you are in control. We help you learn, instead of dictating.
+- **Meticulously designed for speed**: A beautifully designed interface is fine-tuned to get out of your way and make it
+    as fast as possible to explore your finances.
+- **Unabashedly local-first software**: Actual is a local app, plain and simple. Your data is synced in the background
+    so all devices have access, but the app totally works regardless of your network connection. This also allows
+    end-to-end encryption to keep your data private.
+- **Powerful budgeting made simple**: Save hundreds of dollars a year (at least!) by tracking your spending. Based on
+    tried and true methods, our budgeting system is based off of your real income instead of made up numbers. This makes
+    you face your real spending, and clearly shows how much you are saving each month. We make this process as simple as
+    possible. Learn more
+- **The fastest way to manage transactions**: Breeze through your transactions and update them easily with a
+    streamlined, minimal interface. Categorizing your transactions correctly is important and we’ve optimized this
+    process. Manage split transactions and transfers all in the same editor.
+- **Oh my, the reports**: Intuitive reports give you a quick way to learn about your finances. By default, we include
+    net worth and cash flow reports, but soon you’ll be able to create any report that you like. You’ll even be able to
+    download custom reports from others.
 
 [> More about {{ template "chart.title" . }}]({{ template "chart.homepage" . }})
 
@@ -98,7 +109,7 @@ The command removes all the Kubernetes components associated with the chart and 
 {{- range .Values }}
     {{- if hasPrefix "global." .Key }}
         {{- $params = append $params .Key }}
-| `{{ .Key }}` |  {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+        | `{{ .Key }}` |  {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
     {{- end }}
 {{- end }}
 
@@ -117,7 +128,7 @@ The command removes all the Kubernetes components associated with the chart and 
     )
     }}
         {{- $params = append $params .Key }}
-| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+        | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
     {{- end }}
 {{- end }}
 
@@ -134,7 +145,7 @@ The command removes all the Kubernetes components associated with the chart and 
     )
     }}
         {{- $params = append $params .Key }}
-| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+        | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
     {{- end }}
 {{- end }}
 
@@ -151,7 +162,7 @@ The command removes all the Kubernetes components associated with the chart and 
     )
     }}
         {{- $params = append $params .Key }}
-| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+        | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
     {{- end }}
 {{- end }}
 
@@ -179,7 +190,7 @@ The command removes all the Kubernetes components associated with the chart and 
     )
     }}
         {{- $params = append $params .Key }}
-| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+        | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
     {{- end }}
 {{- end }}
 
@@ -197,7 +208,7 @@ The command removes all the Kubernetes components associated with the chart and 
     )
     }}
         {{- $params = append $params .Key }}
-| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+        | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
     {{- end }}
 {{- end }}
 
@@ -213,7 +224,7 @@ The command removes all the Kubernetes components associated with the chart and 
     )
     }}
         {{- $params = append $params .Key }}
-| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+        | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
     {{- end }}
 {{- end }}
 
@@ -229,7 +240,7 @@ The command removes all the Kubernetes components associated with the chart and 
     )
     }}
         {{- $params = append $params .Key }}
-| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+        | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
     {{- end }}
 {{- end }}
 
@@ -240,7 +251,7 @@ The command removes all the Kubernetes components associated with the chart and 
   |-----|-------------|---------|
   {{- range .Values }}
       {{- if not (has .Key $params) }}
-| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+        | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
       {{- end }}
   {{- end }}
 {{- end }}

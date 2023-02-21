@@ -1,0 +1,17 @@
+---
+# Source: actual/templates/storage.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: actual-data
+  labels:
+    app.kubernetes.io/name: actual
+    helm.sh/chart: actual-1.0.0
+    app.kubernetes.io/instance: actual
+    app.kubernetes.io/managed-by: Helm
+spec: 
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

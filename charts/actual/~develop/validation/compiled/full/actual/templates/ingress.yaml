@@ -1,0 +1,28 @@
+---
+# Source: actual/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: actual
+  annotations:
+    annotations: enabled
+  labels:
+    app.kubernetes.io/name: actual
+    helm.sh/chart: actual-1.0.0
+    app.kubernetes.io/instance: actual
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec:
+  ingressClassName: "nginx"
+  rules:
+    - host: actual.example.com
+      http:
+        paths:
+          - path: /ui
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: actual
+                port:
+                  number: 8888

@@ -1,0 +1,77 @@
+---
+# Source: actual/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actual
+  labels:
+    app.kubernetes.io/name: actual
+    helm.sh/chart: actual-1.0.0
+    app.kubernetes.io/instance: actual
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: actual
+      app.kubernetes.io/instance: actual
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: actual
+        app.kubernetes.io/instance: actual
+    spec:
+      securityContext:
+        runAsGroup: 64087
+        runAsNonRoot: true
+        runAsUser: 64087
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: actual-server
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 64087
+            runAsNonRoot: true
+            runAsUser: 64087
+          image: ghcr.io/belug-apps/actual/actualserver:v23.2.9
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 5006
+              protocol: TCP
+          livenessProbe:
+            httpGet: &httpProbe
+              port: web
+              path: /
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet: *httpProbe
+            periodSeconds: 10
+            timeoutSeconds: 10
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 100Mi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/actual/user-files
+              subPath: user-files
+            - name: data
+              mountPath: /opt/actual/server-files
+              subPath: server-files
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: actual-data
