@@ -1,0 +1,24 @@
+apiVersion: v2
+type: application
+name: actual
+description: A local-first personal finance system
+version: 1.0.0
+appVersion: v23.2.9
+kubeVersion: '>=1.20'
+home: https://actualbudget.com/
+icon: https://github.com/actualbudget/docs/raw/master/static/img/favicon.png
+keywords:
+  - actualserver
+  - finance
+  - ynab
+sources:
+  - https://github.com/actualbudget/actual
+  - https://github.com/actualbudget/actual-server
+  - https://github.com/belug-apps/catalog/tree/main/charts/actual
+maintainers:
+  - name: xunleii
+    url: https://github.com/belug-apps
+dependencies:
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    version: 2.2.2

@@ -1,0 +1,7 @@
+~develop/
+ci
+images/
+
+.justfile
+.trivyignore
+README.md.gotmpl
