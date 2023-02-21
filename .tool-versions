@@ -8,3 +8,4 @@ kind 0.17.0
 kubectl 1.26.1
 trivy 0.37.3
 yq 4.30.8
+cmctl 1.11.0
