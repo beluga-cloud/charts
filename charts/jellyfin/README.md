@@ -3,9 +3,9 @@
 <!-- markdownlint-disable MD033 -->
 
 <h1 align="center">
-  <a href="https://jellyfin.org/">
-    <img src="https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg" alt="Logo" width="150" height="150">
-  </a>
+    <a href="https://jellyfin.org/">
+        <img src="https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg" alt="Logo" style="max-height: 150px">
+    </a>
 </h1>
 
 <h4 align="center">Jellyfin - Your media, your server, your way</h4>
@@ -14,12 +14,12 @@
   <br/>
 
   [
-  ![License](https://img.shields.io/github/license/belug-apps/belug-apps?logo=git&logoColor=white&logoWidth=20)
+    ![License](https://img.shields.io/github/license/belug-apps/belug-apps?logo=git&logoColor=white&logoWidth=20)
   ](LICENSE)
   <br/>
-    ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-    ![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat)
-    ![AppVersion: 10.8.9](https://img.shields.io/badge/AppVersion-10.8.9-informational?style=flat)
+  ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
+  ![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat)
+  ![AppVersion: 10.8.9](https://img.shields.io/badge/AppVersion-10.8.9-informational?style=flat)
 
 </div>
 
@@ -183,9 +183,7 @@ The command removes all the Kubernetes components associated with the chart and 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```shell
-helm install my-release \
---set fullnameOverride=my-jellyfin
-belug-apps/jellyfin
+helm install my-release --set fullnameOverride=my-jellyfin belug-apps/jellyfin
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,

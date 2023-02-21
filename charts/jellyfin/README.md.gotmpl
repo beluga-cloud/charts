@@ -6,9 +6,9 @@
 <!-- markdownlint-disable MD033 -->
 
 <h1 align="center">
-  <a href="{{ template "chart.homepage" . }}">
-    <img src="{{ template "chart.icon" . }}" alt="Logo" width="150" height="150">
-  </a>
+    <a href="{{ template "chart.homepage" . }}">
+        <img src="{{ template "chart.icon" . }}" alt="Logo" style="max-height: 150px">
+    </a>
 </h1>
 
 <h4 align="center">{{ template "chart.title" . }} - {{ template "chart.description" . }}</h4>
@@ -17,14 +17,15 @@
   <br/>
 
   [
-  ![License](https://img.shields.io/github/license/belug-apps/belug-apps?logo=git&logoColor=white&logoWidth=20)
+    ![License](https://img.shields.io/github/license/belug-apps/belug-apps?logo=git&logoColor=white&logoWidth=20)
   ](LICENSE)
   <br/>
-    {{ template "chart.typeBadge" . }}
-    {{ template "chart.versionBadge" . }}
-    {{ template "chart.appVersionBadge" . }}
+  {{ template "chart.typeBadge" . }}
+  {{ template "chart.versionBadge" . }}
+  {{ template "chart.appVersionBadge" . }}
 
 </div>
+
 
 ---
 
@@ -108,13 +109,13 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----|-------------|---------|
 {{- range .Values }}
     {{- if and
-    (not (has .Key $params))
-    (or
-    (hasPrefix "commonAnnotations" .Key)
-    (hasPrefix "commonLabels" .Key)
-    (hasPrefix "fullnameOverride" .Key)
-    (hasPrefix "nameOverride" .Key)
-    )
+      (not (has .Key $params))
+      (or
+        (hasPrefix "commonAnnotations" .Key)
+        (hasPrefix "commonLabels" .Key)
+        (hasPrefix "fullnameOverride" .Key)
+        (hasPrefix "nameOverride" .Key)
+      )
     }}
         {{- $params = append $params .Key }}
 | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
@@ -127,11 +128,11 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----|-------------|---------|
 {{- range .Values }}
     {{- if and
-    (not (has .Key $params))
-    (or
-    (hasPrefix "image" .Key)
-    (hasPrefix ($.Name | snakecase) .Key)
-    )
+      (not (has .Key $params))
+      (or
+        (hasPrefix "image" .Key)
+        (hasPrefix ($.Name | snakecase) .Key)
+      )
     }}
         {{- $params = append $params .Key }}
 | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
@@ -144,11 +145,11 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----|-------------|---------|
 {{- range .Values }}
     {{- if and
-    (not (has .Key $params))
-    (or
-    (hasPrefix "podSecurityContext" .Key)
-    (hasPrefix "containerSecurityContext" .Key)
-    )
+      (not (has .Key $params))
+      (or
+        (hasPrefix "podSecurityContext" .Key)
+        (hasPrefix "containerSecurityContext" .Key)
+      )
     }}
         {{- $params = append $params .Key }}
 | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
@@ -161,22 +162,22 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----|-------------|---------|
 {{- range .Values }}
     {{- if and
-    (not (has .Key $params))
-    (or
-    (hasPrefix "affinity" .Key)
-    (hasPrefix "container" .Key)
-    (hasPrefix "deployment" .Key)
-    (hasPrefix "nodeSelector" .Key)
-    (hasPrefix "pod" .Key)
-    (hasPrefix "priorityClassName" .Key)
-    (hasPrefix "provisioning" .Key)
-    (hasPrefix "replicaCount" .Key)
-    (hasPrefix "resources" .Key)
-    (hasPrefix "statefulset" .Key)
-    (hasPrefix "strategy" .Key)
-    (hasPrefix "tolerations" .Key)
-    (hasPrefix "topologySpreadConstraints" .Key)
-    )
+      (not (has .Key $params))
+      (or
+        (hasPrefix "affinity" .Key)
+        (hasPrefix "container" .Key)
+        (hasPrefix "deployment" .Key)
+        (hasPrefix "nodeSelector" .Key)
+        (hasPrefix "pod" .Key)
+        (hasPrefix "priorityClassName" .Key)
+        (hasPrefix "provisioning" .Key)
+        (hasPrefix "replicaCount" .Key)
+        (hasPrefix "resources" .Key)
+        (hasPrefix "statefulset" .Key)
+        (hasPrefix "strategy" .Key)
+        (hasPrefix "tolerations" .Key)
+        (hasPrefix "topologySpreadConstraints" .Key)
+      )
     }}
         {{- $params = append $params .Key }}
 | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
@@ -189,12 +190,12 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----|-------------|---------|
 {{- range .Values }}
     {{- if and
-    (not (has .Key $params))
-    (or
-    (hasPrefix "service" .Key)
-    (hasPrefix "ingress" .Key)
-    (hasPrefix "networkPolicy" .Key)
-    )
+      (not (has .Key $params))
+      (or
+        (hasPrefix "service" .Key)
+        (hasPrefix "ingress" .Key)
+        (hasPrefix "networkPolicy" .Key)
+      )
     }}
         {{- $params = append $params .Key }}
 | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
@@ -207,10 +208,10 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----|-------------|---------|
 {{- range .Values }}
     {{- if and
-    (not (has .Key $params))
-    (or
-    (hasPrefix "persistence" .Key)
-    )
+      (not (has .Key $params))
+      (or
+        (hasPrefix "persistence" .Key)
+      )
     }}
         {{- $params = append $params .Key }}
 | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
@@ -223,10 +224,10 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----|-------------|---------|
 {{- range .Values }}
     {{- if and
-    (not (has .Key $params))
-    (or
-    (hasPrefix "rbac" .Key)
-    )
+      (not (has .Key $params))
+      (or
+        (hasPrefix "rbac" .Key)
+      )
     }}
         {{- $params = append $params .Key }}
 | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
@@ -234,23 +235,21 @@ The command removes all the Kubernetes components associated with the chart and 
 {{- end }}
 
 {{- if not (eq (len .Values) (len $params)) }}
-  ## Other parameters
+### Other parameters
 
-  | Key | Description | Default |
-  |-----|-------------|---------|
-  {{- range .Values }}
-      {{- if not (has .Key $params) }}
+| Key | Description | Default |
+|-----|-------------|---------|
+{{- range .Values }}
+    {{- if not (has .Key $params) }}
 | `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
-      {{- end }}
-  {{- end }}
+    {{- end }}
+{{- end }}
 {{- end }}
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```shell
-helm install my-release \
---set fullnameOverride=my-{{ template "chart.name" . }}
-belug-apps/{{ template "chart.name" . }}
+helm install my-release --set fullnameOverride=my-{{ template "chart.name" . }} belug-apps/{{ template "chart.name" . }}
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,

@@ -1,11 +1,14 @@
+
+
 <!-- markdownlint-disable MD033 -->
+
 <h1 align="center">
-  <a href="https://github.com/belug-apps">
-    <img src="https://github.com/belug-apps/.github/raw/main/assets/logo_400px.png" alt="Logo" width="150" height="150">
+  <a href="https://github.com/cert-manager/cert-manager">
+    <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo-small.png" alt="Logo" style="max-height: 150px">
   </a>
 </h1>
 
-<h4 align="center">Belug-Apps - Simple and secure Charts for homelab</h4>
+<h4 align="center">Cert Manager Issuers - Helper for `cert-manager` to manage Issuers and ClusterIssuers via Helm</h4>
 
 <div align="center">
   <br/>
@@ -22,7 +25,7 @@
 
 ---
 
-## [cert-manager-issuers](https://github.com/cert-manager/cert-manager)
+## [Cert Manager Issuers](https://github.com/cert-manager/cert-manager)
 
 > _Warning: This application requires [`cert-manager`](https://cert-manager.io/)._
 
@@ -113,9 +116,7 @@ acme:
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```shell
-helm install my-release \
-  --set fullnameOverride=my-cert-manager-issuers
-    belug-apps/cert-manager-issuers
+helm install my-release --set fullnameOverride=my-cert-manager-issuers belug-apps/cert-manager-issuers
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
