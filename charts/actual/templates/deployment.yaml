@@ -33,7 +33,7 @@ spec:
       containers:
         - name: actual-server
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-          image: {{ include "common.images.image" (tuple .Values.images.actualserver .Values.global.imageRegistry .Chart.AppVersion) }}
+          image: {{ include "blib.images.image" (dict "image" .Values.images.actualserver "global" $) }}
           imagePullPolicy: {{ .Values.images.actualserver.pullPolicy }}
           ports:
             - name: web
