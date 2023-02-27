@@ -22,7 +22,7 @@ global:
   debug: true
   imagePullSecrets:
   - name: image-pull-secret
-helm_dashboard:
+helmDashboard:
   repositories:
   - name: komodorio
     url: https://helm-charts.komodor.io
@@ -58,11 +58,15 @@ networkPolicy:
         cidr: 0.0.0.0/0
 nodeSelector: {}
 persistence:
-  annotations:
-    annotations: enabled
-  enabled: true
-  size: 20M
-  storageClass: standard
+  data:
+    annotations:
+      annotations: enabled
+    enabled: true
+    volumeClaimSpec:
+      resources:
+        requests:
+          storage: 20M
+      storageClassName: standard
 podAnnotations:
   podAnnotations: enabled
 podLabels:

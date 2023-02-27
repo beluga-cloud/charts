@@ -79,7 +79,8 @@ spec:
         kubernetes.io/os: linux
       volumes:
         - name: data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: helm-dashboard-data
         - name: cache
           emptyDir: {}
         - name: tempdir

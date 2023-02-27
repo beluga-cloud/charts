@@ -132,6 +132,7 @@ The command removes all the Kubernetes components associated with the chart and 
       (or
         (hasPrefix "image" .Key)
         (hasPrefix ($.Name | snakecase) .Key)
+        (hasPrefix "helmDashboard" .Key)
       )
     }}
         {{- $params = append $params .Key }}

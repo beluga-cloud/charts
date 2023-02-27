@@ -1,9 +1,9 @@
 ---
-# Source: helm-dashboard/templates/pvc.yaml
+# Source: helm-dashboard/templates/storage.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: helm-dashboard
+  name: helm-dashboard-data
   annotations:
     annotations: enabled
   labels:
@@ -13,10 +13,10 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
     commonLabels02: enabled
-spec:
-  storageClassName: "standard"
+spec: 
   accessModes:
-    - "ReadWriteOnce"
+  - ReadWriteOnce
   resources:
     requests:
-      storage: "20M"
+      storage: 20M
+  storageClassName: standard

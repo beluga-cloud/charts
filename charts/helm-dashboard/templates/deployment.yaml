@@ -67,7 +67,7 @@ spec:
               mountPath: /.cache
             - name: tempdir
               mountPath: /tmp
-      {{- if not (empty .Values.helm_dashboard.repositories) }}
+      {{- if not (empty .Values.helmDashboard.repositories) }}
       initContainers:
         - name: repositories-preloader
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
@@ -109,13 +109,13 @@ spec:
       {{- end }}
       volumes:
         - name: data
-        {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.data.enabled }}
           persistentVolumeClaim:
-            claimName: {{ include "common.names.fullname" . }}
+            claimName: {{ include "common.names.fullname" . }}-data
         {{- else }}
           emptyDir: {}
         {{- end }}
-        {{- if not (empty .Values.helm_dashboard.repositories) }}
+        {{- if not (empty .Values.helmDashboard.repositories) }}
         - name: preload-script
           configMap:
             name: {{ include "common.names.fullname" . }}-repositories-script

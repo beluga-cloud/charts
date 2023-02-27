@@ -141,7 +141,7 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: helm-dashboard
+            claimName: helm-dashboard-data
         - name: preload-script
           configMap:
             name: helm-dashboard-repositories-script

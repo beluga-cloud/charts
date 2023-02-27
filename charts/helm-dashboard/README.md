@@ -108,7 +108,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `helm_dashboard.repositories` | Default helm registries loaded with helm-dashboard | `[]` |
+| `helmDashboard.repositories` | Default helm registries loaded with helm-dashboard | `[]` |
 | `images.dashboard.digest` | helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
 | `images.dashboard.pullPolicy` | helm-dashboard image pull policy | `"IfNotPresent"` |
 | `images.dashboard.registry` | helm-dashboard image registry (optional) | `""` |
@@ -163,25 +163,21 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.loadBalancerIP` | LoadBalancer IP if service type is `LoadBalancer` (optional, cloud specific) | `""` |
 | `service.loadBalancerSourceRanges` | Addresses that are allowed when service is `LoadBalancer` | `[]` |
 | `service.type` | Service type | `"ClusterIP"` |
-| `service.web.nodePort` | Specify the nodePort value for the `LoadBalancer` and `NodePort` service types | `""` |
+| `service.web.nodePort` | Specify the nodePort value for the `LoadBalancer` and `NodePort` service types | `0` |
 | `service.web.port` | `web` service port | `8080` |
 
 ### Persistence parameters
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `persistence.accessModes` | `PVC` Access Modes for data volume | `["ReadWriteOnce"]` |
-| `persistence.annotations` | Additional annotations for the `PVC` | `{}` |
-| `persistence.enabled` | Enable data persistence using `PVC`. If false, use emptyDir | `false` |
-| `persistence.hostPath` | Set path in case you want to use local host path volumes (not recommended in production) | `""` |
-| `persistence.size` | `PVC` Storage Request for data volume | `"100M"` |
-| `persistence.storageClass` | `PVC` Storage Class for data volume | `""` |
+| `persistence.data.enabled` | Enable data persistence using `PVC`. If false, use emptyDir | `true` |
+| `persistence.data.volumeClaimSpec` | Claims that pods are allowed to reference (see    [kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#persistentvolumeclaim-v1-core)    for structural reference) | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"100M"}}}` |
 
 ### RBAC parameters
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `rbac.allowWriteActions` | allow helm-dashboard to create/edit/delete Kubernetes resources | `false` |
+| `rbac.allowWriteActions` | Allow helm-dashboard to create/edit/delete Kubernetes resources | `false` |
 | `rbac.create` | Specifies whether RBAC resources should be created | `true` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
