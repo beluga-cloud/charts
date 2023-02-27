@@ -17,3 +17,7 @@ sources:
 maintainers:
   - name: belug-apps
     url: https://github.com/belug-apps
+dependencies:
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    version: 2.2.2

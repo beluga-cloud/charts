@@ -1,7 +1,7 @@
 clusterIssuers:
-  acme:
-    letsencrypt:
-      spec:
+  - name: letsencrypt
+    spec:
+      acme:
         email: user@example.com
         server: https://acme-v02.api.letsencrypt.org/directory
         solvers:
@@ -13,16 +13,17 @@ clusterIssuers:
                   name: '{{ .credentials.name }}'
                   key: api-token
         privateKeySecretRef:
-          name: '{{ .credentials.name }}-issuer-key'
-      credentials:
-        api-token: CLOUDFLARE_TOKEN
-  selfSigned:
-    shared-ss: {}
+          name: '{{ .issuer.name }}-issuer-key'
+    credentials:
+      api-token: CLOUDFLARE_TOKEN
+  - name: shared-ss
+    spec:
+      selfSigned: {}
 
 issuers:
-  acme:
-    letsencrypt:
-      spec:
+  - name: letsencrypt
+    spec:
+      acme:
         email: user@example.com
         server: https://acme-v02.api.letsencrypt.org/directory
         solvers:
@@ -34,13 +35,14 @@ issuers:
                   name: '{{ .credentials.name }}'
                   key: api-token
         privateKeySecretRef:
-          name: '{{ .credentials.name }}-issuer-key'
-      credentials:
-        api-token: CLOUDFLARE_TOKEN
+          name: '{{ .issuer.name }}-issuer-key'
+    credentials:
+      api-token: CLOUDFLARE_TOKEN
 
-    letsencrypt-staging:
-      namespace: default
-      spec:
+  - name: letsencrypt-staging
+    namespace: default
+    spec:
+      acme:
         email: user@example.com
         server: https://acme-staging-v02.api.letsencrypt.org/directory
         solvers:
@@ -52,9 +54,11 @@ issuers:
                   name: '{{ .credentials.name }}'
                   key: api-token
         privateKeySecretRef:
-          name: '{{ .credentials.name }}-issuer-key'
-      credentials:
-        api-token: CLOUDFLARE_TOKEN
-  selfSigned:
-    default:
-      namespace: default
+          name: '{{ .issuer.name }}-issuer-key'
+    credentials:
+      api-token: CLOUDFLARE_TOKEN
+
+  - name: default
+    namespace: default
+    spec:
+      selfSigned: {}

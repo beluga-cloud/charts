@@ -1,19 +1,25 @@
+global:
+  # -- Labels to apply to all resources.
+  commonLabels: {}
+
 # each issuer follows the same structure:
-#  issuer-type:
-#    issuer-name:
-#      metadata:
-#        annotations: {} # (Optional) additional annotations
-#        labels: {} # (Optional) additional labels
-#      spec: {} # Issuer configuration (using the same pattern as used inside the issuer CRD)
-#      NOTE: template are allowed here. However, only two value are provided:
-#      - credentials.name - contains the secret name containing credentials
-#      - credentials.namespace - contains the secret namespace containing credentials
-#      credentials: {} # (Optional) create a secret used to store credentials
+#  - name: ... # (Required) issuer name
+#    namespace: ... # (Optional for issuer) issuer namespace
+#    metadata:
+#      annotations: {} # (Optional) additional annotations
+#      labels: {} # (Optional) additional labels
+#    spec: {} # Issuer configuration (using the same pattern as used inside the issuer CRD)
+#    NOTE: template are allowed here. However, only two value are provided:
+#    - issuer.name - contains the issuer name
+#    - issuer.namespace - contains the issuer namespace
+#    - credentials.name - contains the secret name containing credentials
+#    - credentials.namespace - contains the secret namespace containing credentials
+#    credentials: {} # (Optional) create a secret used to store credentials
 #
 # e.g. cluster issuer configured to use Cloudflare as DNS resolver
-#  acme:
-#    letsencrypt:
-#      spec:
+#  - name: letsencrypt
+#    spec:
+#      acme:
 #        email: user@example.com
 #        server: https://acme-v02.api.letsencrypt.org/directory
 #        solvers:
@@ -25,21 +31,9 @@
 #                  name: '{{ .credentials.name }}'
 #                  key: api-token
 #        privateKeySecretRef:
-#          name: '{{ .credentials.name }}-issuer-key'
+#          name: '{{ .issuer.name }}-issuer-key'
 #      credentials:
 #        api-token: CLOUDFLARE_TOKEN
-issuers:
-  # ACME issuers
-  # ref: https://cert-manager.io/docs/configuration/acme/
-  acme: {}
-  # SelfSigned issuers
-  # ref: https://cert-manager.io/docs/configuration/selfsigned/
-  selfSigned: {}
 
-clusterIssuers:
-  # ACME issuers
-  # ref: https://cert-manager.io/docs/configuration/acme/
-  acme: {}
-  # SelfSigned issuers
-  # ref: https://cert-manager.io/docs/configuration/selfsigned/
-  selfSigned: {}
+issuers: []
+clusterIssuers: []

@@ -1,13 +1,10 @@
 All issuers have been deployed successfully!
 
 Here is the list of all deployed issuers:
-{{- range $type, $issuers := .Values.clusterIssuers }}
-{{- range $name, $issuer := $issuers }}
-- {{ $type | lower }}-{{ $issuer.name }} ({{ $type }})
-{{- end }}{{/* range $name, $issuer := $issuers */}}
-{{- end }}{{/* range $type, $issuers := .Values.issuers */}}
-{{- range $type, $issuers := .Values.issuers }}
-{{- range $name, $issuer := $issuers }}
-- {{ include "issuer.crendentials.namespace" (merge dict $ $issuer) }}/{{ $type | lower }}-{{ $issuer.name }} ({{ $type }})
-{{- end }}{{/* range $name, $issuer := $issuers */}}
-{{- end }}{{/* range $type, $issuers := .Values.issuers */}}
+{{- range $issuer := .Values.clusterIssuers }}
+- {{ $issuer.spec | keys | first }}-{{ $issuer.name }} ({{ $issuer.spec | keys | first }})
+{{- end }}
+{{- range $issuer := .Values.issuers }}
+{{ $_ := set $issuer "namespace" ($issuer.namespace | default $.Release.Namespace) }}
+- ${{ $issuer.namespace }}/{{ $issuer.spec | keys | first }}-{{ $issuer.name }} ({{ $issuer.spec | keys | first }})
+{{- end }}

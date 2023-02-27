@@ -1,0 +1,107 @@
+---
+# Source: cert-manager-issuers/templates/issuers.yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: acme-letsencrypt
+  labels:
+    app.kubernetes.io/name: cert-manager-issuers
+    helm.sh/chart: cert-manager-issuers-1.0.3
+    app.kubernetes.io/instance: cert-manager-issuers
+    app.kubernetes.io/managed-by: Helm
+spec: 
+  acme:
+    email: user@example.com
+    privateKeySecretRef:
+      name: 'letsencrypt-issuer-key'
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            key: api-token
+            name: 'clusterissuer-acme-letsencrypt-credentials'
+      selector:
+        dnsZones:
+        - example.com
+---
+# Source: cert-manager-issuers/templates/issuers.yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfSigned-shared-ss
+  labels:
+    app.kubernetes.io/name: cert-manager-issuers
+    helm.sh/chart: cert-manager-issuers-1.0.3
+    app.kubernetes.io/instance: cert-manager-issuers
+    app.kubernetes.io/managed-by: Helm
+spec: 
+  selfSigned: {}
+---
+# Source: cert-manager-issuers/templates/issuers.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: acme-letsencrypt
+  namespace: cert-manager-issuers-validation
+  labels:
+    app.kubernetes.io/name: cert-manager-issuers
+    helm.sh/chart: cert-manager-issuers-1.0.3
+    app.kubernetes.io/instance: cert-manager-issuers
+    app.kubernetes.io/managed-by: Helm
+spec: 
+  acme:
+    email: user@example.com
+    privateKeySecretRef:
+      name: 'letsencrypt-issuer-key'
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            key: api-token
+            name: 'issuer-acme-letsencrypt-credentials'
+      selector:
+        dnsZones:
+        - example.com
+---
+# Source: cert-manager-issuers/templates/issuers.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: acme-letsencrypt-staging
+  namespace: default
+  labels:
+    app.kubernetes.io/name: cert-manager-issuers
+    helm.sh/chart: cert-manager-issuers-1.0.3
+    app.kubernetes.io/instance: cert-manager-issuers
+    app.kubernetes.io/managed-by: Helm
+spec: 
+  acme:
+    email: user@example.com
+    privateKeySecretRef:
+      name: 'letsencrypt-staging-issuer-key'
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            key: api-token
+            name: 'issuer-acme-letsencrypt-staging-credentials'
+      selector:
+        dnsNames:
+        - cm.example.com
+---
+# Source: cert-manager-issuers/templates/issuers.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfSigned-default
+  namespace: default
+  labels:
+    app.kubernetes.io/name: cert-manager-issuers
+    helm.sh/chart: cert-manager-issuers-1.0.3
+    app.kubernetes.io/instance: cert-manager-issuers
+    app.kubernetes.io/managed-by: Helm
+spec: 
+  selfSigned: {}

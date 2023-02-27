@@ -1,7 +1,7 @@
 issuers:
-  acme:
-    letsencrypt:
-      spec:
+  - name: letsencrypt
+    spec:
+      acme:
         email: user@example.com
         server: https://acme-v02.api.letsencrypt.org/directory
         solvers:
@@ -14,5 +14,5 @@ issuers:
                   key: api-token
         privateKeySecretRef:
           name: '{{ .credentials.name }}-issuer-key'
-      credentials:
-        api-token: CLOUDFLARE_TOKEN
+    credentials:
+      api-token: CLOUDFLARE_TOKEN
