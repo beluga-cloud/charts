@@ -35,7 +35,7 @@ podAnnotations: {}
 podLabels: {}
 
 # -- Number of pods. (_**It's not recommended to add more instance of actualserver**_)
-#    NOTE: replicaCount are "disabled" because Jellyfin currently not handle HA
+#    NOTE: replicaCount are "disabled" because Actual server currently not handle HA
 # replicaCount: 1
 
 # -- Set up update strategy for actualserver installation. Set to `Recreate` if you use persistent volume

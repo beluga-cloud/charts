@@ -1,11 +1,16 @@
-{{- if .Values.persistence.data.enabled }}
+{{- range $name, $volume := .Values.persistence }}
+{{- if $volume.enabled }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "common.names.fullname" $ }}-data
+  name: {{ include "common.names.fullname" $ }}-{{ $name }}
+  {{- with $volume.annotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
     {{- include "common.labels.standard" $ | nindent 4 }}
     {{- with $.Values.global.commonLabels }}{{ toYaml . | nindent 4 }}{{ end }}
-spec: {{ toYaml .Values.persistence.data.volumeClaimSpec | nindent 2 }}
+spec: {{ toYaml $volume.volumeClaimSpec | nindent 2 }}
+{{- end }}
 {{- end }}
