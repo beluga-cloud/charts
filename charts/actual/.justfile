@@ -119,7 +119,8 @@ develop +OPTS="": build-images && (e2e-prepare (chart_name + "-dev")) (develop-i
     {{exec}} kind create cluster --name {{ (chart_name + "-dev") }} --wait 120s --config ~develop/environment/kind.yaml
   fi
   {{exec}} kubectl apply --filename https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml --wait
-  {{exec}} kubectl patch --namespace kube-system deployment/metric-server --patch '[{"op":"add","path":"/spec/template/spec/containers/0/args/5","value":"--kubelet-insecure-tls"}]'
+  kubectl patch --namespace kube-system deployment/metrics-server --type json --patch '[{"op":"add","path":"/spec/template/spec/containers/0/args/5","value":"--kubelet-insecure-tls"}]'
+  kubectl wait --namespace kube-system deployment/metrics-server --for=condition=Available
   {{exec}} helm upgrade --install contour bitnami/contour --namespace projectcontour --create-namespace
   {{exec}} helm upgrade --install cert-manager cert-manager/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
   {{exec}} kubectl --namespace default apply --filename ~develop/environment/selfsigned-issuer.yaml

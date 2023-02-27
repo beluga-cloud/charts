@@ -3,3 +3,4 @@ ingress:
     cert-manager.io/cluster-issuer: selfsigned
   enabled: true
   hostname: actual.7f000001.nip.io
+  tls: true
