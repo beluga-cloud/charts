@@ -85,6 +85,7 @@ e2e-setup CLUSTER_NAME=chart_name: build-images
 [no-exit-message]
 e2e-prepare CLUSTER_NAME=chart_name:
   #!/usr/bin/env bash
+  {{exec}} helm repo update
   {{exec}} helm upgrade --install cert-manager jetstack/cert-manager --create-namespace --namespace cert-manager-system --set installCRDs=true
 
 # remove the local environment to run e2e tests locally
