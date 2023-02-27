@@ -1,4 +1,4 @@
-{{- if not (empty .Values.helm_dashboard.repositories) }}
+{{- if not (empty .Values.helmDashboard.repositories) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,7 +7,7 @@ data:
   preload-repositories.sh: |
     #!/usr/bin/env sh
 
-    {{- range .Values.helm_dashboard.repositories }}
-    helm repo add {{ required "repository name is required" .name | quote }} {{ required "repository URL is required" .url | quote }}{{ with .insecure_skip_tls_verify }} --insecure-skip-tls-verify{{end}}{{ with .caFile }} --ca-file {{. | quote}}{{end}}{{ with .certFile }} --cert-file {{. | quote}}{{end}}{{ with .keyFile }} --key-file {{. | quote}}{{end}}{{ with .username }} --username {{. | quote}}{{end}}{{ with .password }} --password {{. | quote}}{{end}}{{ if .pass_credentials_all }} --pass-credentials{{end}}
+    {{- range .Values.helmDashboard.repositories }}
+    helm repo add {{ .name | quote }} {{ .url | quote }}{{ with .insecure_skip_tls_verify }} --insecure-skip-tls-verify{{end}}{{ with .caFile }} --ca-file {{. | quote}}{{end}}{{ with .certFile }} --cert-file {{. | quote}}{{end}}{{ with .keyFile }} --key-file {{. | quote}}{{end}}{{ with .username }} --username {{. | quote}}{{end}}{{ with .password }} --password {{. | quote}}{{end}}{{ if .pass_credentials_all }} --pass-credentials{{end}}
     {{- end }}
 {{- end }}

@@ -1,22 +1,24 @@
 {{/* vim: set filetype=mustache: */}}
 
 {{/*
-Labels that should be added on each issuers.
+Generates a specific issuer name depending on the issuer configuration
 */}}
-{{- define "issuer.labels" -}}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- define "issuer.name" -}}
+{{- if .issuer.namespace -}}
+{{ .issuer.spec | keys | first | lower }}-{{ .issuer.name | lower }}
+{{- else -}}
+{{ .issuer.spec | keys | first | lower }}-{{ .issuer.name | lower }}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Generates a specific credential name depending on the issuer name
 */}}
 {{- define "issuer.crendentials.name" -}}
-{{- if .namespaced -}}
-issuer-{{ .name }}-{{ .type }}-credentials
+{{- if .issuer.namespace -}}
+issuer-{{ include "issuer.name" . }}-credentials
 {{- else -}}
-clusterissuer-{{ .name }}-{{ .type }}-credentials
+clusterissuer-{{ include "issuer.name" . }}-credentials
 {{- end -}}
 {{- end -}}
 
@@ -24,18 +26,16 @@ clusterissuer-{{ .name }}-{{ .type }}-credentials
 Define in which namespace the credential secret is created
 */}}
 {{- define "issuer.crendentials.namespace" -}}
-{{- if and .namespaced .namespace -}}
-{{ .namespace }}
-{{- else -}}
-{{ .Release.Namespace }}
-{{- end -}}
+{{ .issuer.namespace | default .root.Release.Namespace }}
 {{- end -}}
 
 {{/*
 Render the .spec of all issuers
 */}}
 {{- define "issuer.spec.render" -}}
+{{- $issuerName := (include "issuer.name" .) }}
+{{- $issuerNamespace := .issuer.namespace }}
 {{- $credsName := (include "issuer.crendentials.name" .) -}}
 {{- $credsNamespace := (include "issuer.crendentials.namespace" .) -}}
-{{ tpl (.spec | toYaml) (dict "Template" .Template "credentials" (dict "name" $credsName "namespace" $credsNamespace)) }}
+{{ tpl (.issuer.spec | toYaml) (dict "Template" .root.Template "credentials" (dict "name" $credsName "namespace" $credsNamespace) "issuer" (dict "name" $issuerName "namespace" $issuerNamespace)) }}
 {{- end -}}

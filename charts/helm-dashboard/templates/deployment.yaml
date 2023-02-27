@@ -34,15 +34,7 @@ spec:
       containers:
         - name: helm-dashboard
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-          {{- if not .Values.images.dashboard.registry }}
-          {{- $repo := regexSplit "/" (trim .Values.images.dashboard.repository) 2 }}
-          {{- $_ := set .Values.images.dashboard "registry" (.Values.global.imageRegistry | default (index $repo 0)) }}
-          {{- $_ = set .Values.images.dashboard "repository" (trimPrefix "/" (index $repo 1)) }}
-          {{- else if .Values.global.imageRegistry }}
-          {{- $_ := set .Values.images.dashboard "registry" .Values.global.imageRegistry }}
-          {{- end }}
-          {{- if not .Values.images.dashboard.tag }}{{ $_ := set .Values.images.dashboard "tag" .Chart.AppVersion }}{{ end }}
-          image: {{ include "common.images.image" ( dict "imageRoot" .Values.images.dashboard "global" $) }}
+          image: {{ include "blib.images.image" (dict "image" .Values.images.dashboard "global" $) }}
           imagePullPolicy: {{ .Values.images.dashboard.pullPolicy }}
           env:
             - name: HELM_CACHE_HOME
@@ -75,7 +67,7 @@ spec:
               mountPath: /.cache
             - name: tempdir
               mountPath: /tmp
-      {{- if not (empty .Values.helm_dashboard.repositories) }}
+      {{- if not (empty .Values.helmDashboard.repositories) }}
       initContainers:
         - name: repositories-preloader
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
@@ -117,13 +109,13 @@ spec:
       {{- end }}
       volumes:
         - name: data
-        {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.data.enabled }}
           persistentVolumeClaim:
-            claimName: {{ include "common.names.fullname" . }}
+            claimName: {{ include "common.names.fullname" . }}-data
         {{- else }}
           emptyDir: {}
         {{- end }}
-        {{- if not (empty .Values.helm_dashboard.repositories) }}
+        {{- if not (empty .Values.helmDashboard.repositories) }}
         - name: preload-script
           configMap:
             name: {{ include "common.names.fullname" . }}-repositories-script

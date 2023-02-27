@@ -1,11 +1,14 @@
+
+
 <!-- markdownlint-disable MD033 -->
+
 <h1 align="center">
-  <a href="https://github.com/belug-apps">
-    <img src="https://github.com/belug-apps/.github/raw/main/assets/logo_400px.png" alt="Logo" width="150" height="150">
+  <a href="https://github.com/cert-manager/cert-manager">
+    <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo-small.png" alt="Logo" style="max-height: 150px">
   </a>
 </h1>
 
-<h4 align="center">Belug-Apps - Simple and secure Charts for homelab</h4>
+<h4 align="center">Cert Manager Issuers - Helper for `cert-manager` to manage Issuers and ClusterIssuers via Helm</h4>
 
 <div align="center">
   <br/>
@@ -15,14 +18,14 @@
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 1.0.3](https://img.shields.io/badge/Version-1.0.3-informational?style=flat)
+  ![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat)
   ![AppVersion: 1.11.0](https://img.shields.io/badge/AppVersion-1.11.0-informational?style=flat)
 
 </div>
 
 ---
 
-## [cert-manager-issuers](https://github.com/cert-manager/cert-manager)
+## [Cert Manager Issuers](https://github.com/cert-manager/cert-manager)
 
 > _Warning: This application requires [`cert-manager`](https://cert-manager.io/)._
 
@@ -78,12 +81,14 @@ The command removes all the Kubernetes components associated with the chart and 
 Listing all parameters here didn't make sense; each issuer follows the same structure:
 ```yaml
 <issuer-type>:
-  <issuer-name>:
+  - name: <issuer-name>:
     metadata:
       annotations: {} # (Optional) additional annotations
       labels: {} # (Optional) additional labels
     spec: {} # Issuer configuration (using the same pattern as used inside the issuer CRD)
              # NOTE: template are allowed here. However, only two value are provided:
+             # - issuer.name - contains the issuer name
+             # - issuer.namespace - contains the issuer namespace
              # - credentials.name - contains the secret name containing credentials
              # - credentials.namespace - contains the secret namespace containing credentials
     credentials: {} # (Optional) create a secret used to store credentials
@@ -91,21 +96,22 @@ Listing all parameters here didn't make sense; each issuer follows the same stru
 
 For example, a `ClusterIssuer` configured to used Cloudflare as DNS resolver
 ```yaml
-acme:
-  letsencrypt:
+clusterIssuer:
+  - name: letsencrypt:
     spec:
-      email: user@example.com
-      server: https://acme-v02.api.letsencrypt.org/directory
-      solvers:
-        - selector:
-            dnsZones: [example.com]
-          dns01:
-            cloudflare:
-              apiTokenSecretRef:
-                name: '{{ .credentials.name }}'
-                key: api-token
-      privateKeySecretRef:
-        name: '{{ .credentials.name }}-issuer-key'
+      acme:
+        email: user@example.com
+        server: https://acme-v02.api.letsencrypt.org/directory
+        solvers:
+          - selector:
+              dnsZones: [example.com]
+            dns01:
+              cloudflare:
+                apiTokenSecretRef:
+                  name: '{{ .credentials.name }}'
+                  key: api-token
+        privateKeySecretRef:
+          name: '{{ .credentials.name }}-issuer-key'
     credentials:
       api-token: CLOUDFLARE_TOKEN
 ```
@@ -113,9 +119,7 @@ acme:
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```shell
-helm install my-release \
-  --set fullnameOverride=my-cert-manager-issuers
-    belug-apps/cert-manager-issuers
+helm install my-release --set fullnameOverride=my-cert-manager-issuers belug-apps/cert-manager-issuers
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,

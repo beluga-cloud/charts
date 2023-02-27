@@ -1,0 +1,27 @@
+---
+# Source: cert-manager-issuers/templates/issuers.yaml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: acme-letsencrypt
+  namespace: cert-manager-issuers-validation
+  labels:
+    app.kubernetes.io/name: cert-manager-issuers
+    helm.sh/chart: cert-manager-issuers-2.0.0
+    app.kubernetes.io/instance: cert-manager-issuers
+    app.kubernetes.io/managed-by: Helm
+spec: 
+  acme:
+    email: user@example.com
+    privateKeySecretRef:
+      name: 'issuer-acme-letsencrypt-credentials-issuer-key'
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            key: api-token
+            name: 'issuer-acme-letsencrypt-credentials'
+      selector:
+        dnsZones:
+        - example.com

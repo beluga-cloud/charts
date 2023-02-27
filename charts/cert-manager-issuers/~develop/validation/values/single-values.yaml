@@ -1,0 +1,18 @@
+issuers:
+  - name: letsencrypt
+    spec:
+      acme:
+        email: user@example.com
+        server: https://acme-v02.api.letsencrypt.org/directory
+        solvers:
+          - selector:
+              dnsZones: [example.com]
+            dns01:
+              cloudflare:
+                apiTokenSecretRef:
+                  name: '{{ .credentials.name }}'
+                  key: api-token
+        privateKeySecretRef:
+          name: '{{ .credentials.name }}-issuer-key'
+    credentials:
+      api-token: CLOUDFLARE_TOKEN

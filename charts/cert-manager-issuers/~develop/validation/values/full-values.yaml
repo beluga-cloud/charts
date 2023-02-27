@@ -1,0 +1,64 @@
+clusterIssuers:
+  - name: letsencrypt
+    spec:
+      acme:
+        email: user@example.com
+        server: https://acme-v02.api.letsencrypt.org/directory
+        solvers:
+          - selector:
+              dnsZones: [example.com]
+            dns01:
+              cloudflare:
+                apiTokenSecretRef:
+                  name: '{{ .credentials.name }}'
+                  key: api-token
+        privateKeySecretRef:
+          name: '{{ .issuer.name }}-issuer-key'
+    credentials:
+      api-token: CLOUDFLARE_TOKEN
+  - name: shared-ss
+    spec:
+      selfSigned: {}
+
+issuers:
+  - name: letsencrypt
+    spec:
+      acme:
+        email: user@example.com
+        server: https://acme-v02.api.letsencrypt.org/directory
+        solvers:
+          - selector:
+              dnsZones: [example.com]
+            dns01:
+              cloudflare:
+                apiTokenSecretRef:
+                  name: '{{ .credentials.name }}'
+                  key: api-token
+        privateKeySecretRef:
+          name: '{{ .issuer.name }}-issuer-key'
+    credentials:
+      api-token: CLOUDFLARE_TOKEN
+
+  - name: letsencrypt-staging
+    namespace: default
+    spec:
+      acme:
+        email: user@example.com
+        server: https://acme-staging-v02.api.letsencrypt.org/directory
+        solvers:
+          - selector:
+              dnsNames: [cm.example.com]
+            dns01:
+              cloudflare:
+                apiTokenSecretRef:
+                  name: '{{ .credentials.name }}'
+                  key: api-token
+        privateKeySecretRef:
+          name: '{{ .issuer.name }}-issuer-key'
+    credentials:
+      api-token: CLOUDFLARE_TOKEN
+
+  - name: default
+    namespace: default
+    spec:
+      selfSigned: {}

@@ -1,11 +1,14 @@
+
+
 <!-- markdownlint-disable MD033 -->
+
 <h1 align="center">
-  <a href="https://github.com/belug-apps">
-    <img src="https://github.com/belug-apps/.github/raw/main/assets/logo_400px.png" alt="Logo" width="150" height="150">
+  <a href="https://github.com/komodorio/helm-dashboard">
+    <img src="https://raw.githubusercontent.com/komodorio/helm-dashboard/main/pkg/dashboard/static/logo.svg" alt="Logo" style="max-height: 150px">
   </a>
 </h1>
 
-<h4 align="center">Belug-Apps - Simple and secure Charts for homelab</h4>
+<h4 align="center">Helm Dashboard - A GUI Dashboard for Helm by Komodor</h4>
 
 <div align="center">
   <br/>
@@ -15,14 +18,14 @@
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 1.2.1](https://img.shields.io/badge/Version-1.2.1-informational?style=flat)
+  ![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat)
   ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat)
 
 </div>
 
 ---
 
-## [helm-dashboard](https://github.com/komodorio/helm-dashboard)
+## [Helm Dashboard](https://github.com/komodorio/helm-dashboard)
 
 > _Disclaimer: This application has been developed by the [Komodor](https://komodor.com/) team._
 
@@ -89,10 +92,10 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `global.commonLabels` | Labels to apply to all resources. | `{}` |
-| `global.debug` | Enable global debug mode | `false` |
-| `global.imagePullSecrets` | Reference to one or more secrets to be used when pulling images    ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/)) | `[]` |
-| `global.imageRegistry` | Global Docker image registry | `""` |
+| `global.commonLabels` |  Labels to apply to all resources. | `{}` |
+| `global.debug` |  Enable global debug mode | `false` |
+| `global.imagePullSecrets` |  Reference to one or more secrets to be used when pulling images    ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/))) | `[]` |
+| `global.imageRegistry` |  Global Docker image registry | `""` |
 
 ### Common parameters
 
@@ -101,39 +104,38 @@ The command removes all the Kubernetes components associated with the chart and 
 | `fullnameOverride` | String to fully override `common.names.fullname` template | `""` |
 | `nameOverride` | String to partially override `common.names.fullname` template (will maintain the release name) | `""` |
 
-### `helm-dashboard` parameters
+### Helm Dashboard parameters
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `helm_dashboard.repositories` | Default helm registries loaded with helm-dashboard | `[]` |
+| `helmDashboard.repositories` | Default helm registries loaded with helm-dashboard | `[]` |
 | `images.dashboard.digest` | helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
 | `images.dashboard.pullPolicy` | helm-dashboard image pull policy | `"IfNotPresent"` |
 | `images.dashboard.registry` | helm-dashboard image registry (optional) | `""` |
 | `images.dashboard.repository` | helm-dashboard image repository | `"ghcr.io/belug-apps/helm-dashboard/dashboard"` |
 | `images.dashboard.tag` | helm-dashboard image tag (immutable tags are recommended) | `""` |
-| `rbac.allowWriteActions` | allow helm-dashboard to create/edit/delete Kubernetes resources | `false` |
 
 ### Security parameters
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `containerSecurityContext` | Security context for the helm-dashboard container    ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463}` |
-| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"fsGroup":65463,"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463,"seccompProfile":{"type":"RuntimeDefault"}}` |
+| `containerSecurityContext` | Security context for the helm-dashboard container    ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463}` |
+| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))) | `{"fsGroup":65463,"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463,"seccompProfile":{"type":"RuntimeDefault"}}` |
 
 ### Deployment/Statefulset parameters
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `affinity` | Affinity for pod assignment ([kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#affinity-v1-core)) | `{}` |
+| `affinity` | Affinity for pod assignment ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#affinity-v1-core))) | `{}` |
 | `nodeSelector` | Node labels for pod assignment | `{"kubernetes.io/os":"linux"}` |
 | `podAnnotations` | Additional annotations to apply to the pod. | `{}` |
 | `podLabels` | Additional labels to be added to pods | `{}` |
 | `replicaCount` | Number of pods per zone. (_**It's not recommended to add more instance of helm-dashboard**_) | `1` |
 | `resources.limits` | The resources limits for the container | `{"cpu":1,"memory":"1Gi"}` |
 | `resources.requests` | The requested resources for the container | `{"cpu":"200m","memory":"256Mi"}` |
-| `strategy` | Set up update strategy for helm-dashboard installation. Set to `Recreate` if you use persistent volume    that cannot be mounted by more than one pods to make sure the pods is destroyed first.    ([kubernetes.io/docs](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy)) | `{}` |
-| `tolerations` | Tolerations for pod assignment ([kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#toleration-v1-core)) | `[]` |
-| `topologySpreadConstraints` | Topology Spread Constraints for pod assignment    ([kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#topologyspreadconstraint-v1-core)) | `[]` |
+| `strategy` | Set up update strategy for helm-dashboard installation. Set to `Recreate` if you use persistent volume    that cannot be mounted by more than one pods to make sure the pods is destroyed first.    ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy))) | `{}` |
+| `tolerations` | Tolerations for pod assignment ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#toleration-v1-core))) | `[]` |
+| `topologySpreadConstraints` | Topology Spread Constraints for pod assignment    ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.24/#topologyspreadconstraint-v1-core))) | `[]` |
 
 ### Network parameters
 
@@ -152,41 +154,36 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingress.tls` | Enable TLS configuration for the hostname defined at apiIngress.hostname parameter | `false` |
 | `networkPolicy.allowAllOutbound` | Whether to allow all outbound traffic by default. | `true` |
 | `networkPolicy.allowExternal` | Don't require client label for connections | `true` |
-| `networkPolicy.egress` | Sets egress policy block. See [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/) documentation. | `[]` |
+| `networkPolicy.egress` | Sets egress policy block. See [NetworkPolicy]([kubernetes.io/docs](https://kubernetes.io/docs/concepts/services-networking/network-policies/)) documentation. | `[]` |
 | `networkPolicy.enabled` | Enable the default NetworkPolicy policy | `false` |
-| `networkPolicy.ingress` | Sets ingress policy block. See [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/) documentation. | `[]` |
+| `networkPolicy.ingress` | Sets ingress policy block. See [NetworkPolicy]([kubernetes.io/docs](https://kubernetes.io/docs/concepts/services-networking/network-policies/)) documentation. | `[]` |
 | `service.annotations` | Additional annotations for the Service | `{}` |
 | `service.clusterIP` | Service Cluster IP | `""` |
 | `service.externalTrafficPolicy` | Enable client source IP preservation | `"cluster"` |
 | `service.loadBalancerIP` | LoadBalancer IP if service type is `LoadBalancer` (optional, cloud specific) | `""` |
 | `service.loadBalancerSourceRanges` | Addresses that are allowed when service is `LoadBalancer` | `[]` |
 | `service.type` | Service type | `"ClusterIP"` |
-| `service.web.nodePort` | Specify the nodePort value for the `LoadBalancer` and `NodePort` service types | `""` |
+| `service.web.nodePort` | Specify the nodePort value for the `LoadBalancer` and `NodePort` service types | `0` |
 | `service.web.port` | `web` service port | `8080` |
 
 ### Persistence parameters
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `persistence.accessModes` | `PVC` Access Modes for data volume | `["ReadWriteOnce"]` |
-| `persistence.annotations` | Additional annotations for the `PVC` | `{}` |
-| `persistence.enabled` | Enable data persistence using `PVC`. If false, use emptyDir | `false` |
-| `persistence.hostPath` | Set path in case you want to use local host path volumes (not recommended in production) | `""` |
-| `persistence.size` | `PVC` Storage Request for data volume | `"100M"` |
-| `persistence.storageClass` | `PVC` Storage Class for data volume | `""` |
+| `persistence.data.enabled` | Enable data persistence using `PVC`. If false, use emptyDir | `true` |
+| `persistence.data.volumeClaimSpec` | Claims that pods are allowed to reference (see    [kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#persistentvolumeclaim-v1-core)    for structural reference) | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"100M"}}}` |
 
 ### RBAC parameters
 
 | Key | Description | Default |
 |-----|-------------|---------|
+| `rbac.allowWriteActions` | Allow helm-dashboard to create/edit/delete Kubernetes resources | `false` |
 | `rbac.create` | Specifies whether RBAC resources should be created | `true` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```shell
-helm install my-release \
-  --set fullnameOverride=my-helm-dashboard
-    belug-apps/helm-dashboard
+helm install my-release --set fullnameOverride=my-helm-dashboard belug-apps/helm-dashboard
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,

@@ -1,0 +1,35 @@
+{{- range $issuer := .Values.issuers }}
+{{ $_ := set $issuer "namespace" ($issuer.namespace | default $.Release.Namespace) }}
+{{ $param := dict "issuer" $issuer "root" $ }}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ include "issuer.name" $param }}
+  namespace: {{ $issuer.namespace }}
+  {{- if $issuer.metadata }}{{- with $issuer.metadata.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}{{- end }}
+  labels:
+    {{- include "common.labels.standard" $ | nindent 4 }}
+    {{- with $.Values.global.commonLabels }}{{ toYaml . | nindent 4 }}{{ end }}
+    {{- if $issuer.metadata }}{{- with $issuer.metadata.labels }}{{ toYaml . | nindent 4 }}{{ end }}{{ end }}
+spec: {{ include "issuer.spec.render" (dict "root" $ "issuer" $issuer) | nindent 2 }}
+{{- end }}
+{{- range $issuer := .Values.clusterIssuers }}
+{{ $_ := unset $issuer "namespace" }}
+{{ $param := dict "issuer" $issuer "root" $ }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: {{ include "issuer.name" $param }}
+  {{- if $issuer.metadata }}{{- with $issuer.metadata.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}{{- end }}
+  labels:
+    {{- include "common.labels.standard" $ | nindent 4 }}
+    {{- with $.Values.global.commonLabels }}{{ toYaml . | nindent 4 }}{{ end }}
+    {{- if $issuer.metadata }}{{- with $issuer.metadata.labels }}{{ toYaml . | nindent 4 }}{{ end }}{{ end }}
+spec: {{ include "issuer.spec.render" (dict "root" $ "issuer" $issuer) | nindent 2 }}
+{{- end }}

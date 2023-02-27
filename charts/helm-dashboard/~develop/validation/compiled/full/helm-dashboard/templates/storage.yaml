@@ -1,0 +1,22 @@
+---
+# Source: helm-dashboard/templates/storage.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: helm-dashboard-data
+  annotations:
+    annotations: enabled
+  labels:
+    app.kubernetes.io/name: helm-dashboard
+    helm.sh/chart: helm-dashboard-2.0.0
+    app.kubernetes.io/instance: helm-dashboard
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec: 
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20M
+  storageClassName: standard

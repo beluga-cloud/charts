@@ -1,7 +1,9 @@
 ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned
   enabled: true
   hostname: jellyfin.7f000001.nip.io
-  tls: false
+  tls: true
 jellyfin:
   extraDevices:
   # - /dev/dr/renderD128

@@ -1,0 +1,87 @@
+---
+# Source: helm-dashboard/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helm-dashboard
+  labels:
+    app.kubernetes.io/name: helm-dashboard
+    helm.sh/chart: helm-dashboard-2.0.0
+    app.kubernetes.io/instance: helm-dashboard
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: helm-dashboard
+      app.kubernetes.io/instance: helm-dashboard
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: helm-dashboard
+        app.kubernetes.io/instance: helm-dashboard
+    spec:
+      serviceAccountName: helm-dashboard
+      securityContext:
+        fsGroup: 65463
+        runAsGroup: 65463
+        runAsNonRoot: true
+        runAsUser: 65463
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: helm-dashboard
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 65463
+            runAsNonRoot: true
+            runAsUser: 65463
+          image: ghcr.io/belug-apps/helm-dashboard/dashboard:1.0.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: HELM_CACHE_HOME
+              value: /opt/dashboard/helm/cache
+            - name: HELM_CONFIG_HOME
+              value: /opt/dashboard/helm/config
+            - name: HELM_DATA_HOME
+              value: /opt/dashboard/helm/data
+          ports:
+            - name: web
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: web
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: web
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/dashboard/helm
+            - name: cache
+              mountPath: /.cache
+            - name: tempdir
+              mountPath: /tmp
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: helm-dashboard-data
+        - name: cache
+          emptyDir: {}
+        - name: tempdir
+          emptyDir: {}

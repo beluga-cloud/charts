@@ -34,15 +34,7 @@ spec:
       containers:
         - name: jellyfin
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-          {{- if not .Values.images.jellyfin.registry }}
-          {{- $repo := regexSplit "/" (trim .Values.images.jellyfin.repository) 2 }}
-          {{- $_ := set .Values.images.jellyfin "registry" (.Values.global.imageRegistry | default (index $repo 0)) }}
-          {{- $_ = set .Values.images.jellyfin "repository" (trimPrefix "/" (index $repo 1)) }}
-          {{- else if .Values.global.imageRegistry }}
-          {{- $_ := set .Values.images.jellyfin "registry" .Values.global.imageRegistry }}
-          {{- end }}
-          {{- if not .Values.images.jellyfin.tag }}{{ $_ := set .Values.images.jellyfin "tag" .Chart.AppVersion }}{{ end }}
-          image: {{ include "common.images.image" ( dict "imageRoot" .Values.images.jellyfin "global" $) }}
+          image: {{ include "blib.images.image" (dict "image" .Values.images.jellyfin "global" $) }}
           imagePullPolicy: {{ .Values.images.jellyfin.pullPolicy }}
           ports:
             - name: web

@@ -1,0 +1,5 @@
+ingress:
+  enabled: true
+  hostname: helm-dashboard.local
+rbac:
+  allowWriteActions: true
