@@ -81,12 +81,14 @@ The command removes all the Kubernetes components associated with the chart and 
 Listing all parameters here didn't make sense; each issuer follows the same structure:
 ```yaml
 <issuer-type>:
-  <issuer-name>:
+  - name: <issuer-name>:
     metadata:
       annotations: {} # (Optional) additional annotations
       labels: {} # (Optional) additional labels
     spec: {} # Issuer configuration (using the same pattern as used inside the issuer CRD)
              # NOTE: template are allowed here. However, only two value are provided:
+             # - issuer.name - contains the issuer name
+             # - issuer.namespace - contains the issuer namespace
              # - credentials.name - contains the secret name containing credentials
              # - credentials.namespace - contains the secret namespace containing credentials
     credentials: {} # (Optional) create a secret used to store credentials
@@ -94,21 +96,22 @@ Listing all parameters here didn't make sense; each issuer follows the same stru
 
 For example, a `ClusterIssuer` configured to used Cloudflare as DNS resolver
 ```yaml
-acme:
-  letsencrypt:
+clusterIssuer:
+  - name: letsencrypt:
     spec:
-      email: user@example.com
-      server: https://acme-v02.api.letsencrypt.org/directory
-      solvers:
-        - selector:
-            dnsZones: [example.com]
-          dns01:
-            cloudflare:
-              apiTokenSecretRef:
-                name: '{{ .credentials.name }}'
-                key: api-token
-      privateKeySecretRef:
-        name: '{{ .credentials.name }}-issuer-key'
+      acme:
+        email: user@example.com
+        server: https://acme-v02.api.letsencrypt.org/directory
+        solvers:
+          - selector:
+              dnsZones: [example.com]
+            dns01:
+              cloudflare:
+                apiTokenSecretRef:
+                  name: '{{ .credentials.name }}'
+                  key: api-token
+        privateKeySecretRef:
+          name: '{{ .credentials.name }}-issuer-key'
     credentials:
       api-token: CLOUDFLARE_TOKEN
 ```

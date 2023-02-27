@@ -1,10 +1,11 @@
 {{- range $issuer := .Values.issuers }}
 {{ $_ := set $issuer "namespace" ($issuer.namespace | default $.Release.Namespace) }}
+{{ $param := dict "issuer" $issuer "root" $ }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: {{ $issuer.spec | keys | first }}-{{ $issuer.name }}
+  name: {{ include "issuer.name" $param }}
   namespace: {{ $issuer.namespace }}
   {{- if $issuer.metadata }}{{- with $issuer.metadata.annotations }}
   annotations: {{ toYaml . | nindent 4 }}
@@ -17,11 +18,12 @@ spec: {{ include "issuer.spec.render" (dict "root" $ "issuer" $issuer) | nindent
 {{- end }}
 {{- range $issuer := .Values.clusterIssuers }}
 {{ $_ := unset $issuer "namespace" }}
+{{ $param := dict "issuer" $issuer "root" $ }}
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: {{ $issuer.spec | keys | first }}-{{ $issuer.name }}
+  name: {{ include "issuer.name" $param }}
   {{- if $issuer.metadata }}{{- with $issuer.metadata.annotations }}
   annotations: {{ toYaml . | nindent 4 }}
   {{- end }}{{- end }}

@@ -1,0 +1,4 @@
+clusterIssuers:
+  - name: self-signed
+    spec:
+      selfSigned: {}
