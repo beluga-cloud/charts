@@ -139,7 +139,7 @@ persistence:
     # -- Claims that pods are allowed to reference (see
     #    https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#persistentvolumeclaim-v1-core
     #    for structural reference)
-    volumeClaimTemplateSpec:
+    volumeClaimSpec:
       accessModes:
         - ReadWriteOnce
       resources:

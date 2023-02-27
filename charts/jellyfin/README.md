@@ -173,7 +173,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.config.enabled` | Enable configuration persistence using `PVC`. If false, use emptyDir | `true` |
 | `persistence.config.volumeClaimSpec` | Claims that pods are allowed to reference (see    [kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#persistentvolumeclaim-v1-core)    for structural reference) | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Mi"}}}` |
 | `persistence.data.enabled` | Enable data persistence using `PVC`. If false, use emptyDir | `true` |
-| `persistence.data.volumeClaimTemplateSpec` | Claims that pods are allowed to reference (see    [kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#persistentvolumeclaim-v1-core)    for structural reference) | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"2Gi"}}}` |
+| `persistence.data.volumeClaimSpec` | Claims that pods are allowed to reference (see    [kubernetes.io/docs](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#persistentvolumeclaim-v1-core)    for structural reference) | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"2Gi"}}}` |
 
 ### RBAC parameters
 
