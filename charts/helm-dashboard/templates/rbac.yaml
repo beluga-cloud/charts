@@ -19,7 +19,7 @@ rules:
   - apiGroups: ["*"]
     resources: ["*"]
   {{- if .Values.rbac.allowWriteActions }}
-    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+    verbs: ["*"]
   {{- else }}
     verbs: ["get", "list", "watch"]
   {{- end }}
