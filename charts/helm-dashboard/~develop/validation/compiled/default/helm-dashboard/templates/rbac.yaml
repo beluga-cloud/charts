@@ -1,38 +1,38 @@
 ---
-# Source: helm-dashboard/templates/serviceaccount.yaml
+# Source: helm-dashboard/templates/rbac.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: helm-dashboard
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-2.1.0
+    helm.sh/chart: helm-dashboard-2.1.1
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
 ---
-# Source: helm-dashboard/templates/serviceaccount.yaml
+# Source: helm-dashboard/templates/rbac.yaml
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: helm-dashboard
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-2.1.0
+    helm.sh/chart: helm-dashboard-2.1.1
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
 rules:
   - apiGroups: ["*"]
     resources: ["*"]
-    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
+    verbs: ["get", "list", "watch"]
 ---
-# Source: helm-dashboard/templates/serviceaccount.yaml
+# Source: helm-dashboard/templates/rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: helm-dashboard
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-2.1.0
+    helm.sh/chart: helm-dashboard-2.1.1
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
 roleRef:
