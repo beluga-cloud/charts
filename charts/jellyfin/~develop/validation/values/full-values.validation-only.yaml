@@ -45,6 +45,16 @@ jellyfin:
       nfs:
         path: /nas/movies
         server: my-nfs-server.example.com
+  - name: musics
+    readOnly: false
+    volumeSpec:
+      accessModes:
+      - ReadWriteOnce
+      capacity:
+        storage: 8Ti
+      nfs:
+        path: /nas/musics
+        server: my-nfs-server.example.com
   persistentTranscodes: true
 networkPolicy:
   allowAllOutbound: false
