@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: jellyfin-mediavol-movies
+  name: jellyfin-mediavol-musics
   labels:
     app.kubernetes.io/name: jellyfin
     helm.sh/chart: jellyfin-1.2.0
@@ -11,14 +11,14 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
     commonLabels02: enabled
-    jellyfin-volume: movies
+    jellyfin-volume: musics
 spec: 
   accessModes:
   - ReadWriteOnce
   capacity:
     storage: 8Ti
   nfs:
-    path: /nas/movies
+    path: /nas/musics
     server: my-nfs-server.example.com
 ---
 # Source: jellyfin/templates/storage-media.yaml
@@ -44,6 +44,55 @@ spec:
       commonLabels01: enabled
       commonLabels02: enabled
       jellyfin-volume: movies
+  accessModes: 
+    - ReadWriteOnce
+  resources:
+    requests: 
+      storage: 8Ti
+---
+# Source: jellyfin/templates/storage-media.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-mediavol-movies
+  labels:
+    app.kubernetes.io/name: jellyfin
+    helm.sh/chart: jellyfin-1.2.0
+    app.kubernetes.io/instance: jellyfin
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+    jellyfin-volume: movies
+spec: 
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 8Ti
+  nfs:
+    path: /nas/movies
+    server: my-nfs-server.example.com---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-mediavol-musics
+  labels:
+    app.kubernetes.io/name: jellyfin
+    helm.sh/chart: jellyfin-1.2.0
+    app.kubernetes.io/instance: jellyfin
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec:
+  storageClassName: ""
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: jellyfin
+      helm.sh/chart: jellyfin-1.2.0
+      app.kubernetes.io/instance: jellyfin
+      app.kubernetes.io/managed-by: Helm
+      commonLabels01: enabled
+      commonLabels02: enabled
+      jellyfin-volume: musics
   accessModes: 
     - ReadWriteOnce
   resources:
