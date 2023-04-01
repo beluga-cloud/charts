@@ -77,7 +77,7 @@ jobs:
         with:
           path: ${{ env.ASDF_DIR }}
           key: asdf-vm
-      - uses: asdf-vm/actions/install@707e84f3ee349548310aeabdad0dd3bfcb9b69fa # v1.1.0
+      - uses: asdf-vm/actions/install@75bab86b342b8aa14f3b547296607599522cbe90 # v2.1.0
 
       - name: Build helm dependencies
         run: helm dependencies build
