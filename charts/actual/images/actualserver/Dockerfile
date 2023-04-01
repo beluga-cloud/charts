@@ -1,4 +1,4 @@
-FROM docker.io/library/alpine:3.17.2 as builder
+FROM docker.io/library/alpine:3.17.3 as builder
 
 # renovate: datasource=github-tag depName=actualbudget/actual-server versioning=semver
 ARG ACTUAL_VERSION=v23.2.9
@@ -18,7 +18,7 @@ RUN set -x \
     && npm_config_yes=true npx yarn-audit-fix \
     && yarn install
 
-FROM docker.io/library/alpine:3.17.2
+FROM docker.io/library/alpine:3.17.3
 
 # renovate: datasource=github-tag depName=actualbudget/actual-server versioning=semver
 ARG ACTUAL_VERSION=v23.2.9
