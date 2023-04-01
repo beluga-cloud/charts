@@ -4,15 +4,13 @@
     "github>belug-apps/renovate-config:default",
     "github>belug-apps/renovate-config:gitmoji",
     "github>belug-apps/renovate-config:github-actions(nonOfficeHours)",
-
-    "github>belug-apps/renovate-config:group-by-chart(cert-manager)"
+    "github>belug-apps/renovate-config:group-by-chart(actual)",
+    "github>belug-apps/renovate-config:group-by-chart(cert-manager-issuers)",
+    "github>belug-apps/renovate-config:group-by-chart(helm-dashboard)",
+    "github>belug-apps/renovate-config:group-by-image(helm-dashboard, dashboard)",
+    "github>belug-apps/renovate-config:group-by-chart(jellyfin)"
   ],
   "packageRules": [
-    {
-      "matchFiles": ["(^|/)\\.tool-versions$"],
-      "groupName": "ASDF dependencies",
-      "groupSlug": "asdf-dependencies"
-    },
     {
       "matchDatasources": ["docker"],
       "versioning": "semver"
@@ -23,6 +21,7 @@
       "fileMatch": ["(^|/)Chart\\.yaml$"],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)(?: versioning=(?<versioning>[a-z-0-9]+?))?\\s+appVersion: (?<currentValue>[^\\s]+?)\\s"
+
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
