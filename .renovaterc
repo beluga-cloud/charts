@@ -6,10 +6,12 @@
     "github>belug-apps/renovate-config:asdf(nonOfficeHours)",
     "github>belug-apps/renovate-config:github-actions(nonOfficeHours)",
     "github>belug-apps/renovate-config:group-by-chart(actual)",
+    "github>belug-apps/renovate-config:group-by-image(actual,actualserver)",
     "github>belug-apps/renovate-config:group-by-chart(cert-manager-issuers)",
     "github>belug-apps/renovate-config:group-by-chart(helm-dashboard)",
-    "github>belug-apps/renovate-config:group-by-image(helm-dashboard, dashboard)",
-    "github>belug-apps/renovate-config:group-by-chart(jellyfin)"
+    "github>belug-apps/renovate-config:group-by-image(helm-dashboard,dashboard)",
+    "github>belug-apps/renovate-config:group-by-chart(jellyfin)",
+    "github>belug-apps/renovate-config:group-by-image(jellyfin,jellyfin)"
   ],
   "packageRules": [
     {
