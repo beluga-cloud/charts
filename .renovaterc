@@ -5,14 +5,12 @@
     "github>belug-apps/renovate-config:gitmoji",
     "github>belug-apps/renovate-config:github-actions(nonOfficeHours)",
 
-    "github>belug-apps/renovate-config:group-by-chart(cert-manager)"
+    "github>belug-apps/renovate-config:group-by-chart(actual)",
+    "github>belug-apps/renovate-config:group-by-chart(cert-manager-issuers)",
+    "github>belug-apps/renovate-config:group-by-chart(helm-dashboard)",
+    "github>belug-apps/renovate-config:group-by-chart(jellyfin)"
   ],
   "packageRules": [
-    {
-      "matchFiles": ["(^|/)\\.tool-versions$"],
-      "groupName": "ASDF dependencies",
-      "groupSlug": "asdf-dependencies"
-    },
     {
       "matchDatasources": ["docker"],
       "versioning": "semver"
