@@ -182,6 +182,29 @@ git-commit-package +OPTS="": build-external
   git add ~develop/validation/ README.md
   git commit --message ":package: (apps/{{ chart_name }}): rebuild all packaging files" {{ OPTS }}
 
+# automatically bump the chart version if something changes (used by Renovate).
+[private]
+[no-exit-message]
+renovate-update-chart +BASE_BRANCH="main":
+  #!/usr/bin/env bash
+  if git diff --cached {{ BASE_BRANCH }} | grep --silent '^+appVersion:'; then
+    just renovate-bump-minor {{ BASE_BRANCH }}
+  else
+    just renovate-bump-patch {{ BASE_BRANCH }}
+  fi
+
+# bump the current chart version (minor).
+[private]
+[no-exit-message]
+@renovate-bump-minor +BASE_BRANCH="main":
+  git show {{ BASE_BRANCH }}:charts/{{ chart_name }}/Chart.yaml | yq --inplace eval-all '[select(fi == 0), select(fi == 1)] | .[0].version = (.[1].version | split(".") | map(. tag = "!!int") | [.[0], .[1] + 1, 0] | join(".")) | .[0]' Chart.yaml -
+
+# bump the current chart version (patch).
+[private]
+[no-exit-message]
+@renovate-bump-patch +BASE_BRANCH="main":
+  git show {{ BASE_BRANCH }}:charts/{{ chart_name }}/Chart.yaml | yq --inplace eval-all '[select(fi == 0), select(fi == 1)] | .[0].version = (.[1].version | split(".") | map(. tag = "!!int") | [.[0], .[1], .[2] + 1] | join(".")) | .[0]' Chart.yaml -
+
 # (lib only) print a trace of simple commands then run it. If it runs inside
 #            Github Actions, it will also group all outputs inside a block to
 #            simplify CI logs.
