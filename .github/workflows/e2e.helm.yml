@@ -22,7 +22,7 @@ jobs:
         with:
           path: ${{ env.ASDF_DIR }}
           key: asdf-vm
-      - uses: asdf-vm/actions/install@707e84f3ee349548310aeabdad0dd3bfcb9b69fa # v3.3.0
+      - uses: asdf-vm/actions/install@707e84f3ee349548310aeabdad0dd3bfcb9b69fa # v1.1.0
 
       - uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435 # v4.5.0
         with:
