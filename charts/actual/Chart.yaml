@@ -3,6 +3,7 @@ type: application
 name: actual
 description: Enjoy managing your finances
 version: 1.1.0
+# renovate: datasource=docker depName=ghcr.io/belug-apps/actual/actualserver
 appVersion: v23.2.9
 kubeVersion: '>=1.20'
 home: https://actualbudget.com/
