@@ -2,7 +2,7 @@ apiVersion: v2
 type: application
 name: cert-manager-issuers
 description: Helper for `cert-manager` to manage Issuers and ClusterIssuers via Helm
-version: 2.0.0
+version: 2.0.1
 kubeVersion: ">= 1.20.0-0"
 home: https://github.com/cert-manager/cert-manager
 icon: https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo-small.png
