@@ -4,7 +4,13 @@ on: # yamllint disable-line rule:truthy
   pull_request:
     types: [ opened, synchronize ]
     paths:
-      - charts/**
+      # NOTE: only few changes should trigger this pipeline
+      - charts/*/Chart.lock
+      - charts/*/Chart.yaml
+      - charts/*/README.md
+      - charts/*/templates/**
+      - charts/*/values.schema.json
+      - charts/*/values.yaml
 
 concurrency:
   group: ${{ github.ref }}/helm-test
@@ -30,10 +36,11 @@ jobs:
           dir_names: true
           dir_names_max_depth: 2
           files: |
-            charts/*/templates/**
             charts/*/Chart.lock
             charts/*/Chart.yaml
             charts/*/README.md
+            charts/*/templates/**
+            charts/*/values.schema.json
             charts/*/values.yaml
           json: true
       - id: set-matrix
