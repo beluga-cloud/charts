@@ -1,0 +1,86 @@
+---
+name: Renovate (Auto-Fix)
+on: # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - renovate/**
+    paths:
+      # NOTE: only few changes should trigger this pipeline
+      - charts/*/Chart.lock
+      - charts/*/Chart.yaml
+      - charts/*/values.yaml
+
+env:
+  HELM_CONFIG_HOME: ${{ github.workspace }}/e2e/~helm
+  ASDF_DIR: /var/run/asdf-vm
+
+jobs:
+  updated_charts:
+    name: List updated charts
+    runs-on: ubuntu-latest
+    if: github.event.commits[0].author.name == 'renovate[bot]'
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+        with:
+          fetch-depth: 3
+      - uses: tj-actions/changed-files@e9b5807e928fc8eea705c90da5524fd44b183ba1 # v35.7.8
+        id: changed-files
+        with:
+          dir_names: true
+          dir_names_max_depth: 2
+          files: |
+            charts/*/Chart.lock
+            charts/*/Chart.yaml
+            charts/*/values.yaml
+          json: true
+      - id: set-matrix
+        run: echo "matrix={\"chart\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
+
+  update_chart:
+    name: Update Helm version automatically (${{ matrix.chart }})
+    needs: [ updated_charts ]
+    runs-on: ubuntu-latest
+    if: needs.updated_charts.outputs.matrix != '{"chart":[]}'
+    strategy:
+      matrix: ${{ fromJSON(needs.updated_charts.outputs.matrix) }}
+      fail-fast: false
+    steps:
+      - uses: tibdex/github-app-token@021a2405c7f990db57f5eae5397423dcc554159c # tag=1.7.0
+        id: app_auth
+        with:
+          app_id: ${{ secrets.BOT_ID }}
+          private_key: ${{ secrets.BOT_PKEY }}
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app_auth.outputs.token }}
+
+      - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ env.ASDF_DIR }}
+          key: asdf-vm
+      - uses: asdf-vm/actions/install@75bab86b342b8aa14f3b547296607599522cbe90 # v2.1.0
+
+      - name: Configure git user
+        run: |
+          git config user.name "Belug Apps"
+          git config user.email "116495032+belug-apps[bot]@users.noreply.github.com"
+
+      - name: Bump the Chart version
+        run: just renovate-update-chart
+        working-directory: ${{ github.workspace }}/${{ matrix.chart }}
+      - name: Build helm dependencies
+        run: helm dependencies build
+        working-directory: ${{ github.workspace }}/${{ matrix.chart }}
+      - name: Build out the charts/ directory with all depending files
+        run: just build-external
+        working-directory: ${{ github.workspace }}/${{ matrix.chart }}
+
+      - name: Commit and push all changes on the current PR
+        run: |
+          APP_NAME=$(cut -d/ -f2 <<<"${{ matrix.chart }}")
+          git add .
+          git commit --message ":package: (apps/${APP_NAME}): update and rebuild all packaging files"
+          git push
