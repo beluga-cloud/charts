@@ -2,7 +2,7 @@ apiVersion: v2
 type: application
 name: actual
 description: Enjoy managing your finances
-version: 1.1.0
+version: 1.1.1
 # renovate: datasource=docker depName=ghcr.io/belug-apps/actual/actualserver
 appVersion: v23.2.9
 kubeVersion: '>=1.20'
@@ -22,4 +22,4 @@ maintainers:
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami
-    version: 2.2.2
+    version: 2.2.4
