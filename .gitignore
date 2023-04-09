@@ -13,3 +13,4 @@
 
 ### DSL2JSONSCHEMA
 tools/dsl2jsonschema/dsl2jsonschema
+tools/dsl2jsonschema/normalize

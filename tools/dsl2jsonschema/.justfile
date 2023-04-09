@@ -19,3 +19,18 @@ dsl2jsonschema PATH +OPTS="": compile_dsl2jsonschema
     --dsl.external-reference "kubernetes=https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/{{ kubernetes_version }}/_definitions.json" \
     {{ OPTS }}} \
   | jq --sort-keys
+
+# ----------------------------------------------------------------------------------------------------------------------
+# ----------- NORMALIZE -----------
+normalize_bin := justfile_directory() / "normalize"
+
+# compile normalize.go if not already built
+[private]
+[no-exit-message]
+@compile_normalize:
+  [ -f {{ normalize_bin }} ] || (cd {{ justfile_directory() / "cmd/normalize" }} && go build -o {{ normalize_bin }})
+
+# normalize JSON schema provided from stdin.
+[no-exit-message]
+normalize: compile_normalize
+  {{ normalize_bin }} | jq --sort-keys
