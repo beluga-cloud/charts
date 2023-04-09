@@ -1,0 +1,174 @@
+---
+# This file contains a custom DSL used to define the JSON Schema for the Helm Chart's values.yaml file.
+#   For more information about the DSL, see `dsl2jsonschema` source code.
+definitions: !!defs
+  .: !!jsonschema
+    $schema: http://json-schema.org/draft-07/schema#
+    $id: https://belugapps.io/draft/schemas/helm-values.json
+    title: BelugApps Helm Chart values
+
+  io.belugapps.v1.HelmValues:
+    global: !!ref io.belugapps.v1.Global
+
+    nameOverride: !!str _ # String to partially override common.names.fullname template (will maintain the release name).
+    fullnameOverride: !!str _ # String to fully override common.names.fullname template.
+
+    images: !!ref io.belugapps.v1.Images
+    # Compute Resources required by containers.
+    # More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    resources: !!dict_of_ref_on_kubernetes io.k8s.api.core.v1.ResourceRequirements
+
+    podAnnotations: !!ref io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations
+    podLabels: !!ref io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels
+    # Number of replicas to deploy.
+    # More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#what-is-a-replicationcontroller
+    replicaCount: !!int _
+
+    strategy:
+      .: !!jsonschema
+        anyOf:
+          - $ref: '{{ .KubernetesReferenceURL }}#/$defs/io.k8s.api.apps.v1.DaemonSetUpdateStrategy'
+          - $ref: '{{ .KubernetesReferenceURL }}#/$defs/io.k8s.api.apps.v1.DeploymentStrategy'
+          - $ref: '{{ .KubernetesReferenceURL }}#/$defs/io.k8s.api.apps.v1.StatefulSetUpdateStrategy'
+    nodeSelector: !!ref io.k8s/$defs/api.core.v1.PodSpec/$defs/nodeSelector
+    affinity: !!ref_on_kubernetes io.k8s.api.core.v1.Affinity
+    tolerations: !!array_of_ref_on_kubernetes io.k8s.api.core.v1.Toleration
+    # TopologySpreadConstraints describes how a group of pods ought to spread across topology domains.
+    # Scheduler will schedule pods in a way which abides by the constraints.
+    # All topologySpreadConstraints are ANDed.
+    topologySpreadConstraints: !!array_of_ref_on_kubernetes io.k8s.api.core.v1.TopologySpreadConstraint
+
+    persistence: !!ref io.belugapps.v1.PersistentStorage
+
+    service: !!ref io.belugapps.v1.Service
+    ingress: !!ref io.belugapps.v1.Ingress
+
+    podSecurityContext: !!ref_on_kubernetes io.k8s.api.core.v1.PodSecurityContext
+    containerSecurityContext: !!ref_on_kubernetes io.k8s.api.core.v1.SecurityContext
+    networkPolicy: !!ref io.belugapps.v1.NetworkPolicy
+
+  # Global values that can be accessed from any chart or subchart by exactly the same name.
+  io.belugapps.v1.Global:
+    debug: !!bool _ # Enable the debugging mode on all workloads.
+    commonLabels: !!ref io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels
+    imagePullSecrets: !!ref io.k8s/$defs/api.core.v1.PodSpec/$defs/imagePullSecrets
+    imageRegistry: !!str _ # Container image registry to pull images from.
+
+  # Container image definitions that can be used to manage container `image` in a "lego-style".
+  io.belugapps.v1.Images: !!dict
+    .: !!jsonschema
+      required: [ repository ]
+
+    registry: !!str _ # Repository —or collection of repositories— used to store and access container images. ([DOCKER.IO]/bitnami/kubectl:1.26.1@sha256:147f89c260a0f5551052b04c86cb91c9af10338cf3e628f74bbae2527ca4aec4).
+    repository: !!str _ # Collection of related container images that provide different versions of an application. (docker.io/[BITNAMI/KUBECTL]:1.26.1@sha256:147f89c260a0f5551052b04c86cb91c9af10338cf3e628f74bbae2527ca4aec4).
+    tag: !!str _ # Tags are just an alias for an image ID. The tag's name must be an ASCII character string and may include lowercase and uppercase letters, digits, underscores, periods, and dashes. (docker.io/bitnami/kubectl:[1.26.1]@sha256:147f89c260a0f5551052b04c86cb91c9af10338cf3e628f74bbae2527ca4aec4).
+    digest: !!str _ # Digest, is a unique, immutable identifier for a container image to deploy. (docker.io/bitnami/kubectl:1.26.1@[SHA256:147F89C260A0F5551052B04C86CB91C9AF10338CF3E628F74BBAE2527CA4AEC4]).
+    pullPolicy: !!enum # PullPolicy affects when the kubelet attempts to pull (download) the specified image.
+      - Always
+      - Never
+      - IfNotPresent
+
+  # Configure the persistence of the application's volume.
+  io.belugapps.v1.PersistentStorage: !!dict
+    enabled: !!bool _ # Whether the persistence should be enabled or not.
+    annotations: !!ref io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations
+    # Spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    volumeClaimSpec: !!ref_on_kubernetes io.k8s.api.core.v1.PersistentVolumeClaimSpec
+
+  # Service that expose the packaged application inside and outside the cluster.
+  io.belugapps.v1.Service:
+    .: !!jsonschema
+      required: [ type ]
+      additionalProperties:
+        description: Named port that contains information on service's port.
+        $ref: '{{ .KubernetesReferenceURL }}#/$defs/io.k8s.api.core.v1.ServicePort'
+        not: { required: [ name ] }
+
+    annotations: !!ref io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations
+    # Type determines how the Service is exposed.
+    #   * ClusterIP: allocates a cluster-internal IP address for load-balancing to endpoints.
+    #   * NodePort: builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP.
+    #   * LoadBalancer: builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP.
+    #   * ExternalName: aliases this service to the specified externalName. Several other fields do not apply to ExternalName services.
+    # More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    type: !!enum
+      - ClusterIP
+      - NodePort
+      - LoadBalancer
+      - ExternalName
+    # ExternalTrafficPolicy describes how nodes distribute service traffic they receive on one of the Service's "externally-facing" addresses (NodePorts, ExternalIPs, and LoadBalancer IPs).
+    #   * Local: the proxy will configure the service in a way that assumes that external load balancers will take care of balancing the service traffic between nodes, and so each node will deliver traffic only to the node-local endpoints of the service, without masquerading the client source IP. (Traffic mistakenly sent to a node with no endpoints will be dropped.)
+    #   * Cluster: uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features). Note that traffic sent to an External IP or LoadBalancer IP from within the cluster will always get "Cluster" semantics, but clients sending to a NodePort from within the cluster may need to take traffic policy into account when picking a node.
+    externalTrafficPolicy: !!enum
+      - Local
+      - Cluster
+    # ClusterIP is the IP address of the service and is usually assigned randomly.
+    # If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail.
+    # More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    clusterIP: !!str _
+    # Only applies to Service Type: LoadBalancer.
+    # LoadBalancer will get created with the IP specified in this field. This feature depends on whether the underlying cloud-provider supports specifying the loadBalancerIP when a load balancer is created.
+    loadBalancerIP: !!str _
+    # If specified and supported by the platform, this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature.
+    # More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/'
+    loadBalancerSourceRanges: !!array_of_str _
+
+  # Ingress that expose the packaged application outside the cluster.
+  io.belugapps.v1.Ingress:
+    .: !!jsonschema
+      required: [ enabled ]
+      oneOf:
+        - properties: { enabled: { const: true } }
+          required: [ hostname ]
+        - properties: { enabled: { const: false } }
+
+    enabled: !!bool _ # Whether the ingress should be deployed or not.
+    annotations: !!ref io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations
+    # Host is the fully qualified domain name of a network host, as defined by RFC 3986. Note the following deviations from the "host" part of the URI as defined in RFC 3986:
+    #   1. IPs are not allowed. Currently, an IngressRuleValue can only apply to the IP in the Spec of the parent Ingress.
+    #   2. The `:` delimiter is not respected because ports are not allowed.
+    #
+    # Host can be "precise" which is a domain name without the terminating dot of a network host (e.g. "foo.bar.com") or "wildcard", which is a domain name prefixed with a single wildcard label (e.g. "*.foo.com"). The wildcard character '*' must appear by itself as the first DNS label and matches only a single label. You cannot have a wildcard label by itself (e.g. Host == "*"). Requests will be matched against the Host field in the following way: 1. If Host is precise, the request matches this rule if the http host header is equal to Host. 2. If Host is a wildcard, then the request matches this rule if the http host header is to equal to the suffix (removing the first label) of the wildcard rule.
+    hostname: !!str _
+    # PathType determines the interpretation of the Path matching. PathType can be one of the following values:
+    #   * Exact: Matches the URL path exactly.
+    #   * Prefix: Matches based on a URL path prefix split by '/'. Matching is done on a path element by element basis. A path element refers is the list of labels in the path split by the '/' separator. A request is a  match for path p if every p is an element-wise prefix of p of the  request path. Note that if the last element of the path is a substring  of the last element in request path, it is not a match (e.g. /foo/bar  matches /foo/bar/baz, but does not match /foo/barbaz).
+    #   * ImplementationSpecific: Interpretation of the Path matching is up to  the IngressClass. Implementations can treat this as a separate PathType  or treat it identically to Prefix or Exact path types.
+    # Implementations are required to support all path types.
+    pathType: !!str _
+    path: !!str _ # Path is matched against the path of an incoming request. Currently, it can contain characters disallowed from the conventional "path" part of a URL as defined by RFC 3986. Paths must begin with a '/' and must be present when using PathType with value "Exact" or "Prefix".
+    ingressClassName: !!str _ # IngressClass is the name of the IngressClass cluster resource. The associated IngressClass defines which controller will implement the resource. This replaces the deprecated `kubernetes.io/ingress.class` annotation. For backwards compatibility, when that annotation is set, it must be given precedence over this field. The controller may emit a warning if the field and annotation have different values. Implementations of this API should ignore Ingresses without a class specified. An IngressClass resource may be marked as default, which can be used to set a default value for this field. For more information, refer to the IngressClass documentation.
+    tls: !!bool _ # Whether the ingress should be deployed with TLS or not.
+    extraHosts: !!array_of_str _ # List of additional hostname to be covered with this ingress record.
+    extraPaths: !!array_of_ref_on_kubernetes io.k8s.api.networking.v1.HTTPIngressPath # List of additional paths that may need to be added to the ingress under the main host.
+    extraTls: !!array_of_ref_on_kubernetes io.k8s.api.networking.v1.IngressTLS # TLS configuration for additional hostnames to be covered with this ingress record.
+    extraRules: !!array_of_ref_on_kubernetes io.k8s.api.networking.v1.IngressRule # List of host rules used to configure the Ingress. If unspecified, or no rule matches, all traffic is sent to the default backend.
+
+  # Specification of what network traffic is allowed for the packaged application
+  io.belugapps.v1.NetworkPolicy:
+    enabled: !!bool _ # Whether the network policy should be deployed or not.
+    allowExternal: !!bool _ # Whether to allow traffic coming from application without label (preset).
+    allowAllOutbound: !!bool _ # Whether to allow all outbound traffic (preset).
+    egress: !!array_of_ref_on_kubernetes io.k8s.api.networking.v1.NetworkPolicyEgressRule # List of egress rules to be applied to the workload.
+    ingress: !!array_of_ref_on_kubernetes io.k8s.api.networking.v1.NetworkPolicyIngressRule # List of ingress rules to be applied to the workload.
+
+  # Definitions from the Kubernetes API that are not accessible directly from the generated JSON schema.
+  io.k8s: !!defs
+    apimachinery.pkg.apis.meta.v1.ObjectMeta: !!defs
+      # Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata.
+      # They are not queryable and should be preserved when modifying objects.
+      # More info: http://kubernetes.io/docs/user-guide/annotations
+      annotations: !!dict_of_str _
+      # Map of string keys and values that can be used to organize and categorize (scope and select) objects.
+      # May match selectors of replication controllers and services.
+      # More info: http://kubernetes.io/docs/user-guide/labels
+      labels: !!dict_of_str _
+    api.core.v1.PodSpec: !!defs
+      # ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
+      # If specified, these secrets will be passed to individual puller implementations for them to use.
+      # More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
+      imagePullSecrets: !!array_of_ref_on_kubernetes io.k8s.api.core.v1.LocalObjectReference
+      # NodeSelector is a selector which must be true for the pod to fit on a node.
+      # Selector which must match a node's labels for the pod to be scheduled on that node.
+      # More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+      nodeSelector: !!dict_of_str _

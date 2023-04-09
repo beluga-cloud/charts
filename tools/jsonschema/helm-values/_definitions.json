@@ -1,0 +1,374 @@
+{
+  "$defs": {
+    "io.belugapps.v1.Global": {
+      "properties": {
+        "commonLabels": {
+          "$ref": "#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels"
+        },
+        "debug": {
+          "description": "Enable the debugging mode on all workloads.",
+          "type": "boolean"
+        },
+        "imagePullSecrets": {
+          "$ref": "#/$defs/io.k8s/$defs/api.core.v1.PodSpec/$defs/imagePullSecrets"
+        },
+        "imageRegistry": {
+          "description": "Container image registry to pull images from.",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "io.belugapps.v1.HelmValues": {
+      "properties": {
+        "affinity": {
+          "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.Affinity"
+        },
+        "containerSecurityContext": {
+          "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.SecurityContext"
+        },
+        "fullnameOverride": {
+          "description": "String to fully override common.names.fullname template.",
+          "type": "string"
+        },
+        "global": {
+          "$ref": "#/$defs/io.belugapps.v1.Global"
+        },
+        "images": {
+          "$ref": "#/$defs/io.belugapps.v1.Images"
+        },
+        "ingress": {
+          "$ref": "#/$defs/io.belugapps.v1.Ingress"
+        },
+        "nameOverride": {
+          "description": "String to partially override common.names.fullname template (will maintain the release name).",
+          "type": "string"
+        },
+        "networkPolicy": {
+          "$ref": "#/$defs/io.belugapps.v1.NetworkPolicy"
+        },
+        "nodeSelector": {
+          "$ref": "#/$defs/io.k8s/$defs/api.core.v1.PodSpec/$defs/nodeSelector"
+        },
+        "persistence": {
+          "$ref": "#/$defs/io.belugapps.v1.PersistentStorage"
+        },
+        "podAnnotations": {
+          "$ref": "#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations"
+        },
+        "podLabels": {
+          "$ref": "#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels"
+        },
+        "podSecurityContext": {
+          "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.PodSecurityContext"
+        },
+        "replicaCount": {
+          "description": "Number of replicas to deploy.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#what-is-a-replicationcontroller",
+          "type": "integer"
+        },
+        "resources": {
+          "additionalProperties": {
+            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.ResourceRequirements"
+          },
+          "description": "Compute Resources required by containers.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "type": "object"
+        },
+        "service": {
+          "$ref": "#/$defs/io.belugapps.v1.Service"
+        },
+        "strategy": {
+          "anyOf": [
+            {
+              "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.apps.v1.DaemonSetUpdateStrategy"
+            },
+            {
+              "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.apps.v1.DeploymentStrategy"
+            },
+            {
+              "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.apps.v1.StatefulSetUpdateStrategy"
+            }
+          ]
+        },
+        "tolerations": {
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.Toleration"
+          },
+          "type": "array"
+        },
+        "topologySpreadConstraints": {
+          "description": "TopologySpreadConstraints describes how a group of pods ought to spread across topology domains.\nScheduler will schedule pods in a way which abides by the constraints.\nAll topologySpreadConstraints are ANDed.",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.TopologySpreadConstraint"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "io.belugapps.v1.Images": {
+      "additionalProperties": {
+        "properties": {
+          "digest": {
+            "description": "Digest, is a unique, immutable identifier for a container image to deploy. (docker.io/bitnami/kubectl:1.26.1@[SHA256:147F89C260A0F5551052B04C86CB91C9AF10338CF3E628F74BBAE2527CA4AEC4]).",
+            "type": "string"
+          },
+          "pullPolicy": {
+            "description": "PullPolicy affects when the kubelet attempts to pull (download) the specified image.",
+            "enum": [
+              "Always",
+              "Never",
+              "IfNotPresent"
+            ],
+            "type": "string"
+          },
+          "registry": {
+            "description": "Repository —or collection of repositories— used to store and access container images. ([DOCKER.IO]/bitnami/kubectl:1.26.1@sha256:147f89c260a0f5551052b04c86cb91c9af10338cf3e628f74bbae2527ca4aec4).",
+            "type": "string"
+          },
+          "repository": {
+            "description": "Collection of related container images that provide different versions of an application. (docker.io/[BITNAMI/KUBECTL]:1.26.1@sha256:147f89c260a0f5551052b04c86cb91c9af10338cf3e628f74bbae2527ca4aec4).",
+            "type": "string"
+          },
+          "tag": {
+            "description": "Tags are just an alias for an image ID. The tag's name must be an ASCII character string and may include lowercase and uppercase letters, digits, underscores, periods, and dashes. (docker.io/bitnami/kubectl:[1.26.1]@sha256:147f89c260a0f5551052b04c86cb91c9af10338cf3e628f74bbae2527ca4aec4).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "repository"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "io.belugapps.v1.Ingress": {
+      "oneOf": [
+        {
+          "properties": {
+            "enabled": {
+              "const": true
+            }
+          },
+          "required": [
+            "hostname"
+          ]
+        },
+        {
+          "properties": {
+            "enabled": {
+              "const": false
+            }
+          }
+        }
+      ],
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations"
+        },
+        "enabled": {
+          "description": "Whether the ingress should be deployed or not.",
+          "type": "boolean"
+        },
+        "extraHosts": {
+          "description": "List of additional hostname to be covered with this ingress record.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "extraPaths": {
+          "description": "List of additional paths that may need to be added to the ingress under the main host.",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.HTTPIngressPath"
+          },
+          "type": "array"
+        },
+        "extraRules": {
+          "description": "List of host rules used to configure the Ingress. If unspecified, or no rule matches, all traffic is sent to the default backend.",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.IngressRule"
+          },
+          "type": "array"
+        },
+        "extraTls": {
+          "description": "TLS configuration for additional hostnames to be covered with this ingress record.",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.IngressTLS"
+          },
+          "type": "array"
+        },
+        "hostname": {
+          "description": "Host is the fully qualified domain name of a network host, as defined by RFC 3986. Note the following deviations from the \"host\" part of the URI as defined in RFC 3986:\n  1. IPs are not allowed. Currently, an IngressRuleValue can only apply to the IP in the Spec of the parent Ingress.\n  2. The `:` delimiter is not respected because ports are not allowed.\n# Host can be \"precise\" which is a domain name without the terminating dot of a network host (e.g. \"foo.bar.com\") or \"wildcard\", which is a domain name prefixed with a single wildcard label (e.g. \"*.foo.com\"). The wildcard character '*' must appear by itself as the first DNS label and matches only a single label. You cannot have a wildcard label by itself (e.g. Host == \"*\"). Requests will be matched against the Host field in the following way: 1. If Host is precise, the request matches this rule if the http host header is equal to Host. 2. If Host is a wildcard, then the request matches this rule if the http host header is to equal to the suffix (removing the first label) of the wildcard rule.",
+          "type": "string"
+        },
+        "ingressClassName": {
+          "description": "IngressClass is the name of the IngressClass cluster resource. The associated IngressClass defines which controller will implement the resource. This replaces the deprecated `kubernetes.io/ingress.class` annotation. For backwards compatibility, when that annotation is set, it must be given precedence over this field. The controller may emit a warning if the field and annotation have different values. Implementations of this API should ignore Ingresses without a class specified. An IngressClass resource may be marked as default, which can be used to set a default value for this field. For more information, refer to the IngressClass documentation.",
+          "type": "string"
+        },
+        "path": {
+          "description": "Path is matched against the path of an incoming request. Currently, it can contain characters disallowed from the conventional \"path\" part of a URL as defined by RFC 3986. Paths must begin with a '/' and must be present when using PathType with value \"Exact\" or \"Prefix\".",
+          "type": "string"
+        },
+        "pathType": {
+          "description": "PathType determines the interpretation of the Path matching. PathType can be one of the following values:\n  * Exact: Matches the URL path exactly.\n  * Prefix: Matches based on a URL path prefix split by '/'. Matching is done on a path element by element basis. A path element refers is the list of labels in the path split by the '/' separator. A request is a  match for path p if every p is an element-wise prefix of p of the  request path. Note that if the last element of the path is a substring  of the last element in request path, it is not a match (e.g. /foo/bar  matches /foo/bar/baz, but does not match /foo/barbaz).\n  * ImplementationSpecific: Interpretation of the Path matching is up to  the IngressClass. Implementations can treat this as a separate PathType  or treat it identically to Prefix or Exact path types.\nImplementations are required to support all path types.",
+          "type": "string"
+        },
+        "tls": {
+          "description": "Whether the ingress should be deployed with TLS or not.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "type": "object"
+    },
+    "io.belugapps.v1.NetworkPolicy": {
+      "properties": {
+        "allowAllOutbound": {
+          "description": "Whether to allow all outbound traffic (preset).",
+          "type": "boolean"
+        },
+        "allowExternal": {
+          "description": "Whether to allow traffic coming from application without label (preset).",
+          "type": "boolean"
+        },
+        "egress": {
+          "description": "List of egress rules to be applied to the workload.",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.NetworkPolicyEgressRule"
+          },
+          "type": "array"
+        },
+        "enabled": {
+          "description": "Whether the network policy should be deployed or not.",
+          "type": "boolean"
+        },
+        "ingress": {
+          "description": "List of ingress rules to be applied to the workload.",
+          "items": {
+            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.NetworkPolicyIngressRule"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "io.belugapps.v1.PersistentStorage": {
+      "additionalProperties": {
+        "properties": {
+          "annotations": {
+            "$ref": "#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations"
+          },
+          "enabled": {
+            "description": "Whether the persistence should be enabled or not.",
+            "type": "boolean"
+          },
+          "volumeClaimSpec": {
+            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+            "description": "Spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
+          }
+        },
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "io.belugapps.v1.Service": {
+      "additionalProperties": {
+        "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.ServicePort",
+        "description": "Named port that contains information on service's port.",
+        "not": {
+          "required": [
+            "name"
+          ]
+        }
+      },
+      "properties": {
+        "annotations": {
+          "$ref": "#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations"
+        },
+        "clusterIP": {
+          "description": "ClusterIP is the IP address of the service and is usually assigned randomly.\nIf an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail.\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies",
+          "type": "string"
+        },
+        "externalTrafficPolicy": {
+          "description": "ExternalTrafficPolicy describes how nodes distribute service traffic they receive on one of the Service's \"externally-facing\" addresses (NodePorts, ExternalIPs, and LoadBalancer IPs).\n  * Local: the proxy will configure the service in a way that assumes that external load balancers will take care of balancing the service traffic between nodes, and so each node will deliver traffic only to the node-local endpoints of the service, without masquerading the client source IP. (Traffic mistakenly sent to a node with no endpoints will be dropped.)\n  * Cluster: uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features). Note that traffic sent to an External IP or LoadBalancer IP from within the cluster will always get \"Cluster\" semantics, but clients sending to a NodePort from within the cluster may need to take traffic policy into account when picking a node.",
+          "enum": [
+            "Local",
+            "Cluster"
+          ],
+          "type": "string"
+        },
+        "loadBalancerIP": {
+          "description": "Only applies to Service Type: LoadBalancer.\nLoadBalancer will get created with the IP specified in this field. This feature depends on whether the underlying cloud-provider supports specifying the loadBalancerIP when a load balancer is created.",
+          "type": "string"
+        },
+        "loadBalancerSourceRanges": {
+          "description": "If specified and supported by the platform, this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature.\nMore info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/'",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "type": {
+          "description": "Type determines how the Service is exposed.\n  * ClusterIP: allocates a cluster-internal IP address for load-balancing to endpoints.\n  * NodePort: builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP.\n  * LoadBalancer: builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP.\n  * ExternalName: aliases this service to the specified externalName. Several other fields do not apply to ExternalName services.\nMore info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer",
+            "ExternalName"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "io.k8s": {
+      "$defs": {
+        "api.core.v1.PodSpec": {
+          "$defs": {
+            "imagePullSecrets": {
+              "items": {
+                "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.LocalObjectReference"
+              },
+              "type": "array"
+            },
+            "nodeSelector": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "apimachinery.pkg.apis.meta.v1.ObjectMeta": {
+          "$defs": {
+            "annotations": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "labels": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "$id": "https://belugapps.io/draft/schemas/helm-values.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "This file contains a custom DSL used to define the JSON Schema for the Helm Chart's values.yaml file.\n  For more information about the DSL, see `dsl2jsonschema` source code.",
+  "title": "BelugApps Helm Chart values",
+  "type": "object"
+}
