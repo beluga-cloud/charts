@@ -10,3 +10,6 @@
 **/charts/*.tgz
 
 # End of https://www.toptal.com/developers/gitignore/api/helm,direnv
+
+### DSL2JSONSCHEMA
+tools/dsl2jsonschema/dsl2jsonschema
