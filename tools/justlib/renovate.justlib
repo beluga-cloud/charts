@@ -1,0 +1,49 @@
+# Recipes library for renovate automation
+#
+# This library provides a set of recipes to help renovate to keep your project
+# up to date.
+#
+# How to use this library:
+#   1. Add the following lines to your Justfile:
+#     justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+#     renovate := "just --justfile " + justlib / "renovate.justlib"
+#   2. Use it by calling '{{ renovate }}' following by the action you want to use
+#     {{ renovate }} ...
+#
+# ------------------------------------------------------------------------------
+default:
+    @echo >&2 "This is a library of recipes used by Justfile... please read the comments in the file for more information"
+    @just --list
+
+justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+tools := "just --justfile " + justlib / "tools.justlib"
+
+# shortcut to execute some commands in bash verbosely and compatible with Github Actions
+exec := tools + " xtrace"
+
+
+# automatically bump the chart version if something changes (used by Renovate).
+[no-cd]
+update-chart CHART_NAME BASE_BRANCH="main":
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  if git diff HEAD "origin/{{ BASE_BRANCH }}" | grep --silent '^+appVersion:'; then
+    just --justfile {{ justfile() }} bump-minor "{{ CHART_NAME }}" "{{ BASE_BRANCH }}"
+  else
+    just --justfile {{ justfile() }} bump-patch "{{ CHART_NAME }}" "{{ BASE_BRANCH }}"
+  fi
+
+# bump the current chart version (minor).
+[private]
+[no-cd]
+bump-minor CHART_NAME BASE_BRANCH="main":
+  git show "origin/{{ BASE_BRANCH }}:charts/{{ CHART_NAME }}/Chart.yaml" | \
+  yq --inplace eval-all '[select(fi == 0), select(fi == 1)] | .[0].version = (.[1].version | split(".") | map(. tag = "!!int") | [.[0], .[1] + 1, 0] | join(".")) | .[0]' Chart.yaml -
+
+# bump the current chart version (patch).
+[private]
+[no-cd]
+bump-patch CHART_NAME BASE_BRANCH="main":
+  git show "origin/{{ BASE_BRANCH }}:charts/{{ CHART_NAME }}/Chart.yaml" | \
+  yq --inplace eval-all '[select(fi == 0), select(fi == 1)] | .[0].version = (.[1].version | split(".") | map(. tag = "!!int") | [.[0], .[1], .[2] + 1] | join(".")) | .[0]' Chart.yaml -

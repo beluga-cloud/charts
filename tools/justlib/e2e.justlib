@@ -1,0 +1,92 @@
+# Recipes library for end-to-end tests
+#
+# This library provides a set of recipes to help you run our end-to-end tests.
+#
+# How to use this library:
+#   1. Add the following lines to your Justfile:
+#     justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+#     e2e := "just --justfile " + justlib / "e2e.justlib"
+#   2. Use it by calling '{{ e2e }}' following by the action you want to use
+#     {{ e2e }} run
+#
+# ------------------------------------------------------------------------------
+default:
+    @echo >&2 "This is a library of recipes used by Justfile... please read the comments in the file for more information"
+    @just --list
+
+justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+image := "just --justfile " + justlib / "image.justlib"
+tools := "just --justfile " + justlib / "tools.justlib"
+
+# shortcut to execute some commands in bash verbosely and compatible with Github Actions
+exec := tools + " xtrace"
+
+local_registry := "ghcr.io"
+
+
+# prepare the local Kubernetes cluster to run e2e tests locally
+[private]
+[no-cd]
+setup CLUSTER_NAME:
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  if ! (kind get clusters 2> /dev/null | grep "^{{ CLUSTER_NAME }}$" &> /dev/null); then
+    {{ exec }} kind create cluster --name "{{ CLUSTER_NAME }}" --wait 120s
+  fi
+
+# install all required resources to install and run the application properly
+[no-cd]
+prepare CLUSTER_NAME CHART_NAME: (prepare-images CHART_NAME)
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  [ ! -d "images" ] && exit 0
+  for image in images/*; do
+    image_name="{{ local_registry }}/belug-apps/{{ CHART_NAME }}/$(basename "${image}")"
+    image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
+    {{ exec }} kind load docker-image --name "{{ CLUSTER_NAME }}" "${image_name}:${image_version}"
+  done
+
+# prepare all images to run e2e tests locally
+[private]
+[no-cd]
+@prepare-images CHART_NAME:
+  {{ image }} build {{ CHART_NAME }} {{ local_registry }} all
+
+# NOTE: {{ exec }} doesn't work well with quotes, so we need to use a workaround to make better output
+#       on Github Actions
+_ct_install := if env_var_or_default("GITHUB_ACTIONS", "false") =~ '[Tt]rue' { "ct_install_github_actions" } else { "ct_install_default" }
+
+# install and test the current application into a local cluster
+[no-cd]
+@run CLUSTER_NAME CHART_NAME +EXTRA_ARGS="":
+  kubectl config use-context "kind-{{ CLUSTER_NAME }}"
+  just --justfile {{ justfile() }} {{ _ct_install }} "--charts {{ `git rev-parse --show-toplevel`/ "charts" / CHART_NAME }}" {{ EXTRA_ARGS }}
+
+# install and test the current application into a local cluster
+[no-cd]
+@run_all CLUSTER_NAME +EXTRA_ARGS="":
+  kubectl config use-context "kind-{{ CLUSTER_NAME }}"
+  just --justfile {{ justfile() }} {{ _ct_install }} "--all" {{ EXTRA_ARGS }}
+
+[private]
+[no-cd]
+ct_install_default TARGET +EXTRA_ARGS="":
+  ct install {{ TARGET }} --target-branch main --upgrade --debug \
+    --helm-extra-args '--timeout=120s' \
+    --helm-extra-set-args '--set "global.imageRegistry={{ local_registry }}" {{ EXTRA_ARGS }}'
+
+[private]
+[no-cd]
+@ct_install_github_actions TARGET +EXTRA_ARGS="":
+  echo '::group::ct install {{ TARGET }} --target-branch main --upgrade --debug --helm-extra-args '"'"'--timeout=120s'"'"' --helm-extra-set-args '"'"'--set "global.imageRegistry={{ local_registry }}" {{ EXTRA_ARGS }}'"'"
+  ct install {{ TARGET }} --target-branch main --upgrade --debug \
+    --helm-extra-args '--timeout=120s' \
+    --helm-extra-set-args '--set "global.imageRegistry={{ local_registry }}" {{ EXTRA_ARGS }}'
+  echo '::endgroup::'
+
+# remove the local environment to run e2e tests locally
+[no-cd]
+@teardown CLUSTER_NAME:
+  {{ exec }} kind delete cluster --name "{{ CLUSTER_NAME }}"

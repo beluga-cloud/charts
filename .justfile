@@ -1,49 +1,49 @@
-container_registry := "ghcr.io"
+# load all the just libraries
+justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+develop := "just --justfile " + justlib / "develop.justlib"
+e2e := "just --justfile " + justlib / "e2e.justlib"
+helm := "just --justfile " + justlib / "helm.justlib"
+image := "just --justfile " + justlib / "image.justlib"
+renovate := "just --justfile " + justlib / "renovate.justlib"
+security := "just --justfile " + justlib / "security.justlib"
+tools := "just --justfile " + justlib / "tools.justlib"
 
-exec := "just _xtrace"
+# shortcut to execute some commands in bash verbosely and compatible with Github Actions
+exec := tools + " xtrace"
+
+container_registry := "ghcr.io"
 
 [private]
 default:
     @just --list
 
-# ----------------------------------------------------------------------------------------------------------------------
-# --------- E2E TESTS ---------
 
 # install and test the current application into a local cluster
-[no-exit-message]
 e2e-run: e2e-setup e2e-prepare && e2e-teardown
-  ct install --all --target-branch main --upgrade --helm-extra-args '--timeout 120s' --helm-extra-set-args '--set "global.imageRegistry={{ container_registry }}"' --debug
+  {{ e2e }} run_all "e2e-belug-apps"
 
 # prepare the local environment to run e2e tests locally
 [private]
-[no-exit-message]
 e2e-setup:
-  #!/usr/bin/env bash
-  if ! (kind get clusters 2> /dev/null | grep "^belug-apps$" &> /dev/null); then
-    {{exec}} kind create cluster --name belug-apps
-  fi
+  {{ e2e }} setup "e2e-belug-apps"
 
 # install all required resources to install and run the application properly
 [private]
-[no-exit-message]
-e2e-prepare CLUSTER_NAME="belug-apps":
+e2e-prepare:
   #!/usr/bin/env bash
+  set -euo pipefail
+
   for chart in charts/*; do
-    {{exec}} just --justfile ${chart}/.justfile --working-directory ${chart} e2e-prepare {{ CLUSTER_NAME }}
+    {{ exec }} just --justfile "${chart}/.justfile" e2e-prepare "e2e-belug-apps"
   done
 
 # remove the local environment to run e2e tests locally
 [private]
-[no-exit-message]
 @e2e-teardown:
-  {{exec}} kind delete cluster --name belug-apps
+  {{ e2e }} teardown "e2e-belug-apps"
 
-
-# ----------------------------------------------------------------------------------------------------------------------
-# ------ TOOLS & LIBRARY ------
 
 # bootstrap a new charts interactively
-[no-exit-message]
 bootstrap APP:
   #!/usr/bin/env bash
 
@@ -125,7 +125,6 @@ bootstrap APP:
 
 # bootstrap a new charts directly with all the required information
 [private]
-[no-exit-message]
 bootstrap_app name description version url icon_url:
   cp -r docs/app_template "charts/{{ name }}"
   mv "charts/{{ name }}/images/image_template" "charts/{{ name }}/images/{{ name }}"
@@ -136,27 +135,7 @@ bootstrap_app name description version url icon_url:
   find "charts/{{ name }}" -type f -exec sed -i "s/{{ "{{" }} url }}/{{ url }}/g" {} \;
   find "charts/{{ name }}" -type f -exec sed -i "s/{{ "{{" }} icon_url }}/{{ icon_url }}/g" {} \;
 
+
 # generate the UID to use for a specific application
-[no-exit-message]
 @tools-chart-uid APP:
   echo "UID to use for {{ APP }}: 64$(echo {{ APP }} | sha1hmac | tr --delete '[:alpha:][:space:]-' | head --bytes=3)"
-
-# (lib only) print a trace of simple commands then run it. If it runs inside
-#            Github Actions, it will also group all outputs inside a block to
-#            simplify CI logs.
-[private]
-[no-exit-message]
-@_xtrace +CMD:
-  {{ if env_var_or_default("GITHUB_ACTIONS", "false") =~ '[Tt]rue' { "just _xtrace_github_action " + CMD } else { "just _xtrace_default " + CMD } }}
-
-[private]
-[no-exit-message]
-@_xtrace_default +CMD:
-  @{{CMD}}
-
-[private]
-[no-exit-message]
-@_xtrace_github_action +CMD:
-  echo '::group::{{CMD}}'
-  {{CMD}}
-  echo '::endgroup::'

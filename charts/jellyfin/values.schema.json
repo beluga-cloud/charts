@@ -1,10 +1,8 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "oneOf": [
     {
-      "$ref": "#/definitions/io.belugapps.v1.HelmValues",
-      "not": {"required": ["replicaCount"]}
+      "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.belugapps.v1.HelmValues"
     }
   ],
   "properties": {
@@ -12,14 +10,13 @@
       "description": "Configure specific properties to deploy Jellyfin.",
       "properties": {
         "extraDevices": {
-          "description": "Additional device to mount, like GPU",
           "items": {
             "type": "string"
           },
           "type": "array"
         },
         "mediaVolumes": {
-          "description": "List of volumes that will be mounted inside jellyfin pod, to `/media`.",
+          "description": "List of extra devices to mount in the Jellyfin container.",
           "items": {
             "properties": {
               "name": {
@@ -27,27 +24,24 @@
                 "type": "string"
               },
               "readOnly": {
-                "description": "Is this volume read-only?",
+                "description": "Whether the volume is read-only.",
                 "type": "boolean"
               },
               "volumeSpec": {
-                "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/.json_schema/kubernetes/v1.26.1/_definitions.json#/definitions/io.k8s.api.core.v1.PersistentVolumeSpec"
+                "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.PersistentVolumeSpec"
               }
             },
-            "required": ["name", "volumeSpec"],
+            "required": [
+              "name",
+              "volumeSpec"
+            ],
             "type": "object"
           },
           "type": "array"
-        },
-        "persistentTranscodes": {
-          "description": "Keep all transcoded files persistent.",
-          "type": "boolean"
         }
       },
       "type": "object"
     }
   },
-  "definitions": {
-    "io.belugapps.v1.HelmValues": {"$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/.json_schema/common/_definitions.json#/definitions/io.belugapps.v1.HelmValues"}
-  }
+  "type": "object"
 }

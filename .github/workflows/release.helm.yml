@@ -12,7 +12,7 @@ on: # yamllint disable-line rule:truthy
       - charts/*/values.yaml
 
 env:
-  HELM_CONFIG_HOME: ${{ github.workspace }}/e2e/~helm
+  HELM_CONFIG_HOME: ${{ github.workspace }}/test/e2e/~helm
 
 jobs:
   release:

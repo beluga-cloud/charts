@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  HELM_CONFIG_HOME: ${{ github.workspace }}/e2e/~helm
+  HELM_CONFIG_HOME: ${{ github.workspace }}/test/e2e/~helm
   ASDF_DIR: /var/run/asdf-vm
 
 jobs:

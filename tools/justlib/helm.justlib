@@ -1,0 +1,62 @@
+# Recipes library for Helm charts
+#
+# This library provides a set of recipes to help you build/lint/document our
+# Helm charts.
+#
+# How to use this library:
+#   1. Add the following lines to your Justfile:
+#     justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+#     helm := "just --justfile " + justlib / "helm.justlib"
+#   2. Use it by calling '{{ helm }}' following by the action you want to use
+#     {{ helm }} build
+#
+# ------------------------------------------------------------------------------
+default:
+    @echo >&2 "This is a library of recipes used by Justfile... please read the comments in the file for more information"
+    @just --list
+
+justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+tools := "just --justfile " + justlib / "tools.justlib"
+
+jsonschemalib := `git rev-parse --show-toplevel` / "tools/dsl2jsonschema/.justfile"
+jsonschema := "just --justfile " + jsonschemalib
+
+# shortcut to execute some commands in bash verbosely and compatible with Github Actions
+exec := tools + " xtrace"
+
+
+# runs a series of tests to verify that the chart is well-formed
+[no-cd]
+@lint:
+  {{ exec }} ct lint --charts "${PWD}"
+
+# build out the charts/ directory from the Chart.lock file
+[no-cd]
+@build:
+  {{ exec }} helm dependency build
+
+# generates all 'validations' files used to validate the chart and to see immediately any changes after a modification
+[no-cd]
+build-validation-files CHART_NAME:
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  {{ exec }} rm --recursive --force ~develop/validation/compiled
+  for value in ~develop/validation/values/*; do
+    {{ exec }} helm template {{ CHART_NAME }} . --create-namespace --namespace {{ CHART_NAME }}-validation \
+      --values "${value}" \
+      --output-dir "~develop/validation/compiled/$(basename "${value}" | cut -d'-' -f1)"
+  done
+
+# generates markdown documentation from requirements and values files
+[no-cd]
+@build-readme:
+  {{ exec }} helm-docs --badge-style flat
+
+# generates a json schema from values.schema.yaml
+[no-cd]
+@build-schema:
+  {{ jsonschema }} dsl2jsonschema values.schema.yaml \
+    --dsl.external-reference "kubernetes=https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json" \
+    --dsl.external-reference "helm_values=https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json" \
+  > values.schema.json

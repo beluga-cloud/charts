@@ -1,0 +1,94 @@
+# Recipes library for local development
+#
+# This library provides a set of recipes to help you run and develop the
+# project locally.
+#
+# How to use this library:
+#   1. Add the following lines to your Justfile:
+#     justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+#     develop := "just --justfile " + justlib / "develop.justlib"
+#   2. Use it by calling '{{ develop }}' following by the action you want to use
+#     {{ develop }} setup
+#
+# ------------------------------------------------------------------------------
+default:
+    @echo >&2 "This is a library of recipes used by Justfile... please read the comments in the file for more information"
+    @just --list
+
+justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+image := "just --justfile " + justlib / "image.justlib"
+tools := "just --justfile " + justlib / "tools.justlib"
+
+# shortcut to execute some commands in bash verbosely and compatible with Github Actions
+exec := tools + " xtrace"
+
+local_registry := "ghcr.io"
+
+
+# prepare a local cluster to develop and/or debug the application
+[private]
+[no-cd]
+setup CHART_NAME:
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  if ! (kind get clusters 2> /dev/null | grep "^{{ CHART_NAME }}-dev$" &> /dev/null); then
+    {{ exec }} kind create cluster --name "{{ CHART_NAME }}-dev" --wait 120s --config ~develop/environment/kind.yaml
+  fi
+
+  # install metrics-server missing by default inside kind clusters and patch it to work with self-signed certificates
+  {{ exec }} kubectl --context "kind-{{ CHART_NAME }}-dev" apply --filename https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+  kubectl --context "kind-{{ CHART_NAME }}-dev" patch --namespace kube-system deployment/metrics-server --type json --patch '[{"op":"add","path":"/spec/template/spec/containers/0/args/5","value":"--kubelet-insecure-tls"}]'
+  kubectl --context "kind-{{ CHART_NAME }}-dev" wait --namespace kube-system deployment/metrics-server --for=condition=Available
+
+  # install contour and cert-manager to provide ingress and TLS certificate
+  {{ exec }} helm --kube-context "kind-{{ CHART_NAME }}-dev" upgrade --install contour bitnami/contour --namespace projectcontour --create-namespace
+  {{ exec }} helm --kube-context "kind-{{ CHART_NAME }}-dev" upgrade --install cert-manager cert-manager/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
+  {{ exec }} kubectl --context "kind-{{ CHART_NAME }}-dev" --namespace default apply --filename ~develop/environment/selfsigned-issuer.yaml
+
+# install all required resources to develop and/or debug the application
+[no-cd]
+prepare CHART_NAME: (prepare-images CHART_NAME)
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  [ ! -d "images" ] && exit 0
+  for image in images/*; do
+    image_name="{{ local_registry }}/belug-apps/{{ CHART_NAME }}/$(basename "${image}")"
+    image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
+    {{ exec }} kind load docker-image --name "{{ CHART_NAME }}-dev" "${image_name}:${image_version}"
+  done
+
+# prepare all images to develop and/or debug the application
+[private]
+[no-cd]
+@prepare-images CHART_NAME:
+  {{ image }} build {{ CHART_NAME }} {{ local_registry }} all
+
+# install the application on the local environment
+[no-cd]
+install CHART_NAME +OPTS="":
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  {{ exec }} helm --kube-context "kind-{{ CHART_NAME }}-dev" upgrade {{ CHART_NAME }}-dev . \
+    --install \
+    --namespace {{ CHART_NAME }} --create-namespace \
+    --values ~develop/environment/values.yaml \
+    --set "containerSecurityContext.runAsUser=$(id --user)" --set "containerSecurityContext.runAsGroup=$(id --group)" \
+    --set "podSecurityContext.runAsUser=$(id --user)" --set "podSecurityContext.runAsGroup=$(id --group)" \
+     {{ OPTS }}
+
+# uninstall the application on the local environment
+[no-cd]
+@uninstall CHART_NAME:
+  {{ exec }} helm --kube-context "kind-{{ CHART_NAME }}-dev" uninstall {{ CHART_NAME }}-dev --namespace {{ CHART_NAME }}
+
+#reinstall the application on the local environment
+[no-cd]
+@reinstall CHART_NAME +OPTS="": (uninstall CHART_NAME) (install CHART_NAME OPTS)
+
+# stop the local environment
+[no-cd]
+@teardown CHART_NAME:
+  {{ exec }} kind delete cluster --name "{{ CHART_NAME }}-dev"

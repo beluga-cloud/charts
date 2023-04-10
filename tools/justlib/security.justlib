@@ -1,0 +1,41 @@
+# Recipes library for security enforcement
+#
+# This library provides a set of recipes to help you enforce security and
+# best practices.
+#
+# How to use this library:
+#   1. Add the following lines to your Justfile:
+#     justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+#     security := "just --justfile " + justlib / "security.justlib"
+#   2. Use it by calling '{{ security }}' following by the action you want to use
+#     {{ security }} scan
+#
+# ------------------------------------------------------------------------------
+default:
+    @echo >&2 "This is a library of recipes used by Justfile... please read the comments in the file for more information"
+    @just --list
+
+justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+tools := "just --justfile " + justlib / "tools.justlib"
+
+# shortcut to execute some commands in bash verbosely and compatible with Github Actions
+exec := tools + " xtrace"
+
+
+# scan one or multiple images for missconfiguration or security issues
+[no-cd]
+scan-images CHART_NAME CONTAINER_REGISTRY OPTS="" +IMAGES="all":
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  for image in {{ if IMAGES == "all" { `echo images/*` } else { IMAGES } }}; do
+    image_name="{{ CONTAINER_REGISTRY }}/belug-apps/{{ CHART_NAME }}/$(basename "${image}")"
+    image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
+    {{ exec }} trivy config "${image}/Dockerfile" {{ OPTS }}
+    {{ exec }} trivy image "${image_name}:${image_version}" {{ OPTS }}
+  done
+
+# scan current chart for missconfiguration or security issues
+[no-cd]
+@scan-chart OPTS="":
+  {{ exec }} trivy config . {{ OPTS }}

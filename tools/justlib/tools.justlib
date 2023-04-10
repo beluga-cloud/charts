@@ -1,0 +1,38 @@
+# Recipes library for helpers
+#
+# This library provides a set of helper recipes to simplify other recipes.
+# It is not intended to be used directly by users.
+#
+# How to use this library:
+#   1. Add the following lines to your Justfile:
+#     justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+#     tools := "just --justfile " + justlib / "tools.justlib"
+#   2. Use it by calling '{{ tools }}' following by the action you want to use
+#     {{ tools }} xtrace ...
+#
+# ------------------------------------------------------------------------------
+default:
+    @echo >&2 "This is a library of recipes used by Justfile... please read the comments in the file for more information"
+    @just --list
+
+# define which xtrace recipe to use depending if we are in Github Actions environment or not
+_xtrace := if env_var_or_default("GITHUB_ACTIONS", "false") =~ '[Tt]rue' { "xtrace_github_action" } else { "xtrace_default" }
+
+
+# print a trace of simple commands then run it. If it runs inside Github Actions,
+# it will also group all outputs inside a block to simplify CI logs.
+[no-cd]
+@xtrace +CMD:
+  just --justfile {{ justfile() }} {{ _xtrace }} {{CMD}}
+
+[private]
+[no-cd]
+@xtrace_default +CMD:
+  @{{CMD}}
+
+[private]
+[no-cd]
+@xtrace_github_action +CMD:
+  echo '::group::{{CMD}}'
+  {{CMD}}
+  echo '::endgroup::'
