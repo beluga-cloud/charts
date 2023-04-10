@@ -1,82 +1,82 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "oneOf": [
     {
-      "$ref": "#/definitions/io.belugapps.v1.HelmValues"
+      "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.belugapps.v1.HelmValues"
     }
   ],
   "properties": {
-    "rbac": {
-      "description": "Define all RBAC rules to apply on this application.",
-      "properties": {
-        "create": {
-          "description": "Specifies whether RBAC resources should be created.",
-          "type": "boolean"
-        },
-        "allowWriteActions": {
-          "description": "Allow helm-dashboard to create/edit/delete Kubernetes resources.",
-          "type": "boolean"
-        }
-      },
-      "required": ["allowWriteActions"],
-      "type": "object"
-    },
     "helmDashboard": {
       "description": "Configure specific properties to deploy helm-dashboard.",
       "properties": {
         "repositories": {
-          "description": "Default helm registries loaded with helm-dashboard.",
           "items": {
-            "description": "Additional Helm registry.",
             "properties": {
-              "name": {
-                "description": "Registry name.",
-                "type": "string"
-              },
-              "url": {
-                "description": "Registry URL.",
-                "type": "string"
-              },
-              "username": {
-                "description": "Chart repository username.",
-                "type": "string"
-              },
-              "password": {
-                "description": "Chart repository password.",
-                "type": "string"
-              },
               "caFile": {
-                "description": "Verify certificates of HTTPS-enabled servers using this CA bundle.",
+                "description": "Path to the CA certificate to use to authenticate to the Helm repository.",
                 "type": "string"
               },
               "certFile": {
-                "description": "Identify HTTPS client using this SSL certificate file.",
-                "type": "string"
-              },
-              "keyFile": {
-                "description": "Identify HTTPS client using this SSL key file.",
+                "description": "Path to the client certificate to use to authenticate to the Helm repository.",
                 "type": "string"
               },
               "insecure_skip_tls_verify": {
-                "description": "Skip tls certificate checks for the repository.",
+                "description": "Specifies whether to skip TLS verification when connecting to the Helm repository.",
                 "type": "boolean"
               },
+              "keyFile": {
+                "description": "Path to the client key to use to authenticate to the Helm repository.",
+                "type": "string"
+              },
+              "name": {
+                "description": "Name of the Helm repository.",
+                "type": "string"
+              },
               "pass_credentials_all": {
-                "description": "Pass credentials to all domains.",
+                "description": "Specifies whether to pass credentials to all domains.",
                 "type": "boolean"
+              },
+              "password": {
+                "description": "Password to use to authenticate to the Helm repository.",
+                "type": "string"
+              },
+              "url": {
+                "description": "URL of the Helm repository.",
+                "type": "string"
+              },
+              "username": {
+                "description": "Username to use to authenticate to the Helm repository.",
+                "type": "string"
               }
             },
-            "required": ["name", "url"],
+            "required": [
+              "name",
+              "url"
+            ],
             "type": "object"
           },
           "type": "array"
         }
       },
       "type": "object"
+    },
+    "rbac": {
+      "description": "Define all RBAC rules to apply on this application.",
+      "properties": {
+        "allowWriteActions": {
+          "description": "Specifies whether the Helm Dashboard should be allowed to perform write actions on Kubernetes (create/edit/delete).",
+          "type": "boolean"
+        },
+        "create": {
+          "description": "Specifies whether RBAC resources should be created.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "allowWriteActions"
+      ],
+      "type": "object"
     }
   },
-  "definitions": {
-    "io.belugapps.v1.HelmValues": {"$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/.json_schema/common/_definitions.json#/definitions/io.belugapps.v1.HelmValues"}
-  }
+  "type": "object"
 }

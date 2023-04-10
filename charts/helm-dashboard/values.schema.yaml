@@ -1,0 +1,30 @@
+---
+$:
+  .: !!jsonschema
+    $schema: http://json-schema.org/draft-07/schema#
+    oneOf:
+      - $ref: '{{ .HelmValuesReferenceURL }}#/$defs/io.belugapps.v1.HelmValues'
+
+  # Define all RBAC rules to apply on this application.
+  rbac:
+    .: !!jsonschema
+      required: [ allowWriteActions ]
+
+    create: !!bool _ # Specifies whether RBAC resources should be created.
+    allowWriteActions: !!bool _ # Specifies whether the Helm Dashboard should be allowed to perform write actions on Kubernetes (create/edit/delete).
+
+  # Configure specific properties to deploy helm-dashboard.
+  helmDashboard:
+    repositories: !!array # List of preloaded Helm repositories to add to the Helm Dashboard.
+      .: !!jsonschema
+        required: [ name, url ]
+
+      name: !!str _ # Name of the Helm repository.
+      url: !!str _ # URL of the Helm repository.
+      username: !!str _ # Username to use to authenticate to the Helm repository.
+      password: !!str _ # Password to use to authenticate to the Helm repository.
+      caFile: !!str _ # Path to the CA certificate to use to authenticate to the Helm repository.
+      certFile: !!str _ # Path to the client certificate to use to authenticate to the Helm repository.
+      keyFile: !!str _ # Path to the client key to use to authenticate to the Helm repository.
+      insecure_skip_tls_verify: !!bool _ # Specifies whether to skip TLS verification when connecting to the Helm repository.
+      pass_credentials_all: !!bool _ # Specifies whether to pass credentials to all domains.
