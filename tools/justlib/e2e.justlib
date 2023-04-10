@@ -27,17 +27,17 @@ local_registry := "ghcr.io"
 # prepare the local Kubernetes cluster to run e2e tests locally
 [private]
 [no-cd]
-setup CHART_NAME:
+setup CLUSTER_NAME:
   #!/usr/bin/env bash
   set -ueo pipefail
 
-  if ! (kind get clusters 2> /dev/null | grep "^e2e-{{ CHART_NAME }}$" &> /dev/null); then
-    {{ exec }} kind create cluster --name "e2e-"{{ CHART_NAME }}"" --wait 120s
+  if ! (kind get clusters 2> /dev/null | grep "^{{ CLUSTER_NAME }}$" &> /dev/null); then
+    {{ exec }} kind create cluster --name "{{ CLUSTER_NAME }}" --wait 120s
   fi
 
 # install all required resources to install and run the application properly
 [no-cd]
-prepare CHART_NAME: (prepare-images CHART_NAME)
+prepare CLUSTER_NAME CHART_NAME: (prepare-images CHART_NAME)
   #!/usr/bin/env bash
   set -ueo pipefail
 
@@ -45,7 +45,7 @@ prepare CHART_NAME: (prepare-images CHART_NAME)
   for image in images/*; do
     image_name="{{ local_registry }}/belug-apps/{{ CHART_NAME }}/$(basename "${image}")"
     image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
-    {{ exec }} kind load docker-image --name "e2e-{{ CHART_NAME }}" "${image_name}:${image_version}"
+    {{ exec }} kind load docker-image --name "{{ CLUSTER_NAME }}" "${image_name}:${image_version}"
   done
 
 # prepare all images to run e2e tests locally
@@ -60,27 +60,33 @@ _ct_install := if env_var_or_default("GITHUB_ACTIONS", "false") =~ '[Tt]rue' { "
 
 # install and test the current application into a local cluster
 [no-cd]
-@run CHART_NAME +EXTRA_ARGS="":
-  kubectl config use-context "kind-e2e-{{ CHART_NAME }}"
-  just --justfile {{ justfile() }} {{ _ct_install }}
+@run CLUSTER_NAME CHART_NAME +EXTRA_ARGS="":
+  kubectl config use-context "kind-{{ CLUSTER_NAME }}"
+  just --justfile {{ justfile() }} {{ _ct_install }} "--charts {{ `git rev-parse --show-toplevel`/ "charts" / CHART_NAME }}" {{ EXTRA_ARGS }}
+
+# install and test the current application into a local cluster
+[no-cd]
+@run_all CLUSTER_NAME +EXTRA_ARGS="":
+  kubectl config use-context "kind-{{ CLUSTER_NAME }}"
+  just --justfile {{ justfile() }} {{ _ct_install }} "--all" {{ EXTRA_ARGS }}
 
 [private]
 [no-cd]
-ct_install_default +EXTRA_ARGS="":
-  ct install --charts ${PWD} --target-branch main --upgrade --debug \
+ct_install_default TARGET +EXTRA_ARGS="":
+  ct install {{ TARGET }} --target-branch main --upgrade --debug \
     --helm-extra-args '--timeout=120s' \
     --helm-extra-set-args '--set "global.imageRegistry={{ local_registry }}" {{ EXTRA_ARGS }}'
 
 [private]
 [no-cd]
-@ct_install_github_actions +EXTRA_ARGS="":
-  echo '::group::ct install --charts '${PWD}' --target-branch main --upgrade --debug --helm-extra-args '"'"'--timeout=120s'"'"' --helm-extra-set-args '"'"'--set "global.imageRegistry={{ local_registry }}" {{ EXTRA_ARGS }}'"'"
-  ct install --charts ${PWD} --target-branch main --upgrade --debug \
+@ct_install_github_actions TARGET +EXTRA_ARGS="":
+  echo '::group::ct install {{ TARGET }} --target-branch main --upgrade --debug --helm-extra-args '"'"'--timeout=120s'"'"' --helm-extra-set-args '"'"'--set "global.imageRegistry={{ local_registry }}" {{ EXTRA_ARGS }}'"'"
+  ct install {{ TARGET }} --target-branch main --upgrade --debug \
     --helm-extra-args '--timeout=120s' \
     --helm-extra-set-args '--set "global.imageRegistry={{ local_registry }}" {{ EXTRA_ARGS }}'
   echo '::endgroup::'
 
 # remove the local environment to run e2e tests locally
 [no-cd]
-@teardown CHART_NAME:
-  {{ exec }} kind delete cluster --name "e2e-{{ CHART_NAME }}"
+@teardown CLUSTER_NAME:
+  {{ exec }} kind delete cluster --name "{{ CLUSTER_NAME }}"

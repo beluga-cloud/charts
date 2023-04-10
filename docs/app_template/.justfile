@@ -62,27 +62,23 @@ lint-images +IMAGES="all":
 
 
 # install and test the current application into a local cluster
-[no-exit-message]
-@e2e-run: e2e-setup e2e-prepare && e2e-teardown
-  {{ e2e }} run "{{ chart_name }}"
+@e2e-run CLUSTER_NAME=("e2e-" + chart_name): (e2e-setup CLUSTER_NAME) (e2e-prepare CLUSTER_NAME) && (e2e-teardown CLUSTER_NAME)
+  {{ e2e }} run "{{ CLUSTER_NAME }}" "{{ chart_name }}"
 
 # prepare the local environment to run e2e tests locally
 [private]
-[no-exit-message]
-@e2e-setup:
-  {{ e2e }} setup "{{ chart_name }}"
+@e2e-setup CLUSTER_NAME=("e2e-" + chart_name):
+  {{ e2e }} setup "{{ CLUSTER_NAME }}"
 
 # install all required resources to install and run the application properly
 [private]
-[no-exit-message]
-@e2e-prepare:
-  {{ e2e }} prepare "{{ chart_name }}"
+@e2e-prepare CLUSTER_NAME=("e2e-" + chart_name):
+  {{ e2e }} prepare "{{ CLUSTER_NAME }}" "{{ chart_name }}"
 
 # remove the local environment to run e2e tests locally
 [private]
-[no-exit-message]
-@e2e-teardown:
-  {{ e2e }} teardown "{{ chart_name }}"
+@e2e-teardown CLUSTER_NAME=("e2e-" + chart_name):
+  {{ e2e }} teardown "{{ CLUSTER_NAME }}"
 
 
 # prepare a local environment to develop and/or debug the application

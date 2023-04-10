@@ -60,25 +60,25 @@ lint-images +IMAGES="all":
 
 
 # install and test the current application into a local cluster
-@e2e-run: e2e-setup e2e-prepare && e2e-teardown
-  {{ e2e }} run "{{ chart_name }}"
+@e2e-run CLUSTER_NAME=("e2e-" + chart_name): (e2e-setup CLUSTER_NAME) (e2e-prepare CLUSTER_NAME) && (e2e-teardown CLUSTER_NAME)
+  {{ e2e }} run "{{ CLUSTER_NAME }}" "{{ chart_name }}"
 
 # prepare the local environment to run e2e tests locally
 [private]
-@e2e-setup:
-  {{ e2e }} setup "{{ chart_name }}"
+@e2e-setup CLUSTER_NAME=("e2e-" + chart_name):
+  {{ e2e }} setup "{{ CLUSTER_NAME }}"
 
 # install all required resources to install and run the application properly
 [private]
-@e2e-prepare:
-  {{ e2e }} prepare "{{ chart_name }}"
-  {{ exec }} helm --kube-context "kind-e2e-{{ chart_name }}" repo update
-  {{ exec }} helm --kube-context "kind-e2e-{{ chart_name }}" upgrade --install cert-manager jetstack/cert-manager --create-namespace --namespace cert-manager-system --set installCRDs=true
+@e2e-prepare CLUSTER_NAME=("e2e-" + chart_name):
+  {{ e2e }} prepare "{{ CLUSTER_NAME }}" "{{ chart_name }}"
+  {{ exec }} helm --kube-context "kind-{{ CLUSTER_NAME }}" repo update
+  {{ exec }} helm --kube-context "kind-{{ CLUSTER_NAME }}" upgrade --install cert-manager jetstack/cert-manager --create-namespace --namespace cert-manager-system --set installCRDs=true
 
 # remove the local environment to run e2e tests locally
 [private]
-@e2e-teardown:
-  {{ e2e }} teardown "{{ chart_name }}"
+@e2e-teardown CLUSTER_NAME=("e2e-" + chart_name):
+  {{ e2e }} teardown "{{ CLUSTER_NAME }}"
 
 
 # prepare a local environment to develop and/or debug the application
