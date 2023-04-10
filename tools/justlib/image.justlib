@@ -1,0 +1,47 @@
+# Recipes library for OCI images
+#
+# This library provides a set of recipes to help you build/lint/document our
+# OCI images.
+#
+# How to use this library:
+#   1. Add the following lines to your Justfile:
+#     justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+#     image := "just --justfile " + justlib / "image.justlib"
+#   2. Use it by calling '{{ image }}' following by the action you want to use
+#     {{ image }} build
+#
+# ------------------------------------------------------------------------------
+default:
+    @echo >&2 "This is a library of recipes used by Justfile... please read the comments in the file for more information"
+    @just --list
+
+justlib := `git rev-parse --show-toplevel` / "tools/justlib"
+tools := "just --justfile " + justlib / "tools.justlib"
+
+# shortcut to execute some commands in bash verbosely and compatible with Github Actions
+exec := tools + " xtrace"
+
+
+# build one or multiple images (use relative path from current directory)
+[no-cd]
+build CHART_NAME CONTAINER_REGISTRY +IMAGES="all":
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  [ ! -d "images" ] && exit 0
+  for image in {{ if IMAGES == "all" { `echo images/*` } else { IMAGES } }}; do
+    image_name="{{ CONTAINER_REGISTRY }}/belug-apps/{{ CHART_NAME }}/$(basename "${image}")"
+    image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
+    {{ exec }} docker build "${image}" --tag "${image_name}:${image_version}"
+  done
+
+# lint one or multiple images (use relative path from current directory)
+[no-cd]
+lint +IMAGES="all":
+  #!/usr/bin/env bash
+  set -ueo pipefail
+
+  [ ! -d "images" ] && exit 0
+  for image in {{ if IMAGES == "all" { `echo images/*` } else { IMAGES } }}; do
+    {{ exec }} hadolint "${image}/Dockerfile" && echo "No issue found"
+  done
