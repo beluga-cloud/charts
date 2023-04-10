@@ -1,14 +1,13 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "oneOf": [
     {
-      "$ref": "#/definitions/io.belugapps.v1.HelmValues",
-      "not": {"required": ["replicaCount"]}
+      "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.belugapps.v1.HelmValues",
+      "not": {
+        "required": [
+          "replicaCount"
+        ]
+      }
     }
-  ],
-  "properties": {},
-  "definitions": {
-    "io.belugapps.v1.HelmValues": {"$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/.json_schema/common/_definitions.json#/definitions/io.belugapps.v1.HelmValues"}
-  }
+  ]
 }
