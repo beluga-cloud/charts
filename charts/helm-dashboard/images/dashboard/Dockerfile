@@ -1,7 +1,7 @@
 FROM docker.io/library/golang:1.20.3 as builder
 
 # renovate: datasource=docker depName=komodorio/helm-dashboard versioning=semver
-ARG HELM_DASHBOARD_VERSION=1.3.0
+ARG HELM_DASHBOARD_VERSION=1.3.1
 
 WORKDIR /build
 RUN git clone https://github.com/komodorio/helm-dashboard --branch v${HELM_DASHBOARD_VERSION}
@@ -18,7 +18,7 @@ FROM docker.io/aquasec/trivy:0.39.1 as trivy_packager
 FROM docker.io/alpine:3.17.3
 
 # renovate: datasource=docker depName=komodorio/helm-dashboard versioning=semver
-ARG HELM_DASHBOARD_VERSION=1.3.0
+ARG HELM_DASHBOARD_VERSION=1.3.1
 
 RUN apk upgrade --no-cache
 COPY --from=builder /build/dashboard /bin/helm-dashboard
