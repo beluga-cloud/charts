@@ -59,7 +59,7 @@ jobs:
           scan-ref: ${{ matrix.dockerfile }}
           scan-type: config
           severity: UNKNOWN,MEDIUM,HIGH,CRITICAL # NOTE: avoid reporting LOW issues
-      - uses: github/codeql-action/upload-sarif@988e1bc94181d8b9c03964b72e28974e2dbca322 # codeql-bundle-20221211
+      - uses: github/codeql-action/upload-sarif@ed6c4995fcfc90fa1e870bf955dd15e010cf71e8 # codeql-bundle-20221211
         if: always()
         with:
           category: trivy-container-syntax
@@ -95,7 +95,7 @@ jobs:
           output: trivy-results.sarif
           scan-type: image
           severity: UNKNOWN,MEDIUM,HIGH,CRITICAL # NOTE: avoid reporting LOW issues
-      - uses: github/codeql-action/upload-sarif@988e1bc94181d8b9c03964b72e28974e2dbca322 # codeql-bundle-20221211
+      - uses: github/codeql-action/upload-sarif@ed6c4995fcfc90fa1e870bf955dd15e010cf71e8 # codeql-bundle-20221211
         if: always()
         with:
           category: trivy-container
