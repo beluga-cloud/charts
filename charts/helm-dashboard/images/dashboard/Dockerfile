@@ -12,7 +12,7 @@ RUN CGO_ENABLED=0 go build \
     -o ../dashboard .
 
 FROM docker.io/alpine/helm:3.11.2 as helm_packager
-FROM docker.io/bitnami/kubectl:1.26.3 as kubectl_packager
+FROM docker.io/bitnami/kubectl:1.26.4 as kubectl_packager
 FROM docker.io/aquasec/trivy:0.39.1 as trivy_packager
 
 FROM docker.io/alpine:3.17.3
