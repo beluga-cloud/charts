@@ -11,9 +11,9 @@ RUN CGO_ENABLED=0 go build \
     -ldflags "-X main.version=${HELM_DASHBOARD_VERSION} -X main.date=$(date --iso-8601=ns) -X main.commit=$(git rev-parse HEAD)" \
     -o ../dashboard .
 
-FROM docker.io/alpine/helm:3.11.2 as helm_packager
-FROM docker.io/bitnami/kubectl:1.26.4 as kubectl_packager
-FROM docker.io/aquasec/trivy:0.39.1 as trivy_packager
+FROM docker.io/alpine/helm:3.11.3 as helm_packager
+FROM docker.io/bitnami/kubectl:1.27.1 as kubectl_packager
+FROM docker.io/aquasec/trivy:0.40.0 as trivy_packager
 
 FROM docker.io/alpine:3.17.3
 
