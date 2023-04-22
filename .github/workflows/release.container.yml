@@ -13,10 +13,10 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@83b7061638ee4956cf7545a6f7efe594e5ad0247 # v3.5.1
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           fetch-depth: 3
-      - uses: tj-actions/changed-files@7ecfc6730dff8072d1cc5215a24cc9478f55264d # v35.8.0
+      - uses: tj-actions/changed-files@ce810b29b28abf274afebdcd8fe47b8fba0f28bd # v35.9.0
         id: changed-files
         with:
           files: |
@@ -34,7 +34,7 @@ jobs:
       matrix: ${{ fromJSON(needs.updated_container.outputs.matrix) }}
       fail-fast: false
     steps:
-      - uses: actions/checkout@83b7061638ee4956cf7545a6f7efe594e5ad0247 # v3.5.1
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # v2.1.0
       - uses: docker/setup-buildx-action@4b4e9c3e2d4531116a6f8ba8e71fc6e2cb6e6c8c # v2.5.0
         with:
@@ -68,7 +68,7 @@ jobs:
         env:
           DOCKERFILE: ${{ matrix.dockerfile }}
       - id: meta
-        uses: docker/metadata-action@507c2f2dc502c992ad446e3d7a5dfbe311567a96 # v4.3.0
+        uses: docker/metadata-action@c4ee3adeed93b1fa6a762f209fb01608c1a22f1e # v4.4.0
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ steps.dockerfile.outputs.image }}
           flavor: |
