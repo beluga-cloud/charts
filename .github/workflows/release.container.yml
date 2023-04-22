@@ -6,6 +6,9 @@ on: # yamllint disable-line rule:truthy
     paths:
       - charts/**/Dockerfile
 
+env:
+  ASDF_DIR: /var/run/asdf-vm
+
 jobs:
   updated_container:
     name: List updated containers
@@ -26,8 +29,18 @@ jobs:
         run: echo "matrix={\"dockerfile\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
 
   build-and-push-image:
+    # NOTE: This job is a bit heavier that other one in this repository because it tries to
+    #       follow the SLSA (Supply-chain Levels for Software Artifacts) best practices:
+    #       - Build and push the container image for ARM and AMD64 architectures
+    #       - Sign the container image
+    #       - Generate the SBOM (Software Bill of Materials)
+    #       - Sign the SBOM
+    #       - Generate the container vulnerability report
+    #       - Sign the container vulnerability report
+    #       - Generate the build provenance
+    #       - Sign the build provenance
     name: Build & push container image (${{ matrix.dockerfile }})
-    needs: [updated_container]
+    needs: [ updated_container ]
     runs-on: ubuntu-latest
     if: needs.updated_container.outputs.matrix != '{"dockerfile":[]}'
     strategy:
@@ -35,10 +48,10 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+
+      # Build and push the container image for several architectures
       - uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # v2.1.0
       - uses: docker/setup-buildx-action@4b4e9c3e2d4531116a6f8ba8e71fc6e2cb6e6c8c # v2.5.0
-        with:
-          version: latest
       - uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
         with:
           registry: ghcr.io
@@ -48,10 +61,10 @@ jobs:
       - name: Get Dockerfile information
         id: dockerfile
         run: |
+          set -euo pipefail
+          
           # Extract context and image name from path
-          export CONTEXT=${DOCKERFILE%/*}
-          IMAGE=$(awk <<<"${CONTEXT}" -F[/] '{ printf "%s/%s", $2, $4 }')
-          export IMAGE
+          CONTEXT=${DOCKERFILE%/*}
           
           # Load all Dockerfile ARG as environment and substitute all vars in Dockerfile 
           # to extract some information
@@ -59,7 +72,7 @@ jobs:
           source <(grep "^ARG" "${DOCKERFILE}" | sed 's/ARG/export/g')
           
           echo "context=${CONTEXT}" | tee --append "${GITHUB_OUTPUT}"
-          echo "image=${IMAGE}" | tee --append "${GITHUB_OUTPUT}"
+          echo "image=$(awk <<<"${CONTEXT}" -F[/] '{ printf "%s/%s", $2, $4 }')" | tee --append "${GITHUB_OUTPUT}"
           echo "version=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.version | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
           echo "title=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.title | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
           echo "description=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.description | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
@@ -84,11 +97,144 @@ jobs:
             com.github.belug-apps.ci.workflow.url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # v4.0.0
+        id: build
         with:
           context: ${{ steps.dockerfile.outputs.context }}
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           provenance: true
           push: true
-          sbom: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      # Apply SLSA best practices
+      # NOTE: generated SBOM and SARIF files are compatible with
+      #       trivy referrer plugin (github.com/aquasecurity/trivy-plugin-referrer)
+      - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        with:
+          path: ${{ env.ASDF_DIR }}
+          key: asdf-vm
+      - uses: asdf-vm/actions/install@75bab86b342b8aa14f3b547296607599522cbe90 # v2.1.0
+
+      - name: Sign 'ghcr.io/${{ github.repository_owner }}/${{ steps.dockerfile.outputs.image }}:${{ steps.dockerfile.outputs.version }}@${{ steps.build.outputs.digest }}'
+        run: |
+          echo "${COSIGN_PRIVATE_KEY}" | cosign sign --key /dev/stdin --yes \
+            --registry-referrers-mode oci-1-1 \
+            --annotations "workflow-url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "${IMAGE}"
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ steps.dockerfile.outputs.image }}:${{ steps.dockerfile.outputs.version }}@${{ steps.build.outputs.digest }}
+          COSIGN_EXPERIMENTAL: "true"
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+
+      # SBOM can be used to filter images based on software requirements (avoid some dependencies,
+      # allow only GPL compatible licenses, etc.)
+      - name: Generate Software Bill of Materials (SBOM)
+        run: |
+          trivy image --quiet --format cyclonedx "${IMAGE}" > sbom.cyclonedx.json
+          regctl artifact put --subject "${IMAGE}" \
+            --artifact-type application/cyclonedx \
+            --file-media-type application/vnd.cyclonedx+json \
+            --annotation "created-by=trivy" \
+            --annotation "org.opencontainers.artifact.created=$(date -Iseconds)" \
+            --annotation "org.opencontainers.artifact.description=CycloneDX JSON SBOM" \
+            --annotation "workflow-url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            < sbom.cyclonedx.json
+
+          CYCLONEDX_ARTIFACT="$(regctl artifact tree "${IMAGE}" \
+            --filter-artifact-type application/cyclonedx \
+            --format '{{json .}}' | \
+            jq --raw-output '.referrer | first | "\(.reference.Registry)/\(.reference.Repository)@\(.reference.Digest)"')"
+          echo "CYCLONEDX_ARTIFACT=${CYCLONEDX_ARTIFACT}" | tee --append "${GITHUB_ENV}"
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ steps.dockerfile.outputs.image }}:${{ steps.dockerfile.outputs.version }}@${{ steps.build.outputs.digest }}
+      - name: Sign ${{ env.CYCLONEDX_ARTIFACT }}
+        run: |
+          echo "${COSIGN_PRIVATE_KEY}" | cosign sign-blob --key /dev/stdin --yes sbom.cyclonedx.json > sbom.cyclonedx.json.sig
+          echo "${COSIGN_PRIVATE_KEY}" | cosign sign --key /dev/stdin --yes \
+            --registry-referrers-mode oci-1-1 \
+            --annotations "workflow-url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "${CYCLONEDX_ARTIFACT}"
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+
+      # Vulnerability report can be used to filter images based on software vulnerabilities (avoid some CVEs,
+      # allow only low severity, etc.)
+      - name: Generate vulnerability report
+        run: |
+          trivy sbom --quiet --format sarif sbom.cyclonedx.json > vulnerabilities.sarif.json
+          regctl artifact put --subject "${IMAGE}" \
+            --artifact-type application/sarif \
+            --file-media-type application/sarif+json \
+            --annotation "created-by=trivy" \
+            --annotation "org.opencontainers.artifact.created=$(date -Iseconds)" \
+            --annotation "org.opencontainers.artifact.description=SARIF" \
+            --annotation "workflow-url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            < vulnerabilities.sarif.json
+
+          SARIF_ARTIFACT="$(regctl artifact tree "${IMAGE}" \
+            --filter-artifact-type application/sarif \
+            --format '{{json .}}' | \
+            jq --raw-output '.referrer | first | "\(.reference.Registry)/\(.reference.Repository)@\(.reference.Digest)"')"
+          echo "SARIF_ARTIFACT=${SARIF_ARTIFACT}" | tee --append "${GITHUB_ENV}"
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ steps.dockerfile.outputs.image }}:${{ steps.dockerfile.outputs.version }}@${{ steps.build.outputs.digest }}
+      - name: Sign ${{ env.SARIF_ARTIFACT }}
+        run: |
+          echo "${COSIGN_PRIVATE_KEY}" | cosign sign-blob --key /dev/stdin --yes vulnerabilities.sarif.json > vulnerabilities.sarif.json.sig
+          echo "${COSIGN_PRIVATE_KEY}" | cosign sign --key /dev/stdin --yes \
+            --registry-referrers-mode oci-1-1 \
+            --annotations "workflow-url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "${SARIF_ARTIFACT}"
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+
+      # Generate provenance
+      - name: 'WARN: dirty fix consign issue with signature not found in transparency log'
+        run: asdf install cosign 1.13.1 && asdf local cosign 1.13.1
+      - uses: philips-labs/slsa-provenance-action@752766b8a3b1ebd09d599e163eeec8fa39e677aa # v0.8.0
+        with:
+          command: generate
+          subcommand: container
+          arguments: >-
+            --repository "ghcr.io/${{ github.repository_owner }}/${{ steps.dockerfile.outputs.image }}"
+            --tags "${{ steps.dockerfile.outputs.version }}"
+            --digest "${{ steps.build.outputs.digest }}"
+            --output-path provenance.att
+        env:
+          COSIGN_INSECURE_IGNORE_TLOG: yes
+      - name: 'WARN: dirty unfix consign issue with signature not found in transparency log'
+        run: git restore .tool-versions
+      - name: Push provenance attestation as artifact referer
+        run: |
+          jq '.predicate' provenance.att | \
+          regctl artifact put --subject "${IMAGE}" \
+            --artifact-type application/slsaprovenance \
+            --file-media-type application/vnd.in-toto+json \
+            --annotation "created-by=slsa-provenance-action" \
+            --annotation "org.opencontainers.artifact.created=$(date -Iseconds)" \
+            --annotation "org.opencontainers.artifact.description=Provenance" \
+            --annotation "workflow-url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          
+            PROVENANCE_ARTIFACT="$(regctl artifact tree "${IMAGE}" \
+              --filter-artifact-type application/slsaprovenance \
+              --format '{{json .}}' | \
+              jq --raw-output '.referrer | first | "\(.reference.Registry)/\(.reference.Repository)@\(.reference.Digest)"')"
+            echo "PROVENANCE_ARTIFACT=${PROVENANCE_ARTIFACT}" | tee --append "${GITHUB_ENV}"
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/${{ steps.dockerfile.outputs.image }}:${{ steps.dockerfile.outputs.version }}@${{ steps.build.outputs.digest }}
+      - name: Sign ${{ env.PROVENANCE_ARTIFACT }}
+        run: |
+          echo "${COSIGN_PRIVATE_KEY}" | cosign sign-blob --key /dev/stdin --yes provenance.att > provenance.att.sig
+          echo "${COSIGN_PRIVATE_KEY}" | cosign sign --key /dev/stdin --yes \
+            --registry-referrers-mode oci-1-1 \
+            --annotations "workflow-url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "${PROVENANCE_ARTIFACT}"
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
