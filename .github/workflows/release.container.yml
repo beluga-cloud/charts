@@ -109,10 +109,10 @@ jobs:
       # Apply SLSA best practices
       # NOTE: generated SBOM and SARIF files are compatible with
       #       trivy referrer plugin (github.com/aquasecurity/trivy-plugin-referrer)
-      - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+      - uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ env.ASDF_DIR }}
-          key: asdf-vm
+          key: asdf-vm-${{ hashFiles('.tool-versions') }}
       - uses: asdf-vm/actions/install@75bab86b342b8aa14f3b547296607599522cbe90 # v2.1.0
 
       - name: Sign 'ghcr.io/${{ github.repository_owner }}/${{ steps.dockerfile.outputs.image }}:${{ steps.dockerfile.outputs.version }}@${{ steps.build.outputs.digest }}'

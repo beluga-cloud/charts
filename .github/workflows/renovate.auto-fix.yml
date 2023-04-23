@@ -57,10 +57,10 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app_auth.outputs.token }}
 
-      - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+      - uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
         with:
           path: ${{ env.ASDF_DIR }}
-          key: asdf-vm
+          key: asdf-vm-${{ hashFiles('.tool-versions') }}
       - uses: asdf-vm/actions/install@75bab86b342b8aa14f3b547296607599522cbe90 # v2.1.0
 
       - name: Configure git user
