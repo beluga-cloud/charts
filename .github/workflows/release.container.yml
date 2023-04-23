@@ -78,6 +78,8 @@ jobs:
           echo "description=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.description | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
           echo "url=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.url | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
           echo "licenses=$(envsubst < "${DOCKERFILE}" | grep org.opencontainers.image.licenses | cut -d= -f2 | tr -d '"')" | tee --append "${GITHUB_OUTPUT}"
+          
+          echo "image-slug=$(awk <<<"${CONTEXT}" -F[/] '{ printf "%s_%s", $2, $4 }')" | tee --append "${GITHUB_OUTPUT}"
         env:
           DOCKERFILE: ${{ matrix.dockerfile }}
       - id: meta
@@ -238,3 +240,14 @@ jobs:
           COSIGN_EXPERIMENTAL: "true"
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+
+      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
+        with:
+          name: ${{ steps.dockerfile.outputs.image-slug }}-${{ steps.dockerfile.outputs.version }}-slsa-artifacts
+          path: |
+            sbom.cyclonedx.json
+            sbom.cyclonedx.json.sig
+            vulnerabilities.sarif.json
+            vulnerabilities.sarif.json.sig
+            provenance.att
+            provenance.att.sig
