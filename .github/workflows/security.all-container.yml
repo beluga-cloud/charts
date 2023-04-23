@@ -3,6 +3,7 @@ name: Security (Container)
 on: # yamllint disable-line rule:truthy
   schedule:
     - cron: '53 4 * * *'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.ref }}/container-security

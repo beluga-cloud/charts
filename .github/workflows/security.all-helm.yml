@@ -3,6 +3,7 @@ name: Security (Helm)
 on: # yamllint disable-line rule:truthy
   schedule:
     - cron: '31 2 * * *'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.ref }}/helm-security
