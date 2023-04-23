@@ -4,12 +4,12 @@ golang 1.20.3
 gum 0.10.0
 hadolint 2.12.0
 helm 3.11.3
-helm-ct 3.7.1
+helm-ct 3.8.0
 helm-docs 1.11.0
 jq 1.6
 just 1.13.0
-kind 0.17.0
-kubectl 1.26.1
-trivy 0.40.0
-yq 4.30.8
+kind 0.18.0
+kubectl 1.27.1
 regctl 0.4.8
+trivy 0.40.0
+yq 4.33.3
