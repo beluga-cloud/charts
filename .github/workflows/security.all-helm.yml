@@ -1,10 +1,8 @@
 ---
 name: Security (Helm)
 on: # yamllint disable-line rule:truthy
-  push:
-    branches: [main]
-    paths:
-      - charts/**
+  schedule:
+    - cron: '31 2 * * *'
 
 concurrency:
   group: ${{ github.ref }}/helm-security

@@ -1,10 +1,8 @@
 ---
 name: Security (Container)
 on: # yamllint disable-line rule:truthy
-  push:
-    branches: [main]
-    paths:
-      - charts/**/Dockerfile
+  schedule:
+    - cron: '53 4 * * *'
 
 concurrency:
   group: ${{ github.ref }}/container-security
