@@ -1,6 +1,6 @@
 FROM docker.io/library/alpine:3.17.3 as builder
 
-# renovate: datasource=github-tag depName=actualbudget/actual-server versioning=semver
+# renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver
 ARG ACTUAL_VERSION=v23.2.9
 
 # hadolint ignore=DL3018
