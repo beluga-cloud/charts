@@ -4,7 +4,7 @@ ARG DEBIAN_FRONTEND="noninteractive"
 ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility"
 
 # renovate: datasource=github-releases depName=jellyfin/jellyfin versioning=semver
-ARG JELLYFIN_VERSION=10.8.9
+ARG JELLYFIN_VERSION=v10.8.10
 
 # hadolint ignore=DL3008
 RUN apt-get update \
