@@ -1,7 +1,7 @@
 FROM docker.io/library/alpine:3.17.3 as builder
 
 # renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver
-ARG ACTUAL_VERSION=v23.2.9
+ARG ACTUAL_VERSION=v23.4.2
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
