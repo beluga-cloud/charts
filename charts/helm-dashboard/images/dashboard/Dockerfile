@@ -13,7 +13,7 @@ RUN CGO_ENABLED=0 go build \
 
 FROM docker.io/alpine/helm:3.11.3 as helm_packager
 FROM docker.io/bitnami/kubectl:1.27.1 as kubectl_packager
-FROM docker.io/aquasec/trivy:0.40.0 as trivy_packager
+FROM docker.io/aquasec/trivy:0.41.0 as trivy_packager
 
 FROM docker.io/alpine:3.17.3
 
