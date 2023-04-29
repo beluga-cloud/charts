@@ -11,5 +11,5 @@ just 1.13.0
 kind 0.18.0
 kubectl 1.27.1
 regctl 0.4.8
-trivy 0.40.0
+trivy 0.41.0
 yq 4.33.3
