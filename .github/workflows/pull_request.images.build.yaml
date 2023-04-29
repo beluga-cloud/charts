@@ -46,7 +46,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: cloudposse/github-action-matrix-outputs-read@ea1c28d66c34b8400391ed74d510f66abc392d5e # v0.1.1
+      - uses: cloudposse/github-action-matrix-outputs-read@ea1c28d66c34b8400391ed74d510f66abc392d5e # 0.1.1
         id: matrix-outputs
         with:
           matrix-step-name: _.images.build
