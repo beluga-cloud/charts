@@ -30,7 +30,7 @@ jobs:
         with:
           name: ${{ inputs.artifact-ref }}
 
-      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
         with:
           input: ${{ inputs.artifact-ref }}
           format: cyclonedx
@@ -59,7 +59,7 @@ jobs:
         with:
           name: ${{ inputs.artifact-ref }}
 
-      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
         with:
           input: ${{ inputs.artifact-ref }}
           format: cosign-vuln
@@ -70,7 +70,7 @@ jobs:
           path: vulnerabilities.cosign-vuln.json
 
       # Upload SARIF report for GitHub CodeQL at the same time
-      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
         with:
           input: ${{ inputs.artifact-ref }}
           format: sarif
