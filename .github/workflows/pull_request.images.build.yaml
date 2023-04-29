@@ -1,0 +1,87 @@
+---
+name: Build OCI images (pull_request)
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - charts/**/Dockerfile
+
+concurrency:
+  group: ${{ github.ref }}/container-build
+  cancel-in-progress: true
+
+jobs:
+  list-changed-images:
+    name: List all new/updated images
+    permissions:
+      contents: read
+    uses: ./.github/workflows/_.images.list-changed.yaml
+
+  build:
+    name: Build changed image(s)
+    needs: [list-changed-images]
+    if: needs.list-changed-images.outputs.containerfiles != '[]'
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    strategy:
+      matrix:
+        containerfile: ${{ fromJSON(needs.list-changed-images.outputs.containerfiles) }}
+    uses: ./.github/workflows/_.images.build.yaml
+    with:
+      containerfile: ${{ matrix.containerfile }}
+      platforms: linux/amd64,linux/arm64
+      dry-run: true
+
+  # NOTE: waiting https://github.com/orgs/community/discussions/17245 to be resolved ... so for now, we
+  #       are using a workaround to get the list of all generated artifacts
+  artifacts:
+    name: Export all generated artifacts
+    needs: [build]
+    outputs:
+      all-artifacts: ${{ steps.all.outputs.json }}
+      artifacts-by-image: ${{ steps.by-image.outputs.json }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: cloudposse/github-action-matrix-outputs-read@ea1c28d66c34b8400391ed74d510f66abc392d5e # v0.1.1
+        id: matrix-outputs
+        with:
+          matrix-step-name: _.images.build
+      - name: List all artefacts
+        id: all
+        run: |
+          (
+            echo -n 'json='
+            echo '${{ steps.matrix-outputs.outputs.result }}' \
+            | jq --compact-output --sort-keys '.artifacts | map(.) | flatten'
+          ) | tee --append "${GITHUB_OUTPUT}"
+      - name: Group all artefacts by image
+        id: by-image
+        run: |
+          (
+            echo -n 'json='
+            echo '${{ steps.matrix-outputs.outputs.result }}' \
+            | jq --compact-output --sort-keys '.artifacts
+              | to_entries
+              | map(
+                (.value | first | del(.artifact, .digest)) + 
+                {artifacts: (.value | map({artifact, digest}))}
+              )'
+          ) | tee --append "${GITHUB_OUTPUT}"
+
+  supply-chain-compliance:
+    name: Supply chain compliance (${{ matrix.artifact.name }}:${{ matrix.artifact.version }} ${{ matrix.artifact.platform.os }}/${{ matrix.artifact.platform.arch }})
+    needs: [build, artifacts]
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      matrix:
+        artifact: ${{ fromJSON(needs.artifacts.outputs.all-artifacts) }}
+    uses: ./.github/workflows/_.images.supply-chain.for-artifacts.yaml
+    with:
+      artifact-ref: ${{ matrix.artifact.artifact }}
+      name: ${{ matrix.artifact.name-slug }}-${{ matrix.artifact.platform.arch }}-${{ matrix.artifact.platform.platform.os }}

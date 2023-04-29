@@ -1,0 +1,31 @@
+---
+name: Lint OCI images (pull_request)
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - charts/**/Dockerfile
+
+concurrency:
+  group: ${{ github.ref }}/container-lint
+  cancel-in-progress: true
+
+jobs:
+  list-changed-images:
+    name: List all new/updated images
+    permissions:
+      contents: read
+    uses: ./.github/workflows/_.images.list-changed.yaml
+
+  lint:
+    name: Lint changed image(s)
+    if: needs.list-changed-images.outputs.containerfiles != '[]'
+    needs: [list-changed-images]
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        containerfile: ${{ fromJSON(needs.list-changed-images.outputs.containerfiles) }}
+    uses: ./.github/workflows/_.images.lint.yaml
+    with:
+      containerfile: ${{ matrix.containerfile }}

@@ -1,6 +1,6 @@
 ---
 name: Synchronize milestones
-on: # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
   milestone:
     types: [created, closed, opened, edited, deleted]
   repository_dispatch:
@@ -35,6 +35,7 @@ jobs:
     name: List milestones on '${{ github.repository }}'
     outputs:
       milestones: ${{ steps.list-milestones.outputs.milestones }}
+    permissions: {}
     runs-on: ubuntu-latest
     steps:
       - name: List existing milestones on '${{ github.repository }}'
@@ -55,6 +56,7 @@ jobs:
     if: github.event_name != 'repository_dispatch'
     outputs:
       repositories: ${{ steps.list_repositories.outputs.repositories }}
+    permissions: {}
     runs-on: ubuntu-latest
     steps:
       - name: List '${{ github.repository_owner }}' repositories
@@ -69,14 +71,12 @@ jobs:
           ) >> "${GITHUB_OUTPUT}"
   trigger-sync-everywhere:
     name: Trigger synchronization on each '${{ github.repository_owner }}' repositories
-    needs:
-      - app_auth
-      - list_milestones
-      - list_repositories
+    needs: [app_auth, list_milestones, list_repositories]
+    permissions: {}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         repository: ${{ fromJSON(needs.list_repositories.outputs.repositories) }}
-    runs-on: ubuntu-latest
     steps:
       - name: Decrypt Github token
         id: app_auth
@@ -99,10 +99,10 @@ jobs:
   list_missing_milestones:
     name: List missing milestones
     if: github.event_name == 'repository_dispatch'
-    needs:
-      - list_milestones
+    needs: [list_milestones]
     outputs:
       milestones: ${{ steps.list_missing_milestones.outputs.milestones }}
+    permissions: {}
     runs-on: ubuntu-latest
     steps:
       - name: List missing milestones
@@ -124,16 +124,15 @@ jobs:
           ) >> "${GITHUB_OUTPUT}"
   add_milestones:
     name: Create missing milestones `${{ matrix.milestone.title }}`
-    if: ${{ needs.list_missing_milestones.outputs.milestones != '[]' }}
-    needs:
-      - app_auth
-      - list_missing_milestones
     concurrency:
       group: sync-milestone-${{ matrix.milestone.title }}
+    if: ${{ needs.list_missing_milestones.outputs.milestones != '[]' }}
+    needs: [app_auth, list_missing_milestones]
+    permissions: {}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         milestone: ${{ fromJSON(needs.list_missing_milestones.outputs.milestones) }}
-    runs-on: ubuntu-latest
     steps:
       - name: Decrypt Github token
         id: app_auth
@@ -158,10 +157,10 @@ jobs:
   list_removed_milestones:
     name: List removed milestones
     if: github.event_name == 'repository_dispatch'
-    needs:
-      - list_milestones
+    needs: [list_milestones]
     outputs:
       milestones: ${{ steps.list_removed_milestones.outputs.milestones }}
+    permissions: {}
     runs-on: ubuntu-latest
     steps:
       - name: List removed milestones
@@ -183,17 +182,16 @@ jobs:
           ) >> "${GITHUB_OUTPUT}"
   remove_milestones:
     name: Delete removed milestones `${{ matrix.milestone.title }}`
-    if: ${{ needs.list_removed_milestones.outputs.milestones != '[]' }}
-    needs:
-      - app_auth
-      - list_removed_milestones
     concurrency:
       group: sync-milestone-${{ matrix.milestone.title }}
     continue-on-error: true
+    if: ${{ needs.list_removed_milestones.outputs.milestones != '[]' }}
+    needs: [app_auth, list_removed_milestones]
+    permissions: {}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         milestone: ${{ fromJSON(needs.list_removed_milestones.outputs.milestones) }}
-    runs-on: ubuntu-latest
     steps:
       - name: Decrypt Github token
         id: app_auth
@@ -216,10 +214,10 @@ jobs:
   list_unsynced_milestones:
     name: List unsynced milestones
     if: github.event_name == 'repository_dispatch'
-    needs:
-      - list_milestones
+    needs: [list_milestones]
     outputs:
       milestones: ${{ steps.list_unsynced_milestones.outputs.milestones }}
+    permissions: {}
     runs-on: ubuntu-latest
     steps:
       - name: List unsynced milestones
@@ -241,17 +239,16 @@ jobs:
           ) >> "${GITHUB_OUTPUT}"
   update_milestones:
     name: Synchronize unsynced milestones `${{ matrix.milestone.title }}`
-    if: ${{ needs.list_unsynced_milestones.outputs.milestones != '[]' }}
-    needs:
-      - app_auth
-      - list_unsynced_milestones
     concurrency:
       group: sync-milestone-${{ matrix.milestone.title }}
     continue-on-error: true
+    if: ${{ needs.list_unsynced_milestones.outputs.milestones != '[]' }}
+    needs: [app_auth, list_unsynced_milestones]
+    permissions: {}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         milestone: ${{ fromJSON(needs.list_unsynced_milestones.outputs.milestones) }}
-    runs-on: ubuntu-latest
     steps:
       - name: Decrypt Github token
         id: app_auth

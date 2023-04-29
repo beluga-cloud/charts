@@ -1,6 +1,6 @@
 ---
 name: Add `sponsors` labels
-on: # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
   pull_request:
     types: [opened]
   issues:
@@ -8,7 +8,11 @@ on: # yamllint disable-line rule:truthy
 
 jobs:
   is-sponsor-label:
+    name: Add `sponsors` label
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
     steps:
       - uses: JasonEtco/is-sponsor-label-action@39d88e461a53ecb1b3c0a13673e6252f9976f2f5 # v1.2.0
         env:

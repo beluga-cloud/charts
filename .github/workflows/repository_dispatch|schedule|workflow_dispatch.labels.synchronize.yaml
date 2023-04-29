@@ -1,0 +1,22 @@
+---
+name: Synchronize labels
+on:  # yamllint disable-line rule:truthy
+  repository_dispatch:
+    types: [sync-labels]
+  schedule:
+    - cron: 0 3 * * 0,3
+  workflow_dispatch:
+
+jobs:
+  sync-labels:
+    name: Synchronize org. '${{ github.repository_owner }}' labels
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          repository: belug-apps/.github
+      - uses: micnncim/action-label-syncer@3abd5ab72fda571e69fffd97bd4e0033dd5f495c # v1.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

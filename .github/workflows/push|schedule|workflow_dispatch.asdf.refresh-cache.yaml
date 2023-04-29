@@ -1,6 +1,6 @@
 ---
 name: Refresh cache (asdf)
-on: # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
     paths: [.tool-versions]
@@ -18,6 +18,8 @@ env:
 jobs:
   refresh_cache:
     name: Refresh cache
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
@@ -33,6 +35,7 @@ jobs:
   validate-cache:
     name: Validate cache exists
     runs-on: ubuntu-latest
+    permissions: {}
     needs: refresh_cache
     steps:
       - uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1

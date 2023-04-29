@@ -1,6 +1,6 @@
 ---
-name: Release (Helm)
-on: # yamllint disable-line rule:truthy
+name: Release updated charts (helm)
+on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
     paths:
@@ -19,6 +19,7 @@ jobs:
     name: Release Helm charts
     permissions:
       contents: write
+      pages: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
@@ -32,14 +33,9 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-#      - uses: helm/chart-releaser-action@be16258da8010256c6e82849661221415f031968 # v1.5.0
-#        env:
-#          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-#          CR_PAGES_BRANCH: gh-helm
-      - name: Run `chart-releaser` with a patched version (#134)
-        run:
-          curl https://raw.githubusercontent.com/xunleii/chart-releaser-action/main/cr.sh \
-          | bash -s -- --owner "$(cut -d '/' -f 1 <<< "$GITHUB_REPOSITORY")" --repo "$(cut -d '/' -f 2 <<< "$GITHUB_REPOSITORY")" --skip-existing true
+      - uses: helm/chart-releaser-action@5f8660e6e926349f99e4869f158b6384813c18a2
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_PAGES_BRANCH: gh-helm
+        with:
+          skip_existing: true
