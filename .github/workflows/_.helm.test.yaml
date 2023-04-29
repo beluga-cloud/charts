@@ -1,28 +1,36 @@
 ---
-name: Ent-to-end Test (Helm)
-on: # yamllint disable-line rule:truthy
-  schedule:
-    - cron: 0 2 * * 1,3
+name: Build chart (hrlm)
+on:  # yamllint disable-line rule:truthy
+  workflow_call:
+    inputs:
+      chart:
+        description: Path to the chart to build
+        required: true
+        type: string
 
 env:
+  ASDF_DIR: /home/runner/.asdf
   HELM_CONFIG_HOME: ${{ github.workspace }}/test/e2e/~helm
-  ASDF_DIR: /var/run/asdf-vm
 
 jobs:
-  # Test all charts using the official chart-testing CLI.
-  chart_testing:
-    name: Test all charts
+  test:
+    name: Test chart (${{ inputs.chart }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
         with:
           fetch-depth: 0
 
       - uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        id: restore-asdf
         with:
           path: ${{ env.ASDF_DIR }}
           key: asdf-vm-${{ hashFiles('.tool-versions') }}
       - uses: asdf-vm/actions/install@75bab86b342b8aa14f3b547296607599522cbe90 # v2.1.0
+        with:
+          skip_install: ${{ steps.restore-asdf.outputs.cache-hit == 'true' }}
 
       - uses: actions/setup-python@57ded4d7d5e986d7296eab16560982c6dd7c923b # v4.6.0
         with:
@@ -34,7 +42,12 @@ jobs:
           cluster_name: kind
           wait: 30s
 
+      - name: Build required images
+        run: just build-images all
+        working-directory: ${{ github.workspace }}/${{ inputs.chart }}
       - name: Prepare `kind` cluster
-        run: just e2e-prepare
+        run: just e2e-prepare kind
+        working-directory: ${{ github.workspace }}/${{ inputs.chart }}
+
       - name: Run chart-testing (install)
-        run: ct install --all
+        run: ct install --charts ${{ inputs.chart }}

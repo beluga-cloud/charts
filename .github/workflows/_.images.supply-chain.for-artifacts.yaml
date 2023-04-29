@@ -1,0 +1,81 @@
+---
+name: Supply-chain compliance for Github artefacts (container)
+on:  # yamllint disable-line rule:truthy
+  workflow_call:
+    inputs:
+      artifact-ref:
+        description: Github artifact reference to add supply chain metadata to
+        required: true
+        type: string
+      name:
+        description: String used to name the metadata artifact that will be generated
+        required: true
+        type: string
+
+jobs:
+  # SBOM can be used to filter images based on software requirements (avoid some dependencies,
+  # allow only GPL compatible licenses, etc.)
+  sbom:
+    name: SBOM
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+        with:
+          fetch-depth: 1
+
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        id: download-oci
+        with:
+          name: ${{ inputs.artifact-ref }}
+
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+        with:
+          input: ${{ inputs.artifact-ref }}
+          format: cyclonedx
+          output: sbom.cyclonedx.json
+
+      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        with:
+          name: sbom-cyclonedx.${{ inputs.name }}.json
+          path: sbom.cyclonedx.json
+
+  # Vulnerability report can be used to filter images based on software vulnerabilities (avoid some CVEs,
+  # allow only low severity, etc.)
+  vulnerability:
+    name: Vulnerability
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 1
+
+      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        id: download-oci
+        with:
+          name: ${{ inputs.artifact-ref }}
+
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+        with:
+          input: ${{ inputs.artifact-ref }}
+          format: cosign-vuln
+          output: vulnerabilities.cosign-vuln.json
+      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+        with:
+          name: cosign-vuln.${{ inputs.name }}.json
+          path: vulnerabilities.cosign-vuln.json
+
+      # Upload SARIF report for GitHub CodeQL at the same time
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+        with:
+          input: ${{ inputs.artifact-ref }}
+          format: sarif
+          output: vulnerabilities.sarif
+      - uses: github/codeql-action/upload-sarif@9a866ed4524fc3422c3af1e446dab8efa3503411 # codeql-bundle-20230418
+        with:
+          category: trivy-container
+          sarif_file: vulnerabilities.sarif

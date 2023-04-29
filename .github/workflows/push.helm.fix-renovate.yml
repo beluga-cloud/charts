@@ -1,6 +1,6 @@
 ---
-name: Renovate (Auto-Fix)
-on: # yamllint disable-line rule:truthy
+name: Fix Renovate upgrade (helm)
+on:  # yamllint disable-line rule:truthy
   push:
     branches:
       - renovate/**
@@ -10,41 +10,31 @@ on: # yamllint disable-line rule:truthy
       - charts/*/Chart.yaml
       - charts/*/values.yaml
 
+concurrency:
+  group: ${{ github.ref }}/helm-fix-renovate
+  cancel-in-progress: true
+
 env:
+  ASDF_DIR: /home/runner/.asdf
   HELM_CONFIG_HOME: ${{ github.workspace }}/test/e2e/~helm
-  ASDF_DIR: /var/run/asdf-vm
 
 jobs:
-  updated_charts:
-    name: List updated charts
-    runs-on: ubuntu-latest
+  list-changed-charts:
+    name: List all new/updated charts
     if: github.event.commits[0].author.name == 'renovate[bot]'
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-        with:
-          fetch-depth: 3
-      - uses: tj-actions/changed-files@ce810b29b28abf274afebdcd8fe47b8fba0f28bd # v35.9.0
-        id: changed-files
-        with:
-          dir_names: true
-          dir_names_max_depth: 2
-          files: |
-            charts/*/Chart.lock
-            charts/*/Chart.yaml
-            charts/*/values.yaml
-          json: true
-      - id: set-matrix
-        run: echo "matrix={\"chart\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
+    permissions:
+      contents: read
+    uses: ./.github/workflows/_.helm.list-changed.yaml
 
   update_chart:
-    name: Update Helm version automatically (${{ matrix.chart }})
-    needs: [ updated_charts ]
+    name: Bump Helm version (${{ matrix.chart }})
+    if: needs.list-changed-charts.outputs.charts != '[]'
+    needs: [ list-changed-charts ]
+    permissions: {}
     runs-on: ubuntu-latest
-    if: needs.updated_charts.outputs.matrix != '{"chart":[]}'
     strategy:
-      matrix: ${{ fromJSON(needs.updated_charts.outputs.matrix) }}
+      matrix:
+        chart: ${{ fromJSON(needs.list-changed-charts.outputs.charts) }}
       fail-fast: false
     steps:
       - uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92 # v1.8.0
@@ -58,10 +48,13 @@ jobs:
           token: ${{ steps.app_auth.outputs.token }}
 
       - uses: actions/cache/restore@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3.3.1
+        id: restore-asdf
         with:
           path: ${{ env.ASDF_DIR }}
           key: asdf-vm-${{ hashFiles('.tool-versions') }}
       - uses: asdf-vm/actions/install@75bab86b342b8aa14f3b547296607599522cbe90 # v2.1.0
+        with:
+          skip_install: ${{ steps.restore-asdf.outputs.cache-hit == 'true' }}
 
       - name: Configure git user
         run: |
@@ -79,6 +72,7 @@ jobs:
         working-directory: ${{ github.workspace }}/${{ matrix.chart }}
 
       - name: Commit and push all changes on the current PR
+        continue-on-error: true
         run: |
           APP_NAME=$(cut -d/ -f2 <<<"${{ matrix.chart }}")
           git add .

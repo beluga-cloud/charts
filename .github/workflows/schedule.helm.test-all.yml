@@ -1,0 +1,45 @@
+---
+name: Test all charts (helm)
+on:  # yamllint disable-line rule:truthy
+  schedule:
+    - cron: 0 2 * * 1,3
+
+env:
+  ASDF_DIR: /home/runner/.asdf
+  HELM_CONFIG_HOME: ${{ github.workspace }}/test/e2e/~helm
+
+jobs:
+  list-all-charts:
+    name: List all charts
+    outputs:
+      charts: ${{ steps.list-charts.outputs.charts }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 1
+
+      - name: List all charts
+        id: list-charts
+        run: |
+          (
+            echo -n "charts="
+            find charts/ -name "Chart.yaml" -type f -exec dirname '{}' \; \
+            | jq --raw-input --slurp --compact-output 'split("\n") | map(select(length > 0))'
+          ) | tee "${GITHUB_OUTPUT}"
+
+  test:
+    name: Test Helm chart
+    if: needs.list-all-charts.outputs.charts != '[]'
+    needs: [list-all-charts]
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        chart: ${{ fromJson(needs.list-all-charts.outputs.charts) }}
+      fail-fast: false
+    uses: ./.github/workflows/_.helm.test.yaml
+    with:
+      chart: ${{ matrix.chart }}

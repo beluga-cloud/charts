@@ -1,0 +1,38 @@
+---
+name: Lint charts (helm)
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      # NOTE: only few changes should trigger this pipeline
+      - charts/*/Chart.lock
+      - charts/*/Chart.yaml
+      - charts/*/README.md
+      - charts/*/templates/**
+      - charts/*/values.schema.json
+      - charts/*/values.yaml
+
+concurrency:
+  group: ${{ github.ref }}/helm-test
+  cancel-in-progress: true
+
+jobs:
+  list-changed-charts:
+    name: List all new/updated charts
+    permissions:
+      contents: read
+    uses: ./.github/workflows/_.helm.list-changed.yaml
+
+  test:
+    name: Lint Helm chart
+    if: needs.list-changed-charts.outputs.charts != '[]'
+    needs: [list-changed-charts]
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        chart: ${{ fromJson(needs.list-changed-charts.outputs.charts) }}
+      fail-fast: false
+    uses: ./.github/workflows/_.helm.lint.yaml
+    with:
+      chart: ${{ matrix.chart }}

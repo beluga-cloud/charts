@@ -1,0 +1,34 @@
+---
+name: List changed images (container)
+on:  # yamllint disable-line rule:truthy
+  workflow_call:
+    outputs:
+      charts:
+        description: List of changed charts
+        value: ${{ jobs.list-changed.outputs.charts }}
+
+jobs:
+  list-changed:
+    name: List modified charts
+    outputs:
+      charts: ${{ steps.format-output.outputs.json }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 10
+
+      - uses: tj-actions/changed-files@ce810b29b28abf274afebdcd8fe47b8fba0f28bd # v35.9.0
+        id: changed-images
+        with:
+          dir_names: true
+          dir_names_max_depth: 2
+          files: |
+            charts/*/Chart.lock
+            charts/*/Chart.yaml
+            charts/*/values.yaml
+          json: true
+      - id: format-output
+        run: echo "json=${{ steps.changed-images.outputs.all_changed_files }}" >> "${GITHUB_OUTPUT}"

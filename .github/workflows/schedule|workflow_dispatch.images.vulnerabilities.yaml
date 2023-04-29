@@ -1,0 +1,60 @@
+---
+name: Check for vulnerabilities (container)
+on:  # yamllint disable-line rule:truthy
+  schedule:
+    - cron: 32 9 * * 0,3
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}/container-supply-chain-updates
+
+jobs:
+  list-all-images:
+    name: List all existing images reference
+    outputs:
+      image-refs: ${{ steps.find-images.outputs.image-refs }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+
+      - name: Find all images
+        id: find-images
+        run: |
+          set -euo pipefail
+
+          (
+            echo -n "image-refs="
+            find charts/ -name "Dockerfile" \
+            | while read -r containerfile; do
+              (
+                  # shellcheck disable=SC1090
+                  source <(grep "^ARG" "${containerfile}" | sed 's/ARG/export/g')
+          
+                  image_name="$(awk <<<"$(dirname "${containerfile}")" -F[/] '{ printf "%s/%s", $2, $4 }')"
+                  image_version="$(envsubst <"${containerfile}" | grep "org.opencontainers.image.version" | cut -d= -f2 | tr -d '"')"
+                  echo "ghcr.io/${{ github.repository_owner }}/${image_name}:${image_version}"
+              )
+            done \
+            | while read -r image; do
+              podman manifest inspect "${image}" \
+              | jq --arg image "${image}" '.manifests | map(select(.platform.os != "unknown") | "\($image | split(":") | first)@\(.digest)")'
+            done \
+            | jq --slurp --compact-output 'flatten'
+          ) | tee "${GITHUB_OUTPUT}"
+
+  supply-chain-compliance:
+    name: Supply chain compliance (${{ matrix.reference }})
+    needs: [list-all-images]
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    strategy:
+      matrix:
+        reference: ${{ fromJSON(needs.list-all-images.outputs.image-refs) }}
+      fail-fast: false
+    uses: ./.github/workflows/_.images.supply-chain.for-registry.yaml
+    with:
+      image-ref: ${{ matrix.reference }}

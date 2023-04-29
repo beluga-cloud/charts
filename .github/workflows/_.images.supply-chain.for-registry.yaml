@@ -1,0 +1,76 @@
+---
+name: Supply-chain compliance for Github registry (container)
+on:  # yamllint disable-line rule:truthy
+  workflow_call:
+    inputs:
+      image-ref:
+        description: Image reference to add supply chain metadata to
+        required: true
+        type: string
+
+jobs:
+  # SBOM can be used to filter images based on software requirements (avoid some dependencies,
+  # allow only GPL compatible licenses, etc.)
+  sbom:
+    name: SBOM
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      packages: write
+    steps:
+      - uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+        with:
+          image-ref: ${{ inputs.image-ref }}
+          format: cyclonedx
+          output: sbom.cyclonedx.json
+
+      - uses: sigstore/cosign-installer@204a51a57a74d190b284a0ce69b44bc37201f343 # v3.0.3
+      - name: Attest SBOM to ${{ inputs.image-ref }}
+        run: cosign attest --yes --replace --predicate sbom.cyclonedx.json --type cyclonedx "${{ inputs.image-ref }}"
+
+  # Vulnerability report can be used to filter images based on software vulnerabilities (avoid some CVEs,
+  # allow only low severity, etc.)
+  vulnerability:
+    name: Vulnerability
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 1
+
+      - uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+        with:
+          image-ref: ${{ inputs.image-ref }}
+          format: cosign-vuln
+          output: vulnerabilities.cosign-vuln.json
+
+      - uses: sigstore/cosign-installer@204a51a57a74d190b284a0ce69b44bc37201f343 # v3.0.3
+      - name: Attest vulnerability report to ${{ inputs.image-ref }}
+        run: cosign attest --yes --replace --predicate vulnerabilities.cosign-vuln.json --type vuln "${{ inputs.image-ref }}"
+
+      # Upload SARIF report for GitHub CodeQL at the same time
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # v0.10.0
+        with:
+          image-ref: ${{ inputs.image-ref }}
+          format: sarif
+          output: vulnerabilities.sarif
+      - uses: github/codeql-action/upload-sarif@9a866ed4524fc3422c3af1e446dab8efa3503411 # codeql-bundle-20230418
+        with:
+          category: trivy-container
+          sarif_file: vulnerabilities.sarif
