@@ -76,6 +76,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
+      security-events: write
     strategy:
       matrix:
         artifact: ${{ fromJSON(needs.artifacts.outputs.all-artifacts) }}
