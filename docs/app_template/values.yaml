@@ -20,7 +20,7 @@ images:
     # -- helm-dashboard image registry (optional)
     registry: ""
     # -- helm-dashboard image repository
-    repository: ghcr.io/belug-apps/{{ name }}/{{ name }}
+    repository: ghcr.io/beluga-cloud/{{ name }}/{{ name }}
     # -- helm-dashboard image tag (immutable tags are recommended)
     tag: ""
     # -- helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag

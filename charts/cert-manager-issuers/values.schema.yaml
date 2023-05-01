@@ -1,6 +1,6 @@
 ---
 $:
-  global: !!ref_on_helm_values io.belugapps.v1.Global
+  global: !!ref_on_helm_values io.belugacloud.v1.Global
 
   # List of certificate issuing authority available everywhere.
   clusterIssuers: !!array

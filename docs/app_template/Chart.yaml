@@ -3,7 +3,7 @@ type: application
 name: {{ name }}
 description: {{ description }}
 version: 0.0.0
-# renovate: datasource=docker depName=ghcr.io/belug-apps/{{ name }}/{{ name }}
+# renovate: datasource=docker depName=ghcr.io/beluga-cloud/{{ name }}/{{ name }}
 appVersion: {{ version }}
 kubeVersion: '>=1.20'
 home: {{ url }}
@@ -11,10 +11,10 @@ icon: {{ icon_url }}
 keywords: []
 sources:
   - {{ url }}
-  - https://github.com/belug-apps/catalog/tree/main/charts/{{ name }}
+  - https://github.com/beluga-cloud/charts/tree/main/charts/{{ name }}
 maintainers:
   - name: xunleii
-    url: https://github.com/belug-apps
+    url: https://github.com/beluga-cloud
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami

@@ -4,16 +4,16 @@
 definitions: !!defs
   .: !!jsonschema
     $schema: http://json-schema.org/draft-07/schema#
-    $id: https://belugapps.io/draft/schemas/helm-values.json
+    $id: https://belugacloud.io/draft/schemas/helm-values.json
     title: BelugApps Helm Chart values
 
-  io.belugapps.v1.HelmValues:
-    global: !!ref io.belugapps.v1.Global
+  io.belugacloud.v1.HelmValues:
+    global: !!ref io.belugacloud.v1.Global
 
     nameOverride: !!str _ # String to partially override common.names.fullname template (will maintain the release name).
     fullnameOverride: !!str _ # String to fully override common.names.fullname template.
 
-    images: !!ref io.belugapps.v1.Images
+    images: !!ref io.belugacloud.v1.Images
     # Compute Resources required by containers.
     # More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     resources: !!dict_of_ref_on_kubernetes io.k8s.api.core.v1.ResourceRequirements
@@ -38,24 +38,24 @@ definitions: !!defs
     # All topologySpreadConstraints are ANDed.
     topologySpreadConstraints: !!array_of_ref_on_kubernetes io.k8s.api.core.v1.TopologySpreadConstraint
 
-    persistence: !!ref io.belugapps.v1.PersistentStorage
+    persistence: !!ref io.belugacloud.v1.PersistentStorage
 
-    service: !!ref io.belugapps.v1.Service
-    ingress: !!ref io.belugapps.v1.Ingress
+    service: !!ref io.belugacloud.v1.Service
+    ingress: !!ref io.belugacloud.v1.Ingress
 
     podSecurityContext: !!ref_on_kubernetes io.k8s.api.core.v1.PodSecurityContext
     containerSecurityContext: !!ref_on_kubernetes io.k8s.api.core.v1.SecurityContext
-    networkPolicy: !!ref io.belugapps.v1.NetworkPolicy
+    networkPolicy: !!ref io.belugacloud.v1.NetworkPolicy
 
   # Global values that can be accessed from any chart or subchart by exactly the same name.
-  io.belugapps.v1.Global:
+  io.belugacloud.v1.Global:
     debug: !!bool _ # Enable the debugging mode on all workloads.
     commonLabels: !!ref io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels
     imagePullSecrets: !!ref io.k8s/$defs/api.core.v1.PodSpec/$defs/imagePullSecrets
     imageRegistry: !!str _ # Container image registry to pull images from.
 
   # Container image definitions that can be used to manage container `image` in a "lego-style".
-  io.belugapps.v1.Images: !!dict
+  io.belugacloud.v1.Images: !!dict
     .: !!jsonschema
       required: [ repository ]
 
@@ -69,14 +69,14 @@ definitions: !!defs
       - IfNotPresent
 
   # Configure the persistence of the application's volume.
-  io.belugapps.v1.PersistentStorage: !!dict
+  io.belugacloud.v1.PersistentStorage: !!dict
     enabled: !!bool _ # Whether the persistence should be enabled or not.
     annotations: !!ref io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations
     # Spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     volumeClaimSpec: !!ref_on_kubernetes io.k8s.api.core.v1.PersistentVolumeClaimSpec
 
   # Service that expose the packaged application inside and outside the cluster.
-  io.belugapps.v1.Service:
+  io.belugacloud.v1.Service:
     .: !!jsonschema
       required: [ type ]
       additionalProperties:
@@ -114,7 +114,7 @@ definitions: !!defs
     loadBalancerSourceRanges: !!array_of_str _
 
   # Ingress that expose the packaged application outside the cluster.
-  io.belugapps.v1.Ingress:
+  io.belugacloud.v1.Ingress:
     .: !!jsonschema
       required: [ enabled ]
       oneOf:
@@ -145,7 +145,7 @@ definitions: !!defs
     extraRules: !!array_of_ref_on_kubernetes io.k8s.api.networking.v1.IngressRule # List of host rules used to configure the Ingress. If unspecified, or no rule matches, all traffic is sent to the default backend.
 
   # Specification of what network traffic is allowed for the packaged application
-  io.belugapps.v1.NetworkPolicy:
+  io.belugacloud.v1.NetworkPolicy:
     enabled: !!bool _ # Whether the network policy should be deployed or not.
     allowExternal: !!bool _ # Whether to allow traffic coming from application without label (preset).
     allowAllOutbound: !!bool _ # Whether to allow all outbound traffic (preset).

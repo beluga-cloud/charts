@@ -57,6 +57,6 @@ build-validation-files CHART_NAME:
 [no-cd]
 @build-schema:
   {{ jsonschema }} dsl2jsonschema values.schema.yaml \
-    --dsl.external-reference "kubernetes=https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json" \
-    --dsl.external-reference "helm_values=https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json" \
+    --dsl.external-reference "kubernetes=https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json" \
+    --dsl.external-reference "helm_values=https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/helm-values/_definitions.json" \
   > values.schema.json

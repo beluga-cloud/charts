@@ -25,5 +25,5 @@ import_kubernetes_schema KUBERNETES_VERSION=kubernetes_version:
 [no-exit-message]
 build_helm-values_schema: import_kubernetes_schema
   {{ jsonschema_tools }} dsl2jsonschema helm-values/_definitions.yaml \
-    --dsl.external-reference "kubernetes=https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/{{ kubernetes_version }}/_definitions.json" \
+    --dsl.external-reference "kubernetes=https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/{{ kubernetes_version }}/_definitions.json" \
     > helm-values/_definitions.json

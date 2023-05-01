@@ -43,7 +43,7 @@ prepare CLUSTER_NAME CHART_NAME: (prepare-images CHART_NAME)
 
   [ ! -d "images" ] && exit 0
   for image in images/*; do
-    image_name="{{ local_registry }}/belug-apps/{{ CHART_NAME }}/$(basename "${image}")"
+    image_name="{{ local_registry }}/beluga-cloud/{{ CHART_NAME }}/$(basename "${image}")"
     image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
     {{ exec }} kind load docker-image --name "{{ CLUSTER_NAME }}" "${image_name}:${image_version}"
   done

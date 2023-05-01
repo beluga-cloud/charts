@@ -59,7 +59,7 @@ jobs:
       - name: Configure git user
         run: |
           git config user.name "Belug Apps"
-          git config user.email "116495032+belug-apps[bot]@users.noreply.github.com"
+          git config user.email "116495032+belug-cloud[bot]@users.noreply.github.com"
 
       - name: Bump the Chart version
         run: just renovate-update-chart

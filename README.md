@@ -1,21 +1,21 @@
 <!-- markdownlint-disable MD033 -->
 <h1 align="center">
-  <a href="https://github.com/belug-apps">
-    <img src="https://github.com/belug-apps/.github/raw/main/assets/logo_400px.png" alt="Logo" width="150" height="150">
+  <a href="https://github.com/beluga-cloud">
+    <img src="https://github.com/beluga-cloud/.github/raw/main/assets/logo_400px.png" alt="Logo" width="150" height="150">
   </a>
 </h1>
 
-<h4 align="center">Belug-Apps - Personal Helm Charts repository</h4>
+<h4 align="center">:whale: Beluga Cloud - Personal Helm Charts repository</h4>
 
 <div align="center">
   <br/>
 
 [
-![License](https://img.shields.io/github/license/belug-apps/belug-apps?logo=git&logoColor=white&logoWidth=20)
+![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)
 ](LICENSE)
 [
-![Pending dependencies](https://img.shields.io/github/issues-pr/belug-apps/renovate-config/type:%20dependencies?label=dependencies&logo=renovatebot&logoWidth=20&style=flat)
-](https://github.com/belug-apps/renovate-config/pulls?q=is%3Apr+is%3Aopen+label%3A%22type%3A+dependencies%22)
+![Pending dependencies](https://img.shields.io/github/issues-pr/beluga-cloud/charts/type:%20dependencies?label=dependencies&logo=renovatebot&logoWidth=20&style=flat)
+](https://github.com/beluga-cloud/charts/pulls?q=is%3Apr+is%3Aopen+label%3A%22type%3A+dependencies%22)
 
 </div>
 
@@ -39,9 +39,9 @@ _Why maintaining these charts_ will you ask ? There is several reasons:
 ## Usage
 
 ```shell
-helm repo add belug-apps https://belug-apps.github.io/catalog
-helm install my-release belug-apps/<chart>
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/<chart>
 ```
 
 > All charts documentation are available in the `charts/<chart>/README.md` file or
-> on [artifacthub.io](https://artifacthub.io/packages/search?page=1&ts_query_web=belug-apps).
+> on [artifacthub.io](https://artifacthub.io/packages/search?page=1&ts_query_web=beluga-cloud).

@@ -1,6 +1,6 @@
 {
   "$defs": {
-    "io.belugapps.v1.Global": {
+    "io.belugacloud.v1.Global": {
       "properties": {
         "commonLabels": {
           "$ref": "#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels"
@@ -19,39 +19,39 @@
       },
       "type": "object"
     },
-    "io.belugapps.v1.HelmValues": {
+    "io.belugacloud.v1.HelmValues": {
       "properties": {
         "affinity": {
-          "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.Affinity"
+          "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.Affinity"
         },
         "containerSecurityContext": {
-          "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.SecurityContext"
+          "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.SecurityContext"
         },
         "fullnameOverride": {
           "description": "String to fully override common.names.fullname template.",
           "type": "string"
         },
         "global": {
-          "$ref": "#/$defs/io.belugapps.v1.Global"
+          "$ref": "#/$defs/io.belugacloud.v1.Global"
         },
         "images": {
-          "$ref": "#/$defs/io.belugapps.v1.Images"
+          "$ref": "#/$defs/io.belugacloud.v1.Images"
         },
         "ingress": {
-          "$ref": "#/$defs/io.belugapps.v1.Ingress"
+          "$ref": "#/$defs/io.belugacloud.v1.Ingress"
         },
         "nameOverride": {
           "description": "String to partially override common.names.fullname template (will maintain the release name).",
           "type": "string"
         },
         "networkPolicy": {
-          "$ref": "#/$defs/io.belugapps.v1.NetworkPolicy"
+          "$ref": "#/$defs/io.belugacloud.v1.NetworkPolicy"
         },
         "nodeSelector": {
           "$ref": "#/$defs/io.k8s/$defs/api.core.v1.PodSpec/$defs/nodeSelector"
         },
         "persistence": {
-          "$ref": "#/$defs/io.belugapps.v1.PersistentStorage"
+          "$ref": "#/$defs/io.belugacloud.v1.PersistentStorage"
         },
         "podAnnotations": {
           "$ref": "#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations"
@@ -60,7 +60,7 @@
           "$ref": "#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels"
         },
         "podSecurityContext": {
-          "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.PodSecurityContext"
+          "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.PodSecurityContext"
         },
         "replicaCount": {
           "description": "Number of replicas to deploy.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#what-is-a-replicationcontroller",
@@ -68,44 +68,44 @@
         },
         "resources": {
           "additionalProperties": {
-            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.ResourceRequirements"
+            "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.ResourceRequirements"
           },
           "description": "Compute Resources required by containers.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
           "type": "object"
         },
         "service": {
-          "$ref": "#/$defs/io.belugapps.v1.Service"
+          "$ref": "#/$defs/io.belugacloud.v1.Service"
         },
         "strategy": {
           "anyOf": [
             {
-              "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.apps.v1.DaemonSetUpdateStrategy"
+              "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.apps.v1.DaemonSetUpdateStrategy"
             },
             {
-              "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.apps.v1.DeploymentStrategy"
+              "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.apps.v1.DeploymentStrategy"
             },
             {
-              "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.apps.v1.StatefulSetUpdateStrategy"
+              "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.apps.v1.StatefulSetUpdateStrategy"
             }
           ]
         },
         "tolerations": {
           "items": {
-            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.Toleration"
+            "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.Toleration"
           },
           "type": "array"
         },
         "topologySpreadConstraints": {
           "description": "TopologySpreadConstraints describes how a group of pods ought to spread across topology domains.\nScheduler will schedule pods in a way which abides by the constraints.\nAll topologySpreadConstraints are ANDed.",
           "items": {
-            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.TopologySpreadConstraint"
+            "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.TopologySpreadConstraint"
           },
           "type": "array"
         }
       },
       "type": "object"
     },
-    "io.belugapps.v1.Images": {
+    "io.belugacloud.v1.Images": {
       "additionalProperties": {
         "properties": {
           "digest": {
@@ -141,7 +141,7 @@
       },
       "type": "object"
     },
-    "io.belugapps.v1.Ingress": {
+    "io.belugacloud.v1.Ingress": {
       "oneOf": [
         {
           "properties": {
@@ -179,21 +179,21 @@
         "extraPaths": {
           "description": "List of additional paths that may need to be added to the ingress under the main host.",
           "items": {
-            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.HTTPIngressPath"
+            "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.HTTPIngressPath"
           },
           "type": "array"
         },
         "extraRules": {
           "description": "List of host rules used to configure the Ingress. If unspecified, or no rule matches, all traffic is sent to the default backend.",
           "items": {
-            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.IngressRule"
+            "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.IngressRule"
           },
           "type": "array"
         },
         "extraTls": {
           "description": "TLS configuration for additional hostnames to be covered with this ingress record.",
           "items": {
-            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.IngressTLS"
+            "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.IngressTLS"
           },
           "type": "array"
         },
@@ -223,7 +223,7 @@
       ],
       "type": "object"
     },
-    "io.belugapps.v1.NetworkPolicy": {
+    "io.belugacloud.v1.NetworkPolicy": {
       "properties": {
         "allowAllOutbound": {
           "description": "Whether to allow all outbound traffic (preset).",
@@ -236,7 +236,7 @@
         "egress": {
           "description": "List of egress rules to be applied to the workload.",
           "items": {
-            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.NetworkPolicyEgressRule"
+            "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.NetworkPolicyEgressRule"
           },
           "type": "array"
         },
@@ -247,14 +247,14 @@
         "ingress": {
           "description": "List of ingress rules to be applied to the workload.",
           "items": {
-            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.NetworkPolicyIngressRule"
+            "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.networking.v1.NetworkPolicyIngressRule"
           },
           "type": "array"
         }
       },
       "type": "object"
     },
-    "io.belugapps.v1.PersistentStorage": {
+    "io.belugacloud.v1.PersistentStorage": {
       "additionalProperties": {
         "properties": {
           "annotations": {
@@ -265,7 +265,7 @@
             "type": "boolean"
           },
           "volumeClaimSpec": {
-            "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.PersistentVolumeClaimSpec",
+            "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.PersistentVolumeClaimSpec",
             "description": "Spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims"
           }
         },
@@ -273,9 +273,9 @@
       },
       "type": "object"
     },
-    "io.belugapps.v1.Service": {
+    "io.belugacloud.v1.Service": {
       "additionalProperties": {
-        "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.ServicePort",
+        "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.ServicePort",
         "description": "Named port that contains information on service's port.",
         "not": {
           "required": [
@@ -332,7 +332,7 @@
           "$defs": {
             "imagePullSecrets": {
               "items": {
-                "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.LocalObjectReference"
+                "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.LocalObjectReference"
               },
               "type": "array"
             },
@@ -366,7 +366,7 @@
       "type": "object"
     }
   },
-  "$id": "https://belugapps.io/draft/schemas/helm-values.json",
+  "$id": "https://belugacloud.io/draft/schemas/helm-values.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "description": "This file contains a custom DSL used to define the JSON Schema for the Helm Chart's values.yaml file.\n  For more information about the DSL, see `dsl2jsonschema` source code.",
   "title": "BelugApps Helm Chart values",

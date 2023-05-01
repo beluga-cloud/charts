@@ -1669,10 +1669,10 @@
             "description": "Standard object's metadata.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
             "properties": {
               "annotations": {
-                "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations"
+                "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations"
               },
               "labels": {
-                "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels"
+                "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels"
               }
             },
             "type": "object"
@@ -1690,7 +1690,7 @@
       "type": "array"
     },
     "global": {
-      "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.belugapps.v1.Global"
+      "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.belugapps.v1.Global"
     },
     "issuers": {
       "description": "List of namespaced certificate issuing authority.",
@@ -1707,10 +1707,10 @@
             "description": "Standard object's metadata.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata",
             "properties": {
               "annotations": {
-                "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations"
+                "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/annotations"
               },
               "labels": {
-                "$ref": "https://raw.githubusercontent.com/belug-apps/catalog/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels"
+                "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.k8s/$defs/apimachinery.pkg.apis.meta.v1.ObjectMeta/$defs/labels"
               }
             },
             "type": "object"

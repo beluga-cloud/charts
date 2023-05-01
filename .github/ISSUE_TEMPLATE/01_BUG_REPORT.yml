@@ -1,6 +1,6 @@
 ---
 name: 🐛 Bug Report
-description: Create a report to help belug-apps to improve
+description: Create a report to help `beluga-cloud/charts` to improve
 title: "🐛 "
 labels:
   - "type: bug"
