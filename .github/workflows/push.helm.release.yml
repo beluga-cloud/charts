@@ -65,7 +65,6 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           skip_existing: true
-          mark_as_latest: false
 
   list-changed-charts:
     name: List all new/updated charts
