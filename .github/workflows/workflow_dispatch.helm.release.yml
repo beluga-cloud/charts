@@ -1,0 +1,61 @@
+---
+name: '[Manual] Release all charts (helm)'
+on:  # yamllint disable-line rule:truthy
+  workflow_dispatch:
+
+
+env:
+  HELM_CONFIG_HOME: ${{ github.workspace }}/test/e2e/~helm
+
+jobs:
+  release:
+    name: Release Helm charts
+    permissions:
+      contents: write
+      pages: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3.5
+        with:
+          version: v3.10.0
+
+      - name: Prepare GPG environment for Helm
+        id: import-gpg
+        run: |
+          GNUPG_DIR="$(mktemp --directory --tmpdir=${{ runner.temp }})"
+          
+          # Import GPG passphrase
+          echo '${{ secrets.HELM_SIGN_KEY_PASSPHRASE }}' > "${GNUPG_DIR}/passphrase"
+          echo "passphrase-file=${GNUPG_DIR}/passphrase" >> "${GITHUB_OUTPUT}"
+          
+          # Import GPG signing key
+          echo '${{ secrets.HELM_SIGN_KEY }}' | gpg --dearmor > "${GNUPG_DIR}/secring.gpg"
+          echo "keyring=${GNUPG_DIR}/secring.gpg" >> "${GITHUB_OUTPUT}"
+          
+          # Export signing key name
+          (
+            echo -n "name="
+            gpg --with-colons --import-options show-only --import "${GNUPG_DIR}/secring.gpg" \
+            | grep uid \
+            | cut -d':' -f10
+          ) >> "${GITHUB_OUTPUT}"
+
+      - name: Configure git user
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - uses: helm/chart-releaser-action@5f8660e6e926349f99e4869f158b6384813c18a2
+        env:
+          CR_GENERATE_RELEASE_NOTES: 'false'
+          CR_KEY: ${{ steps.import-gpg.outputs.name }}
+          CR_KEYRING: ${{ steps.import-gpg.outputs.keyring }}
+          CR_PAGES_BRANCH: gh-helm
+          CR_PASSPHRASE_FILE: ${{ steps.import-gpg.outputs.passphrase-file }}
+          CR_SIGN: 'true'
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          skip_existing: true
+          mark_as_latest: false

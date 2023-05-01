@@ -1,5 +1,5 @@
 ---
-name: Test all charts (helm)
+name: '[Scheduled] Test all charts (helm)'
 on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: 0 2 * * 1,3

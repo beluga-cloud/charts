@@ -1,5 +1,5 @@
 ---
-name: Check for vulnerabilities (container)
+name: '[Scheduled] Check for vulnerabilities (container)'
 on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: 32 9 * * 0,3

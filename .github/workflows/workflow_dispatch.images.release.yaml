@@ -1,0 +1,132 @@
+---
+name: '[Manual] Release OCI images (push)'
+on:  # yamllint disable-line rule:truthy
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}/container-release
+
+jobs:
+  list-all-images:
+    name: List all existing images
+    outputs:
+      containerfiles: ${{ steps.find-images.outputs.containerfiles }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+
+      - name: Find all Containerfiles
+        id: find-images
+        run: |
+          set -euo pipefail
+
+          (
+            echo -n "containerfiles="
+            find charts/ -name "Dockerfile" | jq --raw-input --slurp --compact-output 'split("\n") | map(select(length > 0))'
+          ) | tee "${GITHUB_OUTPUT}"
+
+  build:
+    name: Build changed image(s)
+    needs: [list-all-images]
+    if: needs.list-all-images.outputs.containerfiles != '[]'
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    strategy:
+      matrix:
+        containerfile: ${{ fromJSON(needs.list-all-images.outputs.containerfiles) }}
+    uses: ./.github/workflows/_.images.build.yaml
+    with:
+      containerfile: ${{ matrix.containerfile }}
+      platforms: linux/amd64,linux/arm64
+
+  # NOTE: waiting https://github.com/orgs/community/discussions/17245 to be resolved ... so for now, we
+  #       are using a workaround to get the list of all generated artifacts
+  artifacts:
+    name: Export all generated artifacts
+    needs: [build]
+    outputs:
+      all-artifacts: ${{ steps.all.outputs.json }}
+      artifacts-by-image: ${{ steps.by-image.outputs.json }}
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: cloudposse/github-action-matrix-outputs-read@ea1c28d66c34b8400391ed74d510f66abc392d5e # 0.1.1
+        id: matrix-outputs
+        with:
+          matrix-step-name: _.images.build
+      - name: List all artefacts
+        id: all
+        run: |
+          (
+            echo -n 'json='
+            echo '${{ steps.matrix-outputs.outputs.result }}' \
+            | jq --compact-output --sort-keys '.artifacts | map(.) | flatten'
+          ) | tee --append "${GITHUB_OUTPUT}"
+      - name: Group all artefacts by image
+        id: by-image
+        run: |
+          (
+            echo -n 'json='
+            echo '${{ steps.matrix-outputs.outputs.result }}' \
+            | jq --compact-output --sort-keys '.artifacts
+              | to_entries
+              | map(
+                (.value | first | del(.artifact, .digest)) + 
+                {artifacts: (.value | map({artifact, digest}))}
+              )'
+          ) | tee --append "${GITHUB_OUTPUT}"
+
+  supply-chain-compliance:
+    name: Supply chain compliance (${{ matrix.artifact.name }}:${{ matrix.artifact.version }} ${{ matrix.artifact.platform.os }}/${{ matrix.artifact.platform.arch }})
+    needs: [build, artifacts]
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+      security-events: write
+    strategy:
+      matrix:
+        artifact: ${{ fromJSON(needs.artifacts.outputs.all-artifacts) }}
+    uses: ./.github/workflows/_.images.supply-chain.for-registry.yaml
+    with:
+      image-ref: ${{ matrix.artifact.artifact }}@sha256:${{ matrix.artifact.digest }}
+
+  generate-manifest:
+    name: Generate OCI manifest (${{ matrix.artifact.name }}:${{ matrix.artifact.version }})
+    needs: [build, artifacts]
+    permissions:
+      id-token: write
+      packages: write
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        artifact: ${{ fromJSON(needs.artifacts.outputs.artifacts-by-image) }}
+    steps:
+      - name: Generate `docker manifest` options
+        id: manifest-options
+        run: |
+          (
+            echo -n 'images='
+            echo '${{ toJSON(matrix.artifact) }}' \
+            | jq --raw-output '.artifacts | map("\(.artifact)@sha256:\(.digest) ") | add'
+          ) | tee --append "${GITHUB_OUTPUT}"
+
+      - uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate OCI manifest
+        run: |
+          docker manifest create --amend \
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }} \
+            ${{ steps.manifest-options.outputs.images }}
+          docker manifest push ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }}
+
+      - uses: sigstore/cosign-installer@204a51a57a74d190b284a0ce69b44bc37201f343 # v3.0.3
+      - name: Sign manifest 'ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }}'
+        run: cosign sign --yes ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }}
