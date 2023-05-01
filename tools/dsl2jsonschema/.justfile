@@ -11,7 +11,7 @@ dsl2jsonschema_bin := justfile_directory() / "dsl2jsonschema"
 # compile dsl2jsonschema.go if not already built
 [private]
 @compile_dsl2jsonschema:
-  [ -f {{ dsl2jsonschema_bin }} ] || (cd "cmd/dsl2jsonschema" }} && go build -o {{ dsl2jsonschema_bin }})
+  [ -f {{ dsl2jsonschema_bin }} ] || (cd "cmd/dsl2jsonschema" && go build -o {{ dsl2jsonschema_bin }})
 
 # build JSON schema based on the given DSL file.
 [no-cd]

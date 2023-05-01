@@ -37,7 +37,7 @@ exec := tools + " xtrace"
 
 # generates all 'validations' files used to validate the chart and to see immediately any changes after a modification
 [no-cd]
-build-validation-files CHART_NAME:
+build-validation-files CHART_NAME: build
   #!/usr/bin/env bash
   set -ueo pipefail
 
