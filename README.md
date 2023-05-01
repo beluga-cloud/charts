@@ -10,15 +10,10 @@
 <div align="center">
   <br/>
 
-[
-![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)
-](LICENSE)
-[
-![Pending dependencies](https://img.shields.io/github/issues-pr/beluga-cloud/charts/type:%20dependencies?label=dependencies&logo=renovatebot&logoWidth=20&style=flat)
-](https://github.com/beluga-cloud/charts/pulls?q=is%3Apr+is%3Aopen+label%3A%22type%3A+dependencies%22)
+[![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)](LICENSE)
+[![Pending dependencies](https://img.shields.io/github/issues-pr/beluga-cloud/charts/type:%20dependencies?label=dependencies&logo=renovatebot&logoWidth=20&style=flat)](https://github.com/beluga-cloud/charts/pulls?q=is%3Apr+is%3Aopen+label%3A%22type%3A+dependencies%22)
 <br/>
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/beluga-cloud)](https://artifacthub.io/packages/search?repo=beluga-cloud)
-
 
 </div>
 
@@ -121,3 +116,5 @@ so I will try to update the dependencies as soon as possible when a fix is publi
 ## License
 
 This repository is distributed under the [Apache License 2.0](LICENSE).
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbeluga-cloud%2Fcharts.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbeluga-cloud%2Fcharts?ref=badge_large)
