@@ -1,5 +1,5 @@
 ---
-name: Build chart (hrlm)
+name: Build chart (helm)
 on:  # yamllint disable-line rule:truthy
   workflow_call:
     inputs:
