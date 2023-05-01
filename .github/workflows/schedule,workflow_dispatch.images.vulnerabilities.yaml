@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   list-all-images:
-    name: List all existing images reference
+    name: List all existing image references
     outputs:
       image-refs: ${{ steps.find-images.outputs.image-refs }}
     permissions:
@@ -51,6 +51,7 @@ jobs:
       contents: read
       id-token: write
       packages: write
+      security-events: write
     strategy:
       fail-fast: false
       matrix:

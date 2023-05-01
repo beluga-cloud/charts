@@ -79,6 +79,7 @@ jobs:
       id-token: write
       packages: write
       security-events: write
+    secrets: inherit
     strategy:
       fail-fast: false
       matrix:

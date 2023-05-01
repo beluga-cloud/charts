@@ -223,24 +223,6 @@ jobs:
           category: trivy-container-syntax
           sarif_file: trivy-results.sarif
 
-  fossa:
-    name: Check for license compliance (${{ matrix.platform.os }}/${{ matrix.platform.arch }})
-    if: ${{ !inputs.dry-run }}
-    needs: [metadata, build]
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: ${{ fromJson(needs.metadata.outputs.build-platforms) }}
-    steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-      - uses: fossa/fossa-action@f61a4c0c263690f2ddb54b9822a719c25a7b608f # v1.3.1
-        with:
-          api-key: ${{ secrets.FOSSA_API_KEY }}
-          container: ghcr.io/${{ github.repository_owner }}/${{ needs.metadata.outputs.image-name }}:${{ needs.metadata.outputs.image-version }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}
-
   export:
     name: Export generated artifacts (${{ inputs.containerfile }})
     needs: [metadata, build]
