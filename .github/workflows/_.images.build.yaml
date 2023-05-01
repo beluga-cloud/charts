@@ -26,7 +26,7 @@ jobs:
   # Extract following metadata from Containerfile
   #   - Image metadata (name, slug, version)
   #   - Context metadata (build context, output destination, platforms)
-  #   - Other metadata required to build image (description, licenses, title, url)
+  #   - Another metadata required to build image (description, licenses, title, url)
   metadata:
     name: Extract Containerfile metadata (${{ inputs.containerfile }})
     outputs:
@@ -200,6 +200,29 @@ jobs:
             version: ${{ needs.metadata.outputs.image-version }}
             artifact: oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
             digest: ${{ steps.format-digest.outputs.digest }}
+
+  security:
+    vulnerability:
+      name: Check for vulnerabilities (${{ inputs.containerfile }})
+      permissions:
+        contents: read
+        security-events: write
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
+          with:
+            exit-code: '1'
+            format: sarif
+            hide-progress: false
+            output: trivy-results.sarif
+            scan-ref: ${{ inputs.containerfile }}
+            scan-type: config
+        - uses: github/codeql-action/upload-sarif@f31a31c052207cc13b328d6295c5b728bb49568c # codeql-bundle-20230418
+          if: always()
+          with:
+            category: trivy-container-syntax
+            sarif_file: trivy-results.sarif
 
   export:
     name: Export generated artifacts (${{ inputs.containerfile }})

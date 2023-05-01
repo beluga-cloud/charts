@@ -4,7 +4,7 @@ on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
     paths:
-      # NOTE: only few changes should trigger this pipeline
+      # NOTE: only a few changes should trigger this pipeline
       - charts/*/templates/**
       - charts/*/Chart.lock
       - charts/*/Chart.yaml
@@ -66,3 +66,36 @@ jobs:
         with:
           skip_existing: true
           mark_as_latest: false
+
+  list-changed-charts:
+    name: List all new/updated charts
+    permissions:
+      contents: read
+    uses: ./.github/workflows/_.helm.list-changed.yaml
+
+  vulnerability:
+    name: Check for vulnerabilities (${{ matrix.chart }})
+    needs: [list-changed-charts]
+    permissions:
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chart: ${{ fromJson(needs.list-changed-charts.outputs.charts) }}
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
+        with:
+          exit-code: '1'
+          format: sarif
+          hide-progress: false
+          output: trivy-results.sarif
+          scan-ref: ${{ matrix.chart }}
+          scan-type: config
+      - uses: github/codeql-action/upload-sarif@f31a31c052207cc13b328d6295c5b728bb49568c # codeql-bundle-20230418
+        if: always()
+        with:
+          category: trivy-helm-syntax
+          sarif_file: trivy-results.sarif
