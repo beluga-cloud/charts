@@ -14,7 +14,7 @@
   <br/>
 
   [
-    ![License](https://img.shields.io/github/license/belug-apps/belug-apps?logo=git&logoColor=white&logoWidth=20)
+    ![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
@@ -38,8 +38,8 @@ referenced issuer that is in a ready condition to attempt to honor the request.
 ## TL;DR
 
 ```shell
-helm repo add belug-apps https://belug-apps.github.io/catalog
-helm install my-release belug-apps/cert-manager-issuers
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/cert-manager-issuers
 ```
 
 ## Introduction
@@ -57,8 +57,8 @@ This chart helps to configure `Issuers` and `ClusterIssuers` using the [Helm](he
 To install the chart with the release name `my-release`:
 
 ```shell
-helm repo add belug-apps https://belug-apps.github.io/catalog
-helm install my-release belug-apps/cert-manager-issuers
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/cert-manager-issuers
 ```
 
 These commands deploy cert-manager-issuers on the Kubernetes cluster in the default configuration.
@@ -119,7 +119,7 @@ clusterIssuer:
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```shell
-helm install my-release --set fullnameOverride=my-cert-manager-issuers belug-apps/cert-manager-issuers
+helm install my-release --set fullnameOverride=my-cert-manager-issuers beluga-cloud/cert-manager-issuers
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,

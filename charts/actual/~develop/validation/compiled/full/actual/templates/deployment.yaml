@@ -54,7 +54,7 @@ spec:
             runAsGroup: 65534
             runAsNonRoot: true
             runAsUser: 65534
-          image: ghcr.io/belug-apps/actual/actualserver:v23.2.9
+          image: ghcr.io/beluga-cloud/actual/actualserver:v23.2.9
           imagePullPolicy: IfNotPresent
           ports:
             - name: web

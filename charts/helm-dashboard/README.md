@@ -14,7 +14,7 @@
   <br/>
 
   [
-    ![License](https://img.shields.io/github/license/belug-apps/belug-apps?logo=git&logoColor=white&logoWidth=20)
+    ![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
@@ -49,8 +49,8 @@ Some of the key capabilities of the tool:
 ## TL;DR
 
 ```shell
-helm repo add belug-apps https://belug-apps.github.io/catalog
-helm install my-release belug-apps/helm-dashboard
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/helm-dashboard
 ```
 
 ## Introduction
@@ -67,8 +67,8 @@ This chart bootstraps a Helm Dashboard deployment on a [Kubernetes](kubernetes.i
 To install the chart with the release name `my-release`:
 
 ```shell
-helm repo add belug-apps https://belug-apps.github.io/catalog
-helm install my-release belug-apps/helm-dashboard
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/helm-dashboard
 ```
 
 These commands deploy helm-dashboard on the Kubernetes cluster in the default configuration.
@@ -112,7 +112,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `images.dashboard.digest` | helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
 | `images.dashboard.pullPolicy` | helm-dashboard image pull policy | `"IfNotPresent"` |
 | `images.dashboard.registry` | helm-dashboard image registry (optional) | `""` |
-| `images.dashboard.repository` | helm-dashboard image repository | `"ghcr.io/belug-apps/helm-dashboard/dashboard"` |
+| `images.dashboard.repository` | helm-dashboard image repository | `"ghcr.io/beluga-cloud/helm-dashboard/dashboard"` |
 | `images.dashboard.tag` | helm-dashboard image tag (immutable tags are recommended) | `""` |
 
 ### Security parameters
@@ -183,7 +183,7 @@ The command removes all the Kubernetes components associated with the chart and 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```shell
-helm install my-release --set fullnameOverride=my-helm-dashboard belug-apps/helm-dashboard
+helm install my-release --set fullnameOverride=my-helm-dashboard beluga-cloud/helm-dashboard
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
