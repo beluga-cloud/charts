@@ -37,9 +37,9 @@ jobs:
     permissions:
       contents: read
     strategy:
+      fail-fast: false
       matrix:
         chart: ${{ fromJson(needs.list-all-charts.outputs.charts) }}
-      fail-fast: false
     uses: ./.github/workflows/_.helm.test.yaml
     with:
       chart: ${{ matrix.chart }}

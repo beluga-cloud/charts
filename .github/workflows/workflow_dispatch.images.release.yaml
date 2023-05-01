@@ -36,6 +36,7 @@ jobs:
       id-token: write
       packages: write
     strategy:
+      fail-fast: false
       matrix:
         containerfile: ${{ fromJSON(needs.list-all-images.outputs.containerfiles) }}
     uses: ./.github/workflows/_.images.build.yaml
@@ -89,6 +90,7 @@ jobs:
       packages: write
       security-events: write
     strategy:
+      fail-fast: false
       matrix:
         artifact: ${{ fromJSON(needs.artifacts.outputs.all-artifacts) }}
     uses: ./.github/workflows/_.images.supply-chain.for-registry.yaml
@@ -103,6 +105,7 @@ jobs:
       packages: write
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         artifact: ${{ fromJSON(needs.artifacts.outputs.artifacts-by-image) }}
     steps:

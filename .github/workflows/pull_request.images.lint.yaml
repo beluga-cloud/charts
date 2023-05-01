@@ -24,6 +24,7 @@ jobs:
     permissions:
       contents: read
     strategy:
+      fail-fast: false
       matrix:
         containerfile: ${{ fromJSON(needs.list-changed-images.outputs.containerfiles) }}
     uses: ./.github/workflows/_.images.lint.yaml
