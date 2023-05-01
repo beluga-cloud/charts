@@ -111,7 +111,7 @@ jobs:
 
   build:
     name: Build '${{ needs.metadata.outputs.image-name }}:${{ needs.metadata.outputs.image-version }}' image (${{ matrix.platform.os }}/${{ matrix.platform.arch }})
-    needs: metadata
+    needs: [metadata]
     permissions:
       contents: read
       id-token: write
@@ -201,28 +201,45 @@ jobs:
             artifact: oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
             digest: ${{ steps.format-digest.outputs.digest }}
 
-  security:
-    vulnerability:
-      name: Check for vulnerabilities (${{ inputs.containerfile }})
-      permissions:
-        contents: read
-        security-events: write
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-        - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
-          with:
-            exit-code: '1'
-            format: sarif
-            hide-progress: false
-            output: trivy-results.sarif
-            scan-ref: ${{ inputs.containerfile }}
-            scan-type: config
-        - uses: github/codeql-action/upload-sarif@f31a31c052207cc13b328d6295c5b728bb49568c # codeql-bundle-20230418
-          if: always()
-          with:
-            category: trivy-container-syntax
-            sarif_file: trivy-results.sarif
+  vulnerability:
+    name: Check for vulnerabilities (${{ inputs.containerfile }})
+    permissions:
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
+        with:
+          exit-code: '1'
+          format: sarif
+          hide-progress: false
+          output: trivy-results.sarif
+          scan-ref: ${{ inputs.containerfile }}
+          scan-type: config
+      - uses: github/codeql-action/upload-sarif@f31a31c052207cc13b328d6295c5b728bb49568c # codeql-bundle-20230418
+        if: always()
+        with:
+          category: trivy-container-syntax
+          sarif_file: trivy-results.sarif
+
+  fossa:
+    name: Check for license compliance (${{ matrix.platform.os }}/${{ matrix.platform.arch }})
+    if: ${{ !inputs.dry-run }}
+    needs: [metadata, build]
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJson(needs.metadata.outputs.build-platforms) }}
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: fossa/fossa-action@f61a4c0c263690f2ddb54b9822a719c25a7b608f # v1.3.1
+        with:
+          api-key: ${{ secrets.FOSSA_API_KEY }}
+          container: ghcr.io/${{ github.repository_owner }}/${{ needs.metadata.outputs.image-name }}:${{ needs.metadata.outputs.image-version }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}
 
   export:
     name: Export generated artifacts (${{ inputs.containerfile }})
