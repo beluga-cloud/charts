@@ -12,6 +12,7 @@
 
 [
 ![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbeluga-cloud%2Fcharts.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbeluga-cloud%2Fcharts?ref=badge_shield)
 ](LICENSE)
 [
 ![Pending dependencies](https://img.shields.io/github/issues-pr/beluga-cloud/charts/type:%20dependencies?label=dependencies&logo=renovatebot&logoWidth=20&style=flat)
@@ -45,3 +46,7 @@ helm install my-release beluga-cloud/<chart>
 
 > All charts documentation are available in the `charts/<chart>/README.md` file or
 > on [artifacthub.io](https://artifacthub.io/packages/search?page=1&ts_query_web=beluga-cloud).
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbeluga-cloud%2Fcharts.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbeluga-cloud%2Fcharts?ref=badge_large)
