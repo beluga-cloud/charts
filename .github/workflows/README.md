@@ -1,6 +1,6 @@
 # Github Actions workflows
 
-This project uses Github Actions workflows to automate everything; building,
+This project uses GitHub Actions workflows to automate everything; building,
 testing, deploying, managing labels, ...
 
 ## Reusable workflows
