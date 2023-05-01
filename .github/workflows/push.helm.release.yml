@@ -59,10 +59,10 @@ jobs:
           CR_GENERATE_RELEASE_NOTES: 'false'
           CR_KEY: ${{ steps.import-gpg.outputs.name }}
           CR_KEYRING: ${{ steps.import-gpg.outputs.keyring }}
-          CR_MAKE_RELEASE_LATEST: 'false'
           CR_PAGES_BRANCH: gh-helm
           CR_PASSPHRASE_FILE: ${{ steps.import-gpg.outputs.passphrase-file }}
           CR_SIGN: 'true'
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           skip_existing: true
+          mark_as_latest: false
