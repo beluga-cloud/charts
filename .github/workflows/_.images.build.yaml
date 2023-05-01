@@ -143,7 +143,7 @@ jobs:
           tags: |
             type=raw,value=${{ needs.metadata.outputs.image-version }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}
           labels: |
-            com.github.belug-apps.ci.workflow.url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            com.github.beluga-cloud.ci.workflow.url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/blob/${{ github.sha }}/${{ inputs.containerfile }}
 
       - uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # v4.0.0

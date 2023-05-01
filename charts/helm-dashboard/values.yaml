@@ -20,7 +20,7 @@ images:
     # -- helm-dashboard image registry (optional)
     registry: ""
     # -- helm-dashboard image repository
-    repository: ghcr.io/belug-apps/helm-dashboard/dashboard
+    repository: ghcr.io/beluga-cloud/helm-dashboard/dashboard
     # -- helm-dashboard image tag (immutable tags are recommended)
     tag: ""
     # -- helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
@@ -198,5 +198,5 @@ networkPolicy:
 helmDashboard:
   # -- Default helm registries loaded with helm-dashboard
   repositories: []
-    # - name: belug-apps
-    #   url: https://belug-apps.github.io/catalog
+    # - name: beluga-cloud
+    #   url: https://beluga-cloud.github.io/charts

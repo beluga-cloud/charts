@@ -14,7 +14,7 @@
   <br/>
 
   [
-    ![License](https://img.shields.io/github/license/belug-apps/belug-apps?logo=git&logoColor=white&logoWidth=20)
+    ![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
@@ -59,8 +59,8 @@ Some features of Actual:
 ## TL;DR
 
 ```shell
-helm repo add belug-apps https://belug-apps.github.io/catalog
-helm install my-release belug-apps/actual
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/actual
 ```
 
 ## Introduction
@@ -77,8 +77,8 @@ This chart bootstraps a Actual deployment on a [Kubernetes](kubernetes.io) clust
 To install the chart with the release name `my-release`:
 
 ```shell
-helm repo add belug-apps https://belug-apps.github.io/catalog
-helm install my-release belug-apps/actual
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/actual
 ```
 
 These commands deploy actual on the Kubernetes cluster in the default configuration.
@@ -121,7 +121,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `images.actualserver.digest` | actualserver image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
 | `images.actualserver.pullPolicy` | actualserver image pull policy | `"IfNotPresent"` |
 | `images.actualserver.registry` | actualserver image registry (optional) | `""` |
-| `images.actualserver.repository` | actualserver image repository | `"ghcr.io/belug-apps/actual/actualserver"` |
+| `images.actualserver.repository` | actualserver image repository | `"ghcr.io/beluga-cloud/actual/actualserver"` |
 | `images.actualserver.tag` | actualserver image tag (immutable tags are recommended) | `""` |
 
 ### Security parameters
@@ -189,7 +189,7 @@ The command removes all the Kubernetes components associated with the chart and 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```shell
-helm install my-release --set fullnameOverride=my-actual belug-apps/actual
+helm install my-release --set fullnameOverride=my-actual beluga-cloud/actual
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,

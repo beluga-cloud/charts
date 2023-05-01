@@ -27,10 +27,10 @@ helmDashboard:
   - name: komodorio
     url: https://helm-charts.komodor.io
   - insecure_skip_tls_verify: true
-    name: belug-apps
+    name: beluga-cloud
     pass_credentials_all: true
     password: password
-    url: https://belug-apps.github.io/catalog
+    url: https://beluga-cloud.github.io/catalog
     username: username
 ingress:
   annotations:

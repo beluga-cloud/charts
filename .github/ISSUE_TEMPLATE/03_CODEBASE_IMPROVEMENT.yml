@@ -7,12 +7,12 @@ labels:
 body:
   - type: markdown
     attributes:
-      value: Thank you for taking the time to improve Belug-Apps!
+      value: Thank you for taking the time to improve this repo!
 
   - type: textarea
     attributes:
-      label: How Belug-Apps can be improved?
-      description: How do you think we can improve Belug-Apps?
+      label: How these charts can be improved?
+      description: How do you think we can improve these charts?
     validations:
       required: true
 

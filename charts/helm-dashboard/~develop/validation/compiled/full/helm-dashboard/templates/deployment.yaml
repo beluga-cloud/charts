@@ -55,7 +55,7 @@ spec:
             runAsGroup: 65534
             runAsNonRoot: true
             runAsUser: 65534
-          image: ghcr.io/belug-apps/helm-dashboard/dashboard:1.3.1
+          image: ghcr.io/beluga-cloud/helm-dashboard/dashboard:1.3.1
           imagePullPolicy: IfNotPresent
           env:
             - name: HELM_CACHE_HOME
@@ -103,7 +103,7 @@ spec:
             runAsGroup: 65534
             runAsNonRoot: true
             runAsUser: 65534
-          image: ghcr.io/belug-apps/helm-dashboard/dashboard:1.3.1
+          image: ghcr.io/beluga-cloud/helm-dashboard/dashboard:1.3.1
           imagePullPolicy: IfNotPresent
           command: ["sh", "-c"]
           args: ["/opt/bin/preload-repositories.sh"]

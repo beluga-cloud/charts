@@ -1,17 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>belug-apps/renovate-config:default",
-    "github>belug-apps/renovate-config:gitmoji",
-    "github>belug-apps/renovate-config:asdf(nonOfficeHours)",
-    "github>belug-apps/renovate-config:github-actions(nonOfficeHours)",
-    "github>belug-apps/renovate-config:group-by-chart(actual)",
-    "github>belug-apps/renovate-config:group-by-image(actual,actualserver)",
-    "github>belug-apps/renovate-config:group-by-chart(cert-manager-issuers)",
-    "github>belug-apps/renovate-config:group-by-chart(helm-dashboard)",
-    "github>belug-apps/renovate-config:group-by-image(helm-dashboard,dashboard)",
-    "github>belug-apps/renovate-config:group-by-chart(jellyfin)",
-    "github>belug-apps/renovate-config:group-by-image(jellyfin,jellyfin)"
+    "github>beluga-cloud/renovate-config:default",
+    "github>beluga-cloud/renovate-config:gitmoji",
+    "github>beluga-cloud/renovate-config:asdf(nonOfficeHours)",
+    "github>beluga-cloud/renovate-config:github-actions(nonOfficeHours)",
+    "github>beluga-cloud/renovate-config:group-by-chart(actual)",
+    "github>beluga-cloud/renovate-config:group-by-image(actual,actualserver)",
+    "github>beluga-cloud/renovate-config:group-by-chart(cert-manager-issuers)",
+    "github>beluga-cloud/renovate-config:group-by-chart(helm-dashboard)",
+    "github>beluga-cloud/renovate-config:group-by-image(helm-dashboard,dashboard)",
+    "github>beluga-cloud/renovate-config:group-by-chart(jellyfin)",
+    "github>beluga-cloud/renovate-config:group-by-image(jellyfin,jellyfin)"
   ],
   "packageRules": [
     {

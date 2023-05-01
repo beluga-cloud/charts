@@ -12,10 +12,10 @@ keywords:
   - helper
 sources:
   - https://github.com/cert-manager/cert-manager
-  - https://github.com/belug-apps/catalog/tree/main/charts/cert-manager-issuers
+  - https://github.com/beluga-cloud/charts/tree/main/charts/cert-manager-issuers
 maintainers:
-  - name: belug-apps
-    url: https://github.com/belug-apps
+  - name: beluga-cloud
+    url: https://github.com/beluga-cloud
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami

@@ -39,7 +39,7 @@ spec:
             runAsGroup: 64710
             runAsNonRoot: true
             runAsUser: 64710
-          image: ghcr.io/belug-apps/jellyfin/jellyfin:10.8.9
+          image: ghcr.io/beluga-cloud/jellyfin/jellyfin:10.8.9
           imagePullPolicy: IfNotPresent
           ports:
             - name: web

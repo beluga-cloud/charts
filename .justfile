@@ -20,12 +20,12 @@ default:
 
 # install and test the current application into a local cluster
 e2e-run: e2e-setup e2e-prepare && e2e-teardown
-  {{ e2e }} run_all "e2e-belug-apps"
+  {{ e2e }} run_all "e2e-beluga-cloud"
 
 # prepare the local environment to run e2e tests locally
 [private]
 e2e-setup:
-  {{ e2e }} setup "e2e-belug-apps"
+  {{ e2e }} setup "e2e-beluga-cloud"
 
 # install all required resources to install and run the application properly
 [private]
@@ -34,13 +34,13 @@ e2e-prepare:
   set -euo pipefail
 
   for chart in charts/*; do
-    {{ exec }} just --justfile "${chart}/.justfile" e2e-prepare "e2e-belug-apps"
+    {{ exec }} just --justfile "${chart}/.justfile" e2e-prepare "e2e-beluga-cloud"
   done
 
 # remove the local environment to run e2e tests locally
 [private]
 @e2e-teardown:
-  {{ e2e }} teardown "e2e-belug-apps"
+  {{ e2e }} teardown "e2e-beluga-cloud"
 
 
 # bootstrap a new charts interactively

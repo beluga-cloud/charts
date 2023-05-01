@@ -52,9 +52,9 @@ jobs:
       id-token: write
       packages: write
     strategy:
+      fail-fast: false
       matrix:
         reference: ${{ fromJSON(needs.list-all-images.outputs.image-refs) }}
-      fail-fast: false
     uses: ./.github/workflows/_.images.supply-chain.for-registry.yaml
     with:
       image-ref: ${{ matrix.reference }}

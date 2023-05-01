@@ -20,7 +20,7 @@ images:
     # -- actualserver image registry (optional)
     registry: ""
     # -- actualserver image repository
-    repository: ghcr.io/belug-apps/actual/actualserver
+    repository: ghcr.io/beluga-cloud/actual/actualserver
     # -- actualserver image tag (immutable tags are recommended)
     tag: ""
     # -- actualserver image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag

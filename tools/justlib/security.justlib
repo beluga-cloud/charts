@@ -29,7 +29,7 @@ scan-images CHART_NAME CONTAINER_REGISTRY OPTS="" +IMAGES="all":
   set -ueo pipefail
 
   for image in {{ if IMAGES == "all" { `echo images/*` } else { IMAGES } }}; do
-    image_name="{{ CONTAINER_REGISTRY }}/belug-apps/{{ CHART_NAME }}/$(basename "${image}")"
+    image_name="{{ CONTAINER_REGISTRY }}/beluga-cloud/{{ CHART_NAME }}/$(basename "${image}")"
     image_version="$(grep appVersion Chart.yaml | awk '{print $2}')"
     {{ exec }} trivy config "${image}/Dockerfile" {{ OPTS }}
     {{ exec }} trivy image "${image_name}:${image_version}" {{ OPTS }}

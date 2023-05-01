@@ -14,7 +14,7 @@
   <br/>
 
   [
-    ![License](https://img.shields.io/github/license/belug-apps/belug-apps?logo=git&logoColor=white&logoWidth=20)
+    ![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
@@ -48,8 +48,8 @@ Some features of Jellyfin:
 ## TL;DR
 
 ```shell
-helm repo add belug-apps https://belug-apps.github.io/catalog
-helm install my-release belug-apps/jellyfin
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/jellyfin
 ```
 
 ## Introduction
@@ -66,8 +66,8 @@ This chart bootstraps a Jellyfin deployment on a [Kubernetes](kubernetes.io) clu
 To install the chart with the release name `my-release`:
 
 ```shell
-helm repo add belug-apps https://belug-apps.github.io/catalog
-helm install my-release belug-apps/jellyfin
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/jellyfin
 ```
 
 These commands deploy jellyfin on the Kubernetes cluster in the default configuration.
@@ -110,7 +110,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `images.jellyfin.digest` | jellyfin image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""` |
 | `images.jellyfin.pullPolicy` | jellyfin image pull policy | `"IfNotPresent"` |
 | `images.jellyfin.registry` | jellyfin image registry (optional) | `""` |
-| `images.jellyfin.repository` | jellyfin image repository | `"ghcr.io/belug-apps/jellyfin/jellyfin"` |
+| `images.jellyfin.repository` | jellyfin image repository | `"ghcr.io/beluga-cloud/jellyfin/jellyfin"` |
 | `images.jellyfin.tag` | jellyfin image tag (immutable tags are recommended) | `""` |
 | `jellyfin.extraDevices` | Additional device like GPU to mount | `[]` |
 | `jellyfin.mediaVolumes` | The list of volumes that will be mounted inside jellyfin pod, to `/media`. | `[]` |
@@ -183,7 +183,7 @@ The command removes all the Kubernetes components associated with the chart and 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```shell
-helm install my-release --set fullnameOverride=my-jellyfin belug-apps/jellyfin
+helm install my-release --set fullnameOverride=my-jellyfin beluga-cloud/jellyfin
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
