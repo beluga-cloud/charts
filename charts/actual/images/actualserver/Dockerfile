@@ -1,14 +1,14 @@
 FROM docker.io/library/alpine:3.17.3 as builder
 
-# renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver
-ARG ACTUAL_VERSION=v23.4.2
+# renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver extractVersion=^v(?<version>\S+)$
+ARG ACTUAL_VERSION=23.4.1
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
       nodejs yarn npm \
       python3 openssl \
       git build-base \
-    && git clone --depth 1 --branch ${ACTUAL_VERSION} https://github.com/actualbudget/actual-server /build
+    && git clone --depth 1 --branch v${ACTUAL_VERSION} https://github.com/actualbudget/actual-server /build
 
 WORKDIR /build
 ENV NODE_ENV=production
@@ -20,8 +20,8 @@ RUN set -x \
 
 FROM docker.io/library/alpine:3.17.3
 
-# renovate: datasource=github-tag depName=actualbudget/actual-server versioning=semver
-ARG ACTUAL_VERSION=v23.2.9
+# renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver extractVersion=^v(?<version>\S+)$
+ARG ACTUAL_VERSION=23.4.1
 
 # hadolint ignore=DL3018
 RUN adduser actual -u 64087 -g 64087 -s /bin/false -D -H \

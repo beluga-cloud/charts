@@ -3,8 +3,8 @@ FROM docker.io/library/ubuntu:kinetic
 ARG DEBIAN_FRONTEND="noninteractive"
 ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility"
 
-# renovate: datasource=github-releases depName=jellyfin/jellyfin versioning=semver
-ARG JELLYFIN_VERSION=v10.8.10
+# renovate: datasource=github-releases depName=jellyfin/jellyfin versioning=semver extractVersion=^v(?<version>\S+)
+ARG JELLYFIN_VERSION=10.8.9
 
 # hadolint ignore=DL3008
 RUN apt-get update \
@@ -26,7 +26,7 @@ RUN groupadd jellyfin --gid 64710 \
     && apt-get update \
     \
     && apt-get install --assume-yes --no-install-recommends \
-      jellyfin="${JELLYFIN_VERSION#v}*" \
+      jellyfin="${JELLYFIN_VERSION}*" \
       mesa-va-drivers \
     && ln -s /usr/share/jellyfin-ffmpeg/ff* /usr/bin \
     && ln -s /usr/share/jellyfin-ffmpeg/vainfo /usr/bin \
