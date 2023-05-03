@@ -6,7 +6,7 @@ metadata:
   name: jellyfin
   labels:
     app.kubernetes.io/name: jellyfin
-    helm.sh/chart: jellyfin-1.2.3
+    helm.sh/chart: jellyfin-1.3.0
     app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -39,7 +39,7 @@ spec:
             runAsGroup: 64710
             runAsNonRoot: true
             runAsUser: 64710
-          image: ghcr.io/beluga-cloud/jellyfin/jellyfin:10.8.9
+          image: ghcr.io/beluga-cloud/jellyfin/jellyfin:10.8.10
           imagePullPolicy: IfNotPresent
           ports:
             - name: web

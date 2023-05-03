@@ -8,7 +8,7 @@ metadata:
     annotations: enabled
   labels:
     app.kubernetes.io/name: jellyfin
-    helm.sh/chart: jellyfin-1.2.3
+    helm.sh/chart: jellyfin-1.3.0
     app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
