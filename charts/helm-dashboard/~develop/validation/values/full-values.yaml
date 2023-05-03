@@ -30,7 +30,7 @@ helmDashboard:
     name: beluga-cloud
     pass_credentials_all: true
     password: password
-    url: https://beluga-cloud.github.io/catalog
+    url: https://beluga-cloud.github.io/charts
     username: username
 ingress:
   annotations:
