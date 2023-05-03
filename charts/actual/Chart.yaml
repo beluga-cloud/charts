@@ -2,9 +2,9 @@ apiVersion: v2
 type: application
 name: actual
 description: Enjoy managing your finances
-version: 1.1.2
+version: 1.2.0
 # renovate: datasource=docker depName=ghcr.io/beluga-cloud/actual/actualserver
-appVersion: v23.2.9
+appVersion: 23.4.2
 kubeVersion: '>=1.20'
 home: https://actualbudget.com/
 icon: https://github.com/actualbudget/docs/raw/master/static/img/favicon.png
@@ -22,4 +22,4 @@ maintainers:
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami
-    version: 2.2.4
+    version: 2.2.5
