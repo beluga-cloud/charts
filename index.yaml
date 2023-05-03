@@ -2,6 +2,34 @@ apiVersion: v1
 entries:
   actual:
   - apiVersion: v2
+    appVersion: 23.4.2
+    created: "2023-05-03T06:27:01.759891281Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.2.5
+    description: Enjoy managing your finances
+    digest: 3a7e0d2f5cda87bc4a63ef01a0a15e2589f4cfe38fc5b1ed1fecb5dc05d6c4d5
+    home: https://actualbudget.com/
+    icon: https://github.com/actualbudget/docs/raw/master/static/img/favicon.png
+    keywords:
+    - actualserver
+    - finance
+    - ynab
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: actual
+    sources:
+    - https://github.com/actualbudget/actual
+    - https://github.com/actualbudget/actual-server
+    - https://github.com/beluga-cloud/charts/tree/main/charts/actual
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/actual-1.2.0/actual-1.2.0.tgz
+    version: 1.2.0
+  - apiVersion: v2
     appVersion: v23.2.9
     created: "2023-05-01T19:39:51.91551771Z"
     dependencies:
@@ -112,4 +140,4 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/jellyfin-1.2.3/jellyfin-1.2.3.tgz
     version: 1.2.3
-generated: "2023-05-01T19:39:52.410874586Z"
+generated: "2023-05-03T06:27:02.090478422Z"
