@@ -8,4 +8,4 @@ data:
   preload-repositories.sh: |
     #!/usr/bin/env sh
     helm repo add "komodorio" "https://helm-charts.komodor.io"
-    helm repo add "beluga-cloud" "https://beluga-cloud.github.io/catalog" --insecure-skip-tls-verify --username "username" --password "password" --pass-credentials
+    helm repo add "beluga-cloud" "https://beluga-cloud.github.io/charts" --insecure-skip-tls-verify --username "username" --password "password" --pass-credentials
