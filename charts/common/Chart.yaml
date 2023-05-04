@@ -1,0 +1,15 @@
+apiVersion: v2
+type: library
+name: common
+description: A Library Helm Chart for grouping common logic between my charts. This chart is not deployable by itself.
+version: 1.0.0
+kubeVersion: '>= 1.20'
+icon: https://media.githubusercontent.com/media/beluga-cloud/.github/main/assets/logo_400px.png
+home: https://github.com/beluga-cloud/charts
+keywords:
+  - helper
+  - template
+  - function
+maintainers:
+  - name: xunleii
+    url: https://github.com/beluga-cloud

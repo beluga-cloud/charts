@@ -15,6 +15,7 @@ env:
 jobs:
   test:
     name: Test chart (${{ inputs.chart }})
+    if: inputs.chart != 'charts/common' # ignore common chart that is not testable
     runs-on: ubuntu-latest
     permissions:
       contents: read
