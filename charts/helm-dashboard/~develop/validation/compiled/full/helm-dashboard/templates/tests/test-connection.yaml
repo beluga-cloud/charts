@@ -6,7 +6,7 @@ metadata:
   name: "helm-dashboard-test-connection"
   labels:
     app.kubernetes.io/name: helm-dashboard
-    helm.sh/chart: helm-dashboard-2.3.0
+    helm.sh/chart: helm-dashboard-2.3.1
     app.kubernetes.io/instance: helm-dashboard
     app.kubernetes.io/managed-by: Helm
   annotations:
