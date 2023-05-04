@@ -112,6 +112,27 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/cert-manager-issuers-2.0.2/cert-manager-issuers-2.0.2.tgz
     version: 2.0.2
+  common:
+  - apiVersion: v2
+    created: "2023-05-04T20:02:28.266860638Z"
+    description: A Library Helm Chart for grouping common logic between my charts.
+      This chart is not deployable by itself.
+    digest: 8af58606a3094ac4aea6f9184666d01bc831374d631804d4d24c1b01be95d04e
+    home: https://github.com/beluga-cloud/charts
+    icon: https://media.githubusercontent.com/media/beluga-cloud/.github/main/assets/logo_400px.png
+    keywords:
+    - helper
+    - template
+    - function
+    kubeVersion: '>= 1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: common
+    type: library
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/common-1.0.0/common-1.0.0.tgz
+    version: 1.0.0
   helm-dashboard:
   - apiVersion: v2
     appVersion: 1.3.1
@@ -220,4 +241,4 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/jellyfin-1.2.3/jellyfin-1.2.3.tgz
     version: 1.2.3
-generated: "2023-05-04T12:47:03.496417586Z"
+generated: "2023-05-04T20:02:28.266880938Z"
