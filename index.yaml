@@ -59,6 +59,33 @@ entries:
     version: 1.1.2
   cert-manager-issuers:
   - apiVersion: v2
+    created: "2023-05-04T12:47:03.496366385Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 2.2.5
+    description: Helper for `cert-manager` to manage Issuers and ClusterIssuers via
+      Helm
+    digest: abe2bf14cc750cc0a20422f892fcba092ec2bbf49d3fc269eba540f7b4e0e5ce
+    home: https://github.com/cert-manager/cert-manager
+    icon: https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo-small.png
+    keywords:
+    - cert-manager
+    - tls
+    - helper
+    kubeVersion: '>= 1.20.0-0'
+    maintainers:
+    - name: beluga-cloud
+      url: https://github.com/beluga-cloud
+    name: cert-manager-issuers
+    sources:
+    - https://github.com/cert-manager/cert-manager
+    - https://github.com/beluga-cloud/charts/tree/main/charts/cert-manager-issuers
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/cert-manager-issuers-2.0.3/cert-manager-issuers-2.0.3.tgz
+    version: 2.0.3
+  - apiVersion: v2
     created: "2023-05-01T19:39:52.072831398Z"
     dependencies:
     - name: common
@@ -193,4 +220,4 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/jellyfin-1.2.3/jellyfin-1.2.3.tgz
     version: 1.2.3
-generated: "2023-05-04T09:52:00.21937072Z"
+generated: "2023-05-04T12:47:03.496417586Z"
