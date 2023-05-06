@@ -1,0 +1,8 @@
+# List of files and directories to be ignored by Helm
+ci
+images/
+~develop/
+
+.justfile
+.trivyignore
+README.md.gotmpl

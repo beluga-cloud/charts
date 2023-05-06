@@ -1,0 +1,21 @@
+---
+# Source: sonarr/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr
+  labels:
+    app.kubernetes.io/name: sonarr
+    helm.sh/chart: sonarr-1.0.0
+    app.kubernetes.io/instance: sonarr
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 8080
+      targetPort: web
+      nodePort: null
+  selector:
+    app.kubernetes.io/name: sonarr
+    app.kubernetes.io/instance: sonarr

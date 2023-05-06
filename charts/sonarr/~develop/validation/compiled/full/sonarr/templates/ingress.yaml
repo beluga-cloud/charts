@@ -1,0 +1,28 @@
+---
+# Source: sonarr/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sonarr
+  annotations:
+    annotations: enabled
+  labels:
+    app.kubernetes.io/name: sonarr
+    helm.sh/chart: sonarr-1.0.0
+    app.kubernetes.io/instance: sonarr
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec:
+  ingressClassName: "nginx"
+  rules:
+    - host: sonarr.example.com
+      http:
+        paths:
+          - path: /ui
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: sonarr
+                port:
+                  number: 8888

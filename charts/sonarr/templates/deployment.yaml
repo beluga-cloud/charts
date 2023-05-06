@@ -31,18 +31,18 @@ spec:
       {{- end }}
       securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ name }}
+        - name: sonarr
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-          image: {{ include "common.images.image" (dict "image" .Values.images.{{ name }} "context" $) }}
-          imagePullPolicy: {{ .Values.images.{{ name }}.pullPolicy }}
+          image: {{ include "common.images.image" (dict "image" .Values.images.sonarr "context" $) }}
+          imagePullPolicy: {{ .Values.images.sonarr.pullPolicy }}
           ports:
             - name: web
-              containerPort: 8080
+              containerPort: 8989
               protocol: TCP
           livenessProbe:
             httpGet: &httpProbe
               port: web
-              path: /
+              path: /ping
             initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 10
@@ -50,10 +50,15 @@ spec:
             httpGet: *httpProbe
             periodSeconds: 10
             timeoutSeconds: 10
-          resources: {{- toYaml .Values.resources.{{ name }} | nindent 12 }}
+          resources: {{- toYaml .Values.resources.sonarr | nindent 12 }}
           volumeMounts:
             - name: data
-              mountPath: /data
+              mountPath: /opt/sonarr/data
+            {{- range .Values.sonarr.mediaVolumes }}
+            - name: {{ .name }}
+              mountPath: /media/{{ .name }}
+              readOnly: {{ .readOnly | default true }}
+            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -71,3 +76,8 @@ spec:
           {{- else }}
           emptyDir: { }
           {{- end }}
+        {{- range .Values.sonarr.mediaVolumes }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ include "common.names.fullname" $ }}-mediavol-{{ .name }}
+        {{- end }}

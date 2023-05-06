@@ -16,11 +16,11 @@ nameOverride: ""
 fullnameOverride: ""
 
 images:
-  {{ name }}:
+  sonarr:
     # -- helm-dashboard image registry (optional)
     registry: ""
     # -- helm-dashboard image repository
-    repository: ghcr.io/beluga-cloud/{{ name }}/{{ name }}
+    repository: ghcr.io/beluga-cloud/sonarr/sonarr
     # -- helm-dashboard image tag (immutable tags are recommended)
     tag: ""
     # -- helm-dashboard image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
@@ -33,9 +33,6 @@ podAnnotations: {}
 
 # -- Additional labels to be added to pods
 podLabels: {}
-
-# -- Number of pods per zone. (_**It's not recommended to add more instance of helm-dashboard**_)
-replicaCount: 1
 
 # -- Set up update strategy for helm-dashboard installation. Set to `Recreate` if you use persistent volume
 #    that cannot be mounted by more than one pods to make sure the pods is destroyed first.
@@ -89,14 +86,15 @@ topologySpreadConstraints: []
 #         app.kubernetes.io/component: dashboard
 
 resources:
-  # -- The requested resources for the container
-  requests:
-    cpu: 200m
-    memory: 256Mi
-  # -- The resources limits for the container
-  limits:
-    cpu: 1
-    memory: 1Gi
+  sonarr:
+    # -- The requested resources for the container
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    # -- The resources limits for the container
+    limits:
+      cpu: 1
+      memory: 1Gi
 
 # -- Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))
 podSecurityContext:
@@ -165,7 +163,7 @@ ingress:
   # -- Additional annotations for the Ingress resource. To enable certificate autogeneration, place here your cert-manager annotations.
   annotations: {}
   # -- Default host for the ingress resource
-  hostname: {{ name }}.local
+  hostname: sonarr.local
   # -- The Path to helm-dashboard. You may need to set this to '/*' in order to use this with ALB ingress controllers.
   path: /
   # -- Ingress path type
@@ -193,5 +191,16 @@ networkPolicy:
   # -- Sets egress policy block. See [NetworkPolicy](https://kubernetes.io/docs/concepts/services-networking/network-policies/) documentation.
   egress: []
 
-{{ name }}:
-  # Custom configuration for {{ name }}
+sonarr:
+  # -- The list of volumes that will be mounted inside sonarr pod, to `/media`.
+  mediaVolumes: []
+  # - name: movies # this volume will be mounted into `/media/movies`
+  #   readOnly: false # is this volume readonly ? (optional, default true)
+  #   volumeSpec: # see https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#persistentvolumespec-v1-core
+  #     accessModes:
+  #       - ReadWriteOnce
+  #     capacity:
+  #       storage: 8Ti
+  #     nfs:
+  #       path: /nas/movies
+  #       server: my-nfs-server.example.com
