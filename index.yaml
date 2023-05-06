@@ -349,4 +349,29 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/jellyfin-1.2.3/jellyfin-1.2.3.tgz
     version: 1.2.3
-generated: "2023-05-06T14:28:44.54008731Z"
+  sonarr:
+  - apiVersion: v2
+    appVersion: 3.0.10.1567
+    created: "2023-05-06T18:53:58.56157534Z"
+    dependencies:
+    - name: common
+      repository: https://beluga-cloud.github.io/charts
+      version: 1.0.0
+    description: Smart PVR for newsgroup and bittorrent users.
+    digest: a156b945b5da4520521ed49c671f6edf6cf7eb67f670cbbf7090a683dc9d311e
+    home: https://sonarr.tv/
+    icon: https://raw.githubusercontent.com/Sonarr/Sonarr/develop/Logo/1024.png
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: sonarr
+    sources:
+    - https://sonarr.tv/
+    - https://github.com/Sonarr/Sonarr
+    - https://github.com/beluga-cloud/charts/tree/main/charts/sonarr
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/sonarr-1.0.0/sonarr-1.0.0.tgz
+    version: 1.0.0
+generated: "2023-05-06T18:53:58.561939861Z"
