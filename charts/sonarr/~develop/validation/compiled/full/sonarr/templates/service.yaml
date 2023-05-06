@@ -1,0 +1,26 @@
+---
+# Source: sonarr/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr
+  annotations:
+    annotations: enabled
+  labels:
+    app.kubernetes.io/name: sonarr
+    helm.sh/chart: sonarr-1.0.0
+    app.kubernetes.io/instance: sonarr
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec:
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 8888
+      targetPort: web
+      nodePort: null
+  selector:
+    app.kubernetes.io/name: sonarr
+    app.kubernetes.io/instance: sonarr
+    podLabels: enabled

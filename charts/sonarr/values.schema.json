@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
+    {
+      "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.belugacloud.v1.HelmValues",
+      "not": {
+        "required": [
+          "replicaCount"
+        ]
+      }
+    }
+  ],
+  "properties": {
+    "sonarr": {
+      "description": "Configure specific properties to deploy Sonarr.",
+      "properties": {
+        "mediaVolumes": {
+          "items": {
+            "properties": {
+              "name": {
+                "description": "Volume and directory name.",
+                "type": "string"
+              },
+              "readOnly": {
+                "description": "Whether the volume is read-only.",
+                "type": "boolean"
+              },
+              "volumeSpec": {
+                "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/kubernetes/v1.26.1/_definitions.json#/$defs/io.k8s.api.core.v1.PersistentVolumeSpec"
+              }
+            },
+            "required": [
+              "name",
+              "volumeSpec"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "type": "object"
+}

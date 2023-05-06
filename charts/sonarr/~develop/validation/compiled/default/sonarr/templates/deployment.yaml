@@ -1,0 +1,74 @@
+---
+# Source: sonarr/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  labels:
+    app.kubernetes.io/name: sonarr
+    helm.sh/chart: sonarr-1.0.0
+    app.kubernetes.io/instance: sonarr
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sonarr
+      app.kubernetes.io/instance: sonarr
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sonarr
+        app.kubernetes.io/instance: sonarr
+    spec:
+      securityContext:
+        fsGroup: 65463
+        runAsGroup: 65463
+        runAsNonRoot: true
+        runAsUser: 65463
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: sonarr
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 65463
+            runAsNonRoot: true
+            runAsUser: 65463
+          image: ghcr.io/beluga-cloud/sonarr/sonarr:3.0.10.1567
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 8989
+              protocol: TCP
+          livenessProbe:
+            httpGet: &httpProbe
+              port: web
+              path: /ping
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet: *httpProbe
+            periodSeconds: 10
+            timeoutSeconds: 10
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/sonarr/data
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: sonarr-data
