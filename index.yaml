@@ -298,6 +298,33 @@ entries:
   jellyfin:
   - apiVersion: v2
     appVersion: 10.8.10
+    created: "2023-05-06T20:57:37.22128356Z"
+    dependencies:
+    - name: common
+      repository: https://beluga-cloud.github.io/charts
+      version: 1.0.0
+    description: Your media, your server, your way
+    digest: 74964b4ff3f6cf1aa42519686162c88a2e2b96a48ab12a4082e774014cb94f37
+    home: https://jellyfin.org/
+    icon: https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg
+    keywords:
+    - jellyfin
+    - media-server
+    - plex
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: jellyfin
+    sources:
+    - https://github.com/jellyfin/jellyfin
+    - https://github.com/beluga-cloud/charts/tree/main/charts/jellyfin
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/jellyfin-2.0.0/jellyfin-2.0.0.tgz
+    version: 2.0.0
+  - apiVersion: v2
+    appVersion: 10.8.10
     created: "2023-05-06T14:28:44.539556696Z"
     dependencies:
     - name: common
@@ -380,6 +407,30 @@ entries:
   sonarr:
   - apiVersion: v2
     appVersion: 3.0.10.1567
+    created: "2023-05-06T20:57:37.447127914Z"
+    dependencies:
+    - name: common
+      repository: https://beluga-cloud.github.io/charts
+      version: 1.0.0
+    description: Smart PVR for newsgroup and bittorrent users.
+    digest: a450d666901f4ae8ee9bd4dfa7c3d7ed568e787875f083fff6dba6ad0d06476e
+    home: https://sonarr.tv/
+    icon: https://raw.githubusercontent.com/Sonarr/Sonarr/develop/Logo/1024.png
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: sonarr
+    sources:
+    - https://sonarr.tv/
+    - https://github.com/Sonarr/Sonarr
+    - https://github.com/beluga-cloud/charts/tree/main/charts/sonarr
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/sonarr-2.0.0/sonarr-2.0.0.tgz
+    version: 2.0.0
+  - apiVersion: v2
+    appVersion: 3.0.10.1567
     created: "2023-05-06T20:40:07.611192492Z"
     dependencies:
     - name: common
@@ -426,4 +477,4 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/sonarr-1.0.0/sonarr-1.0.0.tgz
     version: 1.0.0
-generated: "2023-05-06T20:40:07.611215393Z"
+generated: "2023-05-06T20:57:37.447207115Z"
