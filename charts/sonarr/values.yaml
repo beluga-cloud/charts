@@ -131,12 +131,6 @@ persistence:
         requests:
           storage: 100M
 
-rbac:
-  # -- Specifies whether RBAC resources should be created
-  create: true
-  # -- Allow helm-dashboard to create/edit/delete Kubernetes resources
-  allowWriteActions: false
-
 service:
   # -- Service type
   type: ClusterIP
