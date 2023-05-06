@@ -14,15 +14,15 @@ spec:
   ingress:
     - ports:
         - port: 8096
-    {{- if .Values.networkPolicy.allowExternal }}
       from:
-        - podSelector:
-            matchLabels:
-              {{ include "common.names.fullname" . }}-client: "true"
         - podSelector:
             matchLabels:
               {{- include "common.labels.matchLabels" . | nindent 14 }}
               {{- with .Values.podLabels }}{{ toYaml . | nindent 14 }}{{ end }}
+    {{- if .Values.networkPolicy.allowExternal }}
+        - podSelector:
+            matchLabels:
+              network-policies.kubernetes.io/{{ include "common.names.fullname" . }}-access: required
     {{- end }}
     {{- with .Values.networkPolicy.ingress }}
       {{- toYaml . | nindent 4 }}
@@ -38,8 +38,8 @@ spec:
       {{- include "common.labels.matchLabels" . | nindent 6 }}
       {{- with .Values.podLabels }}{{ toYaml . | nindent 6 }}{{ end }}
   policyTypes:
-  - Ingress
+    - Ingress
   {{- if or (not .Values.networkPolicy.allowAllOutbound) .Values.networkPolicy.egress }}
-  - Egress
+    - Egress
   {{- end }}
 {{- end }}
