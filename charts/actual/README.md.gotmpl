@@ -1,7 +1,6 @@
-{{- define "chart.title" }}{{ .Name | replace "-" " " | title }}{{- end }}
-{{/*{{- define "chart.icon" }}{{ fail "Icon URL not configured" }}{{- end }}*/}}
-{{- define "chart.icon" }}https://github.com/actualbudget/docs/raw/master/static/img/actual.png{{- end }}
-{{- define "parameter.description" }}{{ regexReplaceAll "(https?://)([^/]+(?:/[^/]+)?)([^\\s]+)" (.Description | default .AutoDescription) "[$2]($1$2$3)" }}{{- end }}
+{{- define "chart.title" }}{{ .Name | replace "-" " " | title }}{{- end -}}
+{{- define "chart.icon" }}https://github.com/actualbudget/docs/raw/master/static/img/actual.png{{- end -}}
+{{- define "parameter.description" }}{{ regexReplaceAll "(https?://)([^/]+(?:/[^/]+)?)([^\\s]+)" (.Description | default .AutoDescription) "[$2]($1$2$3)" }}{{- end -}}
 
 <!-- markdownlint-disable MD033 -->
 
