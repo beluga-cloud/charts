@@ -1,5 +1,4 @@
 {{- define "chart.title" }}{{ .Name | replace "-" " " | title }}{{- end }}
-{{/*{{- define "chart.icon" }}{{ fail "Icon URL not configured" }}{{- end }}*/}}
 {{- define "chart.icon" }}https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo-small.png{{- end }}
 {{- define "parameter.description" }}{{ regexReplaceAll "(https?://)([^/]+(?:/[^/]+)?)([^\\s]+)" (.Description | default .AutoDescription) "[$2]($1$2$3)" }}{{- end }}
 
