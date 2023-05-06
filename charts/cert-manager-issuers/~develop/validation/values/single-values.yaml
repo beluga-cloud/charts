@@ -13,6 +13,6 @@ issuers:
                   name: '{{ .credentials.name }}'
                   key: api-token
         privateKeySecretRef:
-          name: '{{ .credentials.name }}-issuer-key'
+          name: '{{ .issuer.name }}-issuer-key'
     credentials:
       api-token: CLOUDFLARE_TOKEN
