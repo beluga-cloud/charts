@@ -1,6 +1,6 @@
 dependencies:
 - name: common
-  repository: https://charts.bitnami.com/bitnami
-  version: 2.2.5
-digest: sha256:d4da258f3306ce81d7e3b232885fc664e4841e0a34cbf4d339467cacbca842e6
-generated: "2023-05-03T06:18:43.229174294Z"
+  repository: https://beluga-cloud.github.io/charts
+  version: 1.0.0
+digest: sha256:b05740c22202c78723fe70b3e4c9d680a31b98ec7d5e59cd4ef06ad6f01f601c
+generated: "2023-05-04T22:21:42.269779238+02:00"
