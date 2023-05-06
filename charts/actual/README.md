@@ -1,5 +1,3 @@
-
-
 <!-- markdownlint-disable MD033 -->
 
 <h1 align="center">
@@ -18,7 +16,7 @@
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 1.2.0](https://img.shields.io/badge/Version-1.2.0-informational?style=flat)
+  ![Version: 1.2.1](https://img.shields.io/badge/Version-1.2.1-informational?style=flat)
   ![AppVersion: 23.4.2](https://img.shields.io/badge/AppVersion-23.4.2-informational?style=flat)
 
 </div>
@@ -168,7 +166,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.annotations` | Additional annotations for the Service | `{}` |
 | `service.clusterIP` | Service Cluster IP | `""` |
 | `service.externalTrafficPolicy` | Enable client source IP preservation | `"Cluster"` |
-| `service.loadBalancerIP` | LoadBalancer IP if service type is `LoadBalancer` (optional, cloud specific) | `""` |
 | `service.loadBalancerSourceRanges` | Addresses that are allowed when service is `LoadBalancer` | `[]` |
 | `service.type` | Service type | `"ClusterIP"` |
 | `service.web.nodePort` | Specify the nodePort value for the `LoadBalancer` and `NodePort` service types | `0` |
