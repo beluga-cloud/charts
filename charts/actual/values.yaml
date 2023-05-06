@@ -139,8 +139,6 @@ service:
   type: ClusterIP
   # -- Service Cluster IP
   clusterIP: ""
-  # -- LoadBalancer IP if service type is `LoadBalancer` (optional, cloud specific)
-  loadBalancerIP: ""
   # -- Addresses that are allowed when service is `LoadBalancer`
   loadBalancerSourceRanges: []
   # -- Enable client source IP preservation
