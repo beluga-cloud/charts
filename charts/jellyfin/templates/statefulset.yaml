@@ -34,7 +34,7 @@ spec:
       containers:
         - name: jellyfin
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-          image: {{ include "blib.images.image" (dict "image" .Values.images.jellyfin "global" $) }}
+          image: {{ include "common.images.image" (dict "image" .Values.images.jellyfin "context" $) }}
           imagePullPolicy: {{ .Values.images.jellyfin.pullPolicy }}
           ports:
             - name: web

@@ -28,3 +28,12 @@ repositories:
   password: ""
   url: https://charts.jetstack.io
   username: ""
+- caFile: ""
+  certFile: ""
+  insecure_skip_tls_verify: false
+  keyFile: ""
+  name: beluga-cloud
+  pass_credentials_all: false
+  password: ""
+  url: https://beluga-cloud.github.io/charts
+  username: ""

@@ -106,9 +106,6 @@ definitions: !!defs
     # If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail.
     # More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     clusterIP: !!str _
-    # Only applies to Service Type: LoadBalancer.
-    # LoadBalancer will get created with the IP specified in this field. This feature depends on whether the underlying cloud-provider supports specifying the loadBalancerIP when a load balancer is created.
-    loadBalancerIP: !!str _
     # If specified and supported by the platform, this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature.
     # More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/'
     loadBalancerSourceRanges: !!array_of_str _

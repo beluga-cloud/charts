@@ -1,6 +1,9 @@
-~develop/
-ci
+# Ignore all images
 images/
+
+# Ignore everything related to CI or development tools
+ci/
+~develop/
 
 .justfile
 .trivyignore

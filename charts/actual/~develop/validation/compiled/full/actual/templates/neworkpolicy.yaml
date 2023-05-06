@@ -8,7 +8,7 @@ metadata:
     annotations: enabled
   labels:
     app.kubernetes.io/name: actual
-    helm.sh/chart: actual-1.2.0
+    helm.sh/chart: actual-1.2.1
     app.kubernetes.io/instance: actual
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
@@ -16,7 +16,13 @@ metadata:
 spec:
   ingress:
     - ports:
-        - port: 8096
+        - port: 5006
+      from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: actual
+              app.kubernetes.io/instance: actual
+              podLabels: enabled
     - from:
       - ipBlock:
           cidr: 0.0.0.0/0
