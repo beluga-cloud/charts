@@ -13,16 +13,16 @@ metadata:
 spec:
   ingress:
     - ports:
-        - port: 8080
-    {{- if .Values.networkPolicy.allowExternal }}
+        - port: 5006
       from:
-        - podSelector:
-            matchLabels:
-              {{ include "common.names.fullname" . }}-client: "true"
         - podSelector:
             matchLabels:
               {{- include "common.labels.matchLabels" . | nindent 14 }}
               {{- with .Values.podLabels }}{{ toYaml . | nindent 14 }}{{ end }}
+    {{- if .Values.networkPolicy.allowExternal }}
+        - podSelector:
+            matchLabels:
+              network-policies.kubernetes.io/{{ include "common.names.fullname" . }}-access: required
     {{- end }}
     {{- with .Values.networkPolicy.ingress }}
       {{- toYaml . | nindent 4 }}

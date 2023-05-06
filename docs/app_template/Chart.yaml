@@ -17,5 +17,5 @@ maintainers:
     url: https://github.com/beluga-cloud
 dependencies:
   - name: common
-    repository: https://charts.bitnami.com/bitnami
-    version: 2.2.5
+    repository: https://beluga-cloud.github.io/charts
+    version: 1.0.0

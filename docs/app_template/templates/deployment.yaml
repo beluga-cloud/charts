@@ -33,7 +33,7 @@ spec:
       containers:
         - name: {{ name }}
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-          image: {{ include "blib.images.image" (dict "image" .Values.images.{{ name }} "global" $) }}
+          image: {{ include "common.images.image" (dict "image" .Values.images.{{ name }} "context" $) }}
           imagePullPolicy: {{ .Values.images.{{ name }}.pullPolicy }}
           ports:
             - name: web
