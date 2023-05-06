@@ -75,7 +75,7 @@ jobs:
           input: ${{ inputs.artifact-ref }}
           format: sarif
           output: vulnerabilities.sarif
-      - uses: github/codeql-action/upload-sarif@11fba50273d618449e446a32bdab3d9dec79212b # codeql-bundle-20230418
+      - uses: github/codeql-action/upload-sarif@deb312c60b474a4b2a0f60399ae8fad9fa46e2bc # codeql-bundle-20230418
         with:
           category: trivy-container
           sarif_file: vulnerabilities.sarif
