@@ -13,12 +13,10 @@
 <div align="center">
   <br/>
 
-  [
-    ![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)
-  ](LICENSE)
+  [![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat)
+  ![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat)
   ![AppVersion: 3.0.10.1567](https://img.shields.io/badge/AppVersion-3.0.10.1567-informational?style=flat)
 
 </div>
@@ -28,6 +26,28 @@
 ## [Sonarr](https://sonarr.tv/)
 
 > _Disclaimer: This application has been developed by **sonarr community**._
+
+Sonarr is a PVR for Usenet and BitTorrent users. It can monitor multiple RSS feeds for new episodes of your favorite
+shows and will grab, sort and rename them. It can also be configured to automatically upgrade the quality of files
+already downloaded when a better quality format becomes available.
+
+### Current Features
+
+- Support for major platforms: Windows, Linux, macOS, Raspberry Pi, etc.
+- Automatically detects new episodes
+- Can scan your existing library and download any missing episodes
+- Can watch for better quality of the episodes you already have and do an automatic upgrade. e.g. from DVD to Blu-ray
+- Automatic failed download handling will try another release if one fails
+- Manual search, so you can pick any release or to see why a release was not downloaded automatically
+- Fully configurable episode renaming
+- Full integration with SABnzbd and NZBGet
+- Full integration with Kodi, Plex (notification, library update, metadata)
+- Full support for specials and multi-episode releases
+- And a beautiful UI
+
+[> More about Sonarr](https://sonarr.tv/)
+
+---
 
 ## TL;DR
 
@@ -158,8 +178,6 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `rbac.allowWriteActions` | Allow helm-dashboard to create/edit/delete Kubernetes resources | `false` |
-| `rbac.create` | Specifies whether RBAC resources should be created | `true` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

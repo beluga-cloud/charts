@@ -6,7 +6,7 @@ metadata:
   name: sonarr-mediavol-series
   labels:
     app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-1.0.0
+    helm.sh/chart: sonarr-1.0.1
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
@@ -28,7 +28,7 @@ metadata:
   name: sonarr-mediavol-animes
   labels:
     app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-1.0.0
+    helm.sh/chart: sonarr-1.0.1
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
@@ -50,7 +50,7 @@ metadata:
   name: sonarr-mediavol-series
   labels:
     app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-1.0.0
+    helm.sh/chart: sonarr-1.0.1
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
@@ -60,7 +60,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: sonarr
-      helm.sh/chart: sonarr-1.0.0
+      helm.sh/chart: sonarr-1.0.1
       app.kubernetes.io/instance: sonarr
       app.kubernetes.io/managed-by: Helm
       commonLabels01: enabled
@@ -79,7 +79,7 @@ metadata:
   name: sonarr-mediavol-animes
   labels:
     app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-1.0.0
+    helm.sh/chart: sonarr-1.0.1
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
@@ -89,7 +89,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: sonarr
-      helm.sh/chart: sonarr-1.0.0
+      helm.sh/chart: sonarr-1.0.1
       app.kubernetes.io/instance: sonarr
       app.kubernetes.io/managed-by: Helm
       commonLabels01: enabled
