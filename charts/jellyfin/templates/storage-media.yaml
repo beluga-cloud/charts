@@ -11,8 +11,7 @@ spec:
   storageClassName: ""
   selector:
     matchLabels:
-      {{- include "common.labels.standard" $ | nindent 6 }}
-      {{- with $.Values.global.commonLabels }}{{ toYaml . | nindent 6 }}{{ end }}
+      {{- include "common.labels.matchLabels" $ | nindent 6 }}
       jellyfin-volume: {{ .name }}
   accessModes: {{ toYaml .volumeSpec.accessModes | nindent 4 }}
   resources:
