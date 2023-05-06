@@ -380,6 +380,30 @@ entries:
   sonarr:
   - apiVersion: v2
     appVersion: 3.0.10.1567
+    created: "2023-05-06T20:40:07.611192492Z"
+    dependencies:
+    - name: common
+      repository: https://beluga-cloud.github.io/charts
+      version: 1.0.0
+    description: Smart PVR for newsgroup and bittorrent users.
+    digest: 39450ab326fedc989f025a8f11f94080d17931058c6039c6fa2fdbba551b0d40
+    home: https://sonarr.tv/
+    icon: https://raw.githubusercontent.com/Sonarr/Sonarr/develop/Logo/1024.png
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: sonarr
+    sources:
+    - https://sonarr.tv/
+    - https://github.com/Sonarr/Sonarr
+    - https://github.com/beluga-cloud/charts/tree/main/charts/sonarr
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/sonarr-1.0.1/sonarr-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 3.0.10.1567
     created: "2023-05-06T18:53:58.56157534Z"
     dependencies:
     - name: common
@@ -402,4 +426,4 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/sonarr-1.0.0/sonarr-1.0.0.tgz
     version: 1.0.0
-generated: "2023-05-06T19:13:00.430529421Z"
+generated: "2023-05-06T20:40:07.611215393Z"
