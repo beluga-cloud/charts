@@ -87,4 +87,4 @@ jobs:
     uses: ./.github/workflows/_.images.supply-chain.for-artifacts.yaml
     with:
       artifact-ref: ${{ matrix.artifact.artifact }}
-      name: ${{ matrix.artifact.name-slug }}-${{ matrix.artifact.platform.arch }}-${{ matrix.artifact.platform.platform.os }}
+      name: ${{ matrix.artifact.name-slug }}-${{ matrix.artifact.platform.arch }}-${{ matrix.artifact.platform.os }}
