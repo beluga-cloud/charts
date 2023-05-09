@@ -6,7 +6,7 @@ metadata:
   name: sonarr
   labels:
     app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-2.0.0
+    helm.sh/chart: sonarr-2.0.1
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -22,10 +22,10 @@ spec:
         app.kubernetes.io/instance: sonarr
     spec:
       securityContext:
-        fsGroup: 65463
-        runAsGroup: 65463
+        fsGroup: 64085
+        runAsGroup: 64085
         runAsNonRoot: true
-        runAsUser: 65463
+        runAsUser: 64085
         seccompProfile:
           type: RuntimeDefault
       containers:
@@ -36,9 +36,9 @@ spec:
               drop:
               - ALL
             readOnlyRootFilesystem: true
-            runAsGroup: 65463
+            runAsGroup: 64085
             runAsNonRoot: true
-            runAsUser: 65463
+            runAsUser: 64085
           image: ghcr.io/beluga-cloud/sonarr/sonarr:3.0.10.1567
           imagePullPolicy: IfNotPresent
           ports:

@@ -16,7 +16,7 @@
   [![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat)
+  ![Version: 2.0.1](https://img.shields.io/badge/Version-2.0.1-informational?style=flat)
   ![AppVersion: 3.0.10.1567](https://img.shields.io/badge/AppVersion-3.0.10.1567-informational?style=flat)
 
 </div>
@@ -122,8 +122,8 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Description | Default |
 |-----|-------------|---------|
-| `containerSecurityContext` | Security context for the helm-dashboard container    ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463}` |
-| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))) | `{"fsGroup":65463,"runAsGroup":65463,"runAsNonRoot":true,"runAsUser":65463,"seccompProfile":{"type":"RuntimeDefault"}}` |
+| `containerSecurityContext` | Security context for the helm-dashboard container    ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":64085,"runAsNonRoot":true,"runAsUser":64085}` |
+| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs]([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))) | `{"fsGroup":64085,"runAsGroup":64085,"runAsNonRoot":true,"runAsUser":64085,"seccompProfile":{"type":"RuntimeDefault"}}` |
 
 ### Deployment/Statefulset parameters
 
@@ -165,7 +165,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `service.loadBalancerSourceRanges` | Addresses that are allowed when service is `LoadBalancer` | `[]` |
 | `service.type` | Service type | `"ClusterIP"` |
 | `service.web.nodePort` | Specify the nodePort value for the `LoadBalancer` and `NodePort` service types | `0` |
-| `service.web.port` | `web` service port | `8080` |
+| `service.web.port` | `web` service port | `8989` |
 
 ### Persistence parameters
 
