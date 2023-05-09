@@ -1,0 +1,22 @@
+apiVersion: v2
+type: application
+name: prowlarr
+description: Prowlarr is an indexer manager/proxy built on the popular *arr.
+version: 1.0.0
+# renovate: datasource=docker depName=ghcr.io/beluga-cloud/prowlarr/prowlarr
+appVersion: 1.4.1.3258
+kubeVersion: '>=1.20'
+home: https://prowlarr.com/
+icon: https://raw.githubusercontent.com/Prowlarr/Prowlarr/develop/Logo/1024.png
+keywords: []
+sources:
+  - https://prowlarr.tv/
+  - https://github.com/Prowlarr/Prowlarr
+  - https://github.com/beluga-cloud/charts/tree/main/charts/prowlarr
+maintainers:
+  - name: xunleii
+    url: https://github.com/beluga-cloud
+dependencies:
+  - name: common
+    repository: https://beluga-cloud.github.io/charts
+    version: 1.0.0

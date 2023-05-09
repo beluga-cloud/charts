@@ -1,0 +1,103 @@
+---
+# Source: prowlarr/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  annotations:
+    podAnnotations: enabled
+  labels:
+    app.kubernetes.io/name: prowlarr
+    helm.sh/chart: prowlarr-1.0.0
+    app.kubernetes.io/instance: prowlarr
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prowlarr
+      app.kubernetes.io/instance: prowlarr
+      podLabels: enabled
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        podAnnotations: enabled
+      labels:
+        app.kubernetes.io/name: prowlarr
+        app.kubernetes.io/instance: prowlarr
+        podLabels: enabled
+    spec:
+      imagePullSecrets:
+        - name: image-pull-secret
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: Unconfined
+      containers:
+        - name: prowlarr
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: false
+            runAsGroup: 65534
+            runAsNonRoot: true
+            runAsUser: 65534
+          image: ghcr.io/beluga-cloud/prowlarr/prowlarr:1.4.1.3258
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 9696
+              protocol: TCP
+          livenessProbe:
+            httpGet: &httpProbe
+              port: web
+              path: /ping
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet: *httpProbe
+            periodSeconds: 10
+            timeoutSeconds: 10
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/prowlarr/data
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: another-node-label-key
+                operator: In
+                values:
+                - another-node-label-value
+            weight: 1
+      tolerations:
+        - effect: NoSchedule
+          key: foo.bar.com/role
+          operator: Equal
+          value: master
+      volumes:
+        - name: data
+          emptyDir: { }
