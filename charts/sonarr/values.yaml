@@ -98,10 +98,10 @@ resources:
 
 # -- Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/))
 podSecurityContext:
-  fsGroup: 65463
+  fsGroup: 64085
   runAsNonRoot: true
-  runAsUser: 65463
-  runAsGroup: 65463
+  runAsUser: 64085
+  runAsGroup: 64085
   seccompProfile:
     type: RuntimeDefault
 
@@ -113,8 +113,8 @@ containerSecurityContext:
     drop:
       - ALL
   readOnlyRootFilesystem: true
-  runAsUser: 65463
-  runAsGroup: 65463
+  runAsUser: 64085
+  runAsGroup: 64085
   runAsNonRoot: true
 
 persistence:
@@ -145,7 +145,7 @@ service:
 
   web:
     # -- `web` service port
-    port: 8080
+    port: 8989
     # -- Specify the nodePort value for the `LoadBalancer` and `NodePort` service types
     nodePort: 0
 

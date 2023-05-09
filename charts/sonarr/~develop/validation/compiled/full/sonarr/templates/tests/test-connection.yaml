@@ -6,7 +6,7 @@ metadata:
   name: "sonarr-test-connection"
   labels:
     app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-2.0.0
+    helm.sh/chart: sonarr-2.0.1
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
   annotations:
@@ -46,7 +46,7 @@ metadata:
   name: "sonarr-test-connection"
   labels:
     app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-2.0.0
+    helm.sh/chart: sonarr-2.0.1
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
   annotations:

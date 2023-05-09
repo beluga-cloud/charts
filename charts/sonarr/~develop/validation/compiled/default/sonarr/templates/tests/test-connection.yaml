@@ -6,7 +6,7 @@ metadata:
   name: "sonarr-test-connection"
   labels:
     app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-2.0.0
+    helm.sh/chart: sonarr-2.0.1
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
   annotations:
@@ -14,7 +14,7 @@ metadata:
 spec:
   containers:
     - name: wget
-      args: ['--timeout=5', '-O/dev/null', 'sonarr:8080/ping']
+      args: ['--timeout=5', '-O/dev/null', 'sonarr:8989/ping']
       command: ['wget']
       image: busybox:musl
       resources:
