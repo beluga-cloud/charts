@@ -1,0 +1,17 @@
+---
+# Source: prowlarr/templates/storage.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prowlarr-data
+  labels:
+    app.kubernetes.io/name: prowlarr
+    helm.sh/chart: prowlarr-1.0.0
+    app.kubernetes.io/instance: prowlarr
+    app.kubernetes.io/managed-by: Helm
+spec: 
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100M

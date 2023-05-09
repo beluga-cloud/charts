@@ -1,0 +1,74 @@
+---
+# Source: prowlarr/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  labels:
+    app.kubernetes.io/name: prowlarr
+    helm.sh/chart: prowlarr-1.0.0
+    app.kubernetes.io/instance: prowlarr
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: prowlarr
+      app.kubernetes.io/instance: prowlarr
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: prowlarr
+        app.kubernetes.io/instance: prowlarr
+    spec:
+      securityContext:
+        fsGroup: 64037
+        runAsGroup: 64037
+        runAsNonRoot: true
+        runAsUser: 64037
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: prowlarr
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 64037
+            runAsNonRoot: true
+            runAsUser: 64037
+          image: ghcr.io/beluga-cloud/prowlarr/prowlarr:1.4.1.3258
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 9696
+              protocol: TCP
+          livenessProbe:
+            httpGet: &httpProbe
+              port: web
+              path: /ping
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet: *httpProbe
+            periodSeconds: 10
+            timeoutSeconds: 10
+          resources:
+            limits:
+              cpu: 1
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/prowlarr/data
+      nodeSelector:
+        kubernetes.io/os: linux
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: prowlarr-data

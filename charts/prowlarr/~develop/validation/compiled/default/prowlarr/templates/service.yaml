@@ -1,0 +1,21 @@
+---
+# Source: prowlarr/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: prowlarr
+  labels:
+    app.kubernetes.io/name: prowlarr
+    helm.sh/chart: prowlarr-1.0.0
+    app.kubernetes.io/instance: prowlarr
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 9696
+      targetPort: web
+      nodePort: null
+  selector:
+    app.kubernetes.io/name: prowlarr
+    app.kubernetes.io/instance: prowlarr

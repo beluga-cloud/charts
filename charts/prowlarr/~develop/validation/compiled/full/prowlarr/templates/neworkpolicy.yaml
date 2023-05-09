@@ -1,0 +1,43 @@
+---
+# Source: prowlarr/templates/neworkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prowlarr
+  annotations:
+    annotations: enabled
+  labels:
+    app.kubernetes.io/name: prowlarr
+    helm.sh/chart: prowlarr-1.0.0
+    app.kubernetes.io/instance: prowlarr
+    app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec:
+  ingress:
+    - ports:
+        - port: 5006
+      from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prowlarr
+              app.kubernetes.io/instance: prowlarr
+              podLabels: enabled
+    - from:
+      - ipBlock:
+          cidr: 0.0.0.0/0
+  egress: 
+    - ports:
+      - port: 8080
+        protocol: TCP
+      to:
+      - ipBlock:
+          cidr: 0.0.0.0/0
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prowlarr
+      app.kubernetes.io/instance: prowlarr
+      podLabels: enabled
+  policyTypes:
+  - Ingress
+  - Egress
