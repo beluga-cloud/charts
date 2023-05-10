@@ -6,7 +6,7 @@ metadata:
   name: "prowlarr-test-connection"
   labels:
     app.kubernetes.io/name: prowlarr
-    helm.sh/chart: prowlarr-1.0.0
+    helm.sh/chart: prowlarr-1.0.1
     app.kubernetes.io/instance: prowlarr
     app.kubernetes.io/managed-by: Helm
   annotations:
@@ -46,7 +46,7 @@ metadata:
   name: "prowlarr-test-connection"
   labels:
     app.kubernetes.io/name: prowlarr
-    helm.sh/chart: prowlarr-1.0.0
+    helm.sh/chart: prowlarr-1.0.1
     app.kubernetes.io/instance: prowlarr
     app.kubernetes.io/managed-by: Helm
   annotations:
