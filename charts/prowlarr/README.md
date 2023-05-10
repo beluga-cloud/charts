@@ -16,7 +16,7 @@
   [![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat)
+  ![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat)
   ![AppVersion: 1.4.1.3258](https://img.shields.io/badge/AppVersion-1.4.1.3258-informational?style=flat)
 
 </div>

@@ -2,7 +2,7 @@ apiVersion: v2
 type: application
 name: prowlarr
 description: Prowlarr is an indexer manager/proxy built on the popular *arr.
-version: 1.0.0
+version: 1.0.1
 # renovate: datasource=docker depName=ghcr.io/beluga-cloud/prowlarr/prowlarr
 appVersion: 1.4.1.3258
 kubeVersion: '>=1.20'
