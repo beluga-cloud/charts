@@ -19,13 +19,12 @@ spec:
     - host: {{ .Values.ingress.hostname }}
       http:
         paths:
+          - path: {{ .Values.ingress.path }}
+            pathType: {{ default "ImplementationSpecific" .Values.ingress.pathType }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "common.names.fullname" $) "servicePort" $.Values.service.web.port "context" $) | nindent 14 }}
           {{- if .Values.ingress.extraPaths }}
           {{- toYaml .Values.ingress.extraPaths | nindent 10 }}
           {{- end }}
-          - path: {{ .Values.ingress.path }}
-            pathType: {{ default "ImplementationSpecific" .Values.ingress.pathType }}
-            {{- $backend := (dict "serviceName" (include "common.names.fullname" .) "servicePort" .Values.service.web.port "context" .) }}
-            backend: {{- include "common.ingress.backend" $backend | nindent 14 }}
     {{- end }}
     {{- range .Values.ingress.extraHosts }}
     - host: {{ .name | quote }}
@@ -33,15 +32,14 @@ spec:
         paths:
           - path: {{ default "/" .path }}
             pathType: {{ default "ImplementationSpecific" .pathType }}
-            {{- $backend := (dict "serviceName" (include "common.names.fullname" $) "servicePort" .Values.service.web.port "context" $) }}
-            backend: {{- include "common.ingress.backend" $backend | nindent 14 }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "common.names.fullname" $) "servicePort" $.Values.service.web.port "context" $) | nindent 14 }}
     {{- end }}
     {{- if .Values.ingress.extraRules }}
     {{- include "common.tplvalues.render" (dict "value" .Values.ingress.extraRules "context" $) | nindent 4 }}
     {{- end }}
-  {{- if or (and .Values.ingress.tls (or (include "common.ingress.certManagerRequest" (dict "annotations" .Values.ingress.annotations)))) .Values.ingress.extraTls }}
+  {{- if or (and .Values.ingress.tls (or (include "common.ingress.certManagerRequest" .Values.ingress.annotations))) .Values.ingress.extraTls }}
   tls:
-    {{- if and .Values.ingress.tls (or (include "common.ingress.certManagerRequest" (dict "annotations" .Values.ingress.annotations))) }}
+    {{- if and .Values.ingress.tls (or (include "common.ingress.certManagerRequest" .Values.ingress.annotations)) }}
     - hosts:
         - {{ .Values.ingress.hostname }}
       secretName: {{ printf "%s-tls" .Values.ingress.hostname }}
@@ -51,4 +49,3 @@ spec:
     {{- end }}
   {{- end }}
 {{- end }}
----
