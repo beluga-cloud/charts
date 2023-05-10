@@ -380,6 +380,30 @@ entries:
   prowlarr:
   - apiVersion: v2
     appVersion: 1.4.1.3258
+    created: "2023-05-10T22:38:43.650514495Z"
+    dependencies:
+    - name: common
+      repository: https://beluga-cloud.github.io/charts
+      version: 1.0.0
+    description: Prowlarr is an indexer manager/proxy built on the popular *arr.
+    digest: 2b8b57de4458f1c16e175da28a9391ecca7a93b56e82a59bbf472bcdf8fbb808
+    home: https://prowlarr.com/
+    icon: https://raw.githubusercontent.com/Prowlarr/Prowlarr/develop/Logo/1024.png
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: prowlarr
+    sources:
+    - https://prowlarr.tv/
+    - https://github.com/Prowlarr/Prowlarr
+    - https://github.com/beluga-cloud/charts/tree/main/charts/prowlarr
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/prowlarr-1.0.1/prowlarr-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.4.1.3258
     created: "2023-05-09T22:03:57.071169366Z"
     dependencies:
     - name: common
@@ -403,6 +427,30 @@ entries:
     - https://github.com/beluga-cloud/charts/releases/download/prowlarr-1.0.0/prowlarr-1.0.0.tgz
     version: 1.0.0
   sonarr:
+  - apiVersion: v2
+    appVersion: 3.0.10.1567
+    created: "2023-05-10T22:38:43.823907589Z"
+    dependencies:
+    - name: common
+      repository: https://beluga-cloud.github.io/charts
+      version: 1.0.0
+    description: Smart PVR for newsgroup and bittorrent users.
+    digest: 98843c71f867a2a5307b7055973a3623c777ea3966e97ca563dfc3797792e672
+    home: https://sonarr.tv/
+    icon: https://raw.githubusercontent.com/Sonarr/Sonarr/develop/Logo/1024.png
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: sonarr
+    sources:
+    - https://sonarr.tv/
+    - https://github.com/Sonarr/Sonarr
+    - https://github.com/beluga-cloud/charts/tree/main/charts/sonarr
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/sonarr-2.0.2/sonarr-2.0.2.tgz
+    version: 2.0.2
   - apiVersion: v2
     appVersion: 3.0.10.1567
     created: "2023-05-09T21:27:12.107032617Z"
@@ -499,4 +547,4 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/sonarr-1.0.0/sonarr-1.0.0.tgz
     version: 1.0.0
-generated: "2023-05-09T22:03:57.071211367Z"
+generated: "2023-05-10T22:38:43.82416611Z"
