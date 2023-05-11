@@ -15,7 +15,7 @@ FROM docker.io/alpine/helm:3.11.3 as helm_packager
 FROM docker.io/bitnami/kubectl:1.27.1 as kubectl_packager
 FROM docker.io/aquasec/trivy:0.41.0 as trivy_packager
 
-FROM docker.io/alpine:3.17.3
+FROM docker.io/alpine:3.18.0
 
 # renovate: datasource=docker depName=komodorio/helm-dashboard versioning=semver
 ARG HELM_DASHBOARD_VERSION=1.3.1
