@@ -6,7 +6,7 @@ metadata:
   name: sonarr-data
   labels:
     app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-2.0.3
+    helm.sh/chart: sonarr-2.0.4
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
 spec: 

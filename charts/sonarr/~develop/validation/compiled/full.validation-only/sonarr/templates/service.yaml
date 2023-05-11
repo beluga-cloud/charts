@@ -14,12 +14,12 @@ metadata:
     commonLabels01: enabled
     commonLabels02: enabled
 spec:
-  type: ClusterIP
+  type: LoadBalancer
+  externalTrafficPolicy: "Cluster"
   ports:
     - name: web
       port: 8888
       targetPort: web
-      nodePort: null
   selector:
     app.kubernetes.io/name: sonarr
     app.kubernetes.io/instance: sonarr

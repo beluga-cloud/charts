@@ -4,30 +4,45 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sonarr
+  annotations:
+    podAnnotations: enabled
   labels:
     app.kubernetes.io/name: sonarr
     helm.sh/chart: sonarr-2.0.4
     app.kubernetes.io/instance: sonarr
     app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: sonarr
       app.kubernetes.io/instance: sonarr
+      podLabels: enabled
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
+      annotations:
+        podAnnotations: enabled
       labels:
         app.kubernetes.io/name: sonarr
         app.kubernetes.io/instance: sonarr
+        podLabels: enabled
     spec:
+      imagePullSecrets:
+        - name: image-pull-secret
       securityContext:
-        fsGroup: 64085
-        runAsGroup: 64085
+        fsGroup: 65534
+        runAsGroup: 65534
         runAsNonRoot: true
-        runAsUser: 64085
+        runAsUser: 65534
         seccompProfile:
-          type: RuntimeDefault
+          type: Unconfined
       containers:
         - name: sonarr
           securityContext:
@@ -35,10 +50,10 @@ spec:
             capabilities:
               drop:
               - ALL
-            readOnlyRootFilesystem: true
-            runAsGroup: 64085
+            readOnlyRootFilesystem: false
+            runAsGroup: 65534
             runAsNonRoot: true
-            runAsUser: 64085
+            runAsUser: 65534
           image: ghcr.io/beluga-cloud/sonarr/sonarr:3.0.10.1567
           imagePullPolicy: IfNotPresent
           ports:
@@ -58,17 +73,43 @@ spec:
             timeoutSeconds: 10
           resources:
             limits:
-              cpu: 1
-              memory: 1Gi
+              cpu: 2
+              memory: 2Gi
             requests:
-              cpu: 200m
-              memory: 256Mi
+              cpu: 10m
+              memory: 10Mi
           volumeMounts:
             - name: data
               mountPath: /opt/sonarr/data
+            - name: series
+              mountPath: /media/series
+              readOnly: false
+            - name: animes
+              mountPath: /media/animes
+              readOnly: true
       nodeSelector:
         kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: another-node-label-key
+                operator: In
+                values:
+                - another-node-label-value
+            weight: 1
+      tolerations:
+        - effect: NoSchedule
+          key: foo.bar.com/role
+          operator: Equal
+          value: master
       volumes:
         - name: data
+          emptyDir: { }
+        - name: series
           persistentVolumeClaim:
-            claimName: sonarr-data
+            claimName: sonarr-mediavol-series
+        - name: animes
+          persistentVolumeClaim:
+            claimName: sonarr-mediavol-animes
