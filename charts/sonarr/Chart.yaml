@@ -2,7 +2,7 @@ apiVersion: v2
 type: application
 name: sonarr
 description: Smart PVR for newsgroup and bittorrent users.
-version: 2.0.2
+version: 2.0.3
 # renovate: datasource=docker depName=ghcr.io/beluga-cloud/sonarr/sonarr
 appVersion: 3.0.10.1567
 kubeVersion: '>=1.20'
