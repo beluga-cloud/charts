@@ -74,7 +74,9 @@ spec:
             {{- range .Values.jellyfin.mediaVolumes }}
             - name: {{ .name }}
               mountPath: /media/{{ .name }}
-              readOnly: {{ .readOnly | default true }}
+              {{- with .readOnly }}
+              readOnly: {{ . }}
+              {{- end }}
             {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
