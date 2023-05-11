@@ -45,7 +45,7 @@ build-validation-files CHART_NAME: build
   for value in ~develop/validation/values/*; do
     {{ exec }} helm template {{ CHART_NAME }} . --create-namespace --namespace {{ CHART_NAME }}-validation \
       --values "${value}" \
-      --output-dir "~develop/validation/compiled/$(basename "${value}" | cut -d'-' -f1)"
+      --output-dir "~develop/validation/compiled/$(basename "${value}" | sed 's/-values//;s/.yaml//')"
   done
 
 # generates markdown documentation from requirements and values files
