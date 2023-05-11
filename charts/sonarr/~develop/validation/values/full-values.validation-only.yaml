@@ -91,7 +91,7 @@ sonarr:
         path: /nas/series
         server: my-nfs-server.example.com
   - name: animes
-    readOnly: false
+    readOnly: true
     volumeSpec:
       accessModes:
       - ReadWriteOnce
