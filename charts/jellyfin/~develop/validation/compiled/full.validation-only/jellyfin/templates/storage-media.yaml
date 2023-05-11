@@ -1,57 +1,57 @@
 ---
-# Source: sonarr/templates/storage-media.yaml
+# Source: jellyfin/templates/storage-media.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: sonarr-mediavol-series
+  name: jellyfin-mediavol-movies
   labels:
-    app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-2.0.3
-    app.kubernetes.io/instance: sonarr
+    app.kubernetes.io/name: jellyfin
+    helm.sh/chart: jellyfin-2.0.2
+    app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
     commonLabels02: enabled
-    sonarr-volume: series
+    jellyfin-volume: movies
 spec: 
   accessModes:
   - ReadWriteOnce
   capacity:
     storage: 8Ti
   nfs:
-    path: /nas/series
+    path: /nas/movies
     server: my-nfs-server.example.com
 ---
-# Source: sonarr/templates/storage-media.yaml
+# Source: jellyfin/templates/storage-media.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: sonarr-mediavol-animes
+  name: jellyfin-mediavol-musics
   labels:
-    app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-2.0.3
-    app.kubernetes.io/instance: sonarr
+    app.kubernetes.io/name: jellyfin
+    helm.sh/chart: jellyfin-2.0.2
+    app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
     commonLabels02: enabled
-    sonarr-volume: animes
+    jellyfin-volume: musics
 spec: 
   accessModes:
   - ReadWriteOnce
   capacity:
     storage: 8Ti
   nfs:
-    path: /nas/animes
+    path: /nas/musics
     server: my-nfs-server.example.com
 ---
-# Source: sonarr/templates/storage-media.yaml
+# Source: jellyfin/templates/storage-media.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: sonarr-mediavol-series
+  name: jellyfin-mediavol-movies
   labels:
-    app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-2.0.3
-    app.kubernetes.io/instance: sonarr
+    app.kubernetes.io/name: jellyfin
+    helm.sh/chart: jellyfin-2.0.2
+    app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
     commonLabels02: enabled
@@ -59,24 +59,24 @@ spec:
   storageClassName: ""
   selector:
     matchLabels:
-      app.kubernetes.io/name: sonarr
-      app.kubernetes.io/instance: sonarr
-      sonarr-volume: series
+      app.kubernetes.io/name: jellyfin
+      app.kubernetes.io/instance: jellyfin
+      jellyfin-volume: movies
   accessModes: 
     - ReadWriteOnce
   resources:
     requests: 
       storage: 8Ti
 ---
-# Source: sonarr/templates/storage-media.yaml
+# Source: jellyfin/templates/storage-media.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: sonarr-mediavol-animes
+  name: jellyfin-mediavol-musics
   labels:
-    app.kubernetes.io/name: sonarr
-    helm.sh/chart: sonarr-2.0.3
-    app.kubernetes.io/instance: sonarr
+    app.kubernetes.io/name: jellyfin
+    helm.sh/chart: jellyfin-2.0.2
+    app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
     commonLabels02: enabled
@@ -84,9 +84,9 @@ spec:
   storageClassName: ""
   selector:
     matchLabels:
-      app.kubernetes.io/name: sonarr
-      app.kubernetes.io/instance: sonarr
-      sonarr-volume: animes
+      app.kubernetes.io/name: jellyfin
+      app.kubernetes.io/instance: jellyfin
+      jellyfin-volume: musics
   accessModes: 
     - ReadWriteOnce
   resources:

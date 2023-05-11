@@ -4,11 +4,15 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: jellyfin
+  annotations:
+    podAnnotations: enabled
   labels:
     app.kubernetes.io/name: jellyfin
     helm.sh/chart: jellyfin-2.0.2
     app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/managed-by: Helm
+    commonLabels01: enabled
+    commonLabels02: enabled
 spec:
   serviceName: jellyfin
   replicas: 1
@@ -16,18 +20,30 @@ spec:
     matchLabels:
       app.kubernetes.io/name: jellyfin
       app.kubernetes.io/instance: jellyfin
+      podLabels: enabled
+  updateStrategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
+      annotations:
+        podAnnotations: enabled
       labels:
         app.kubernetes.io/name: jellyfin
         app.kubernetes.io/instance: jellyfin
+        podLabels: enabled
     spec:
+      imagePullSecrets:
+        - name: image-pull-secret
       securityContext:
-        runAsGroup: 64710
+        fsGroup: 65534
+        runAsGroup: 65534
         runAsNonRoot: true
-        runAsUser: 64710
+        runAsUser: 65534
         seccompProfile:
-          type: RuntimeDefault
+          type: Unconfined
       containers:
         - name: jellyfin
           securityContext:
@@ -35,10 +51,10 @@ spec:
             capabilities:
               drop:
               - ALL
-            readOnlyRootFilesystem: true
-            runAsGroup: 64710
+            readOnlyRootFilesystem: false
+            runAsGroup: 65534
             runAsNonRoot: true
-            runAsUser: 64710
+            runAsUser: 65534
           image: ghcr.io/beluga-cloud/jellyfin/jellyfin:10.8.10
           imagePullPolicy: IfNotPresent
           ports:
@@ -58,34 +74,51 @@ spec:
             timeoutSeconds: 10
           resources:
             limits:
-              cpu: "2"
-              memory: 6Gi
+              cpu: 2
+              memory: 2Gi
             requests:
-              cpu: 500m
-              memory: 512Mi
+              cpu: 10m
+              memory: 10Mi
           volumeMounts:
             - name: config
               mountPath: /opt/jellyfin/config
             - name: data
               mountPath: /opt/jellyfin/data
-            - name: transcodes
-              mountPath: /opt/jellyfin/data/transcodes
             - name: cache
               mountPath: /opt/jellyfin/cache
             - name: log
               mountPath: /opt/jellyfin/log
             - name: tmpfs
               mountPath: /tmp
+            - name: dev-dri-renderd128
+              mountPath: /dev/dri/renderD128
+            - name: movies
+              mountPath: /media/movies
+              readOnly: false
+            - name: musics
+              mountPath: /media/musics
+              readOnly: true
       nodeSelector:
         kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: another-node-label-key
+                operator: In
+                values:
+                - another-node-label-value
+            weight: 1
+      tolerations:
+        - effect: NoSchedule
+          key: foo.bar.com/role
+          operator: Equal
+          value: master
       volumes:
         - name: config
-          persistentVolumeClaim:
-            claimName: jellyfin-config
+          emptyDir: { }
         - name: data
-          persistentVolumeClaim:
-            claimName: jellyfin-data
-        - name: transcodes
           emptyDir: { }
         - name: cache
           emptyDir: { }
@@ -95,3 +128,12 @@ spec:
           emptyDir:
             medium: Memory
             sizeLimit: 10Mi
+        - name: dev-dri-renderd128
+          hostPath:
+            path: /dev/dri/renderD128
+        - name: movies
+          persistentVolumeClaim:
+            claimName: jellyfin-mediavol-movies
+        - name: musics
+          persistentVolumeClaim:
+            claimName: jellyfin-mediavol-musics

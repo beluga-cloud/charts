@@ -74,8 +74,10 @@ spec:
             {{- range .Values.jellyfin.mediaVolumes }}
             - name: {{ .name }}
               mountPath: /media/{{ .name }}
-              {{- with .readOnly }}
-              readOnly: {{ . }}
+              {{- if hasKey . "readOnly" }}
+              readOnly: {{ .readOnly }}
+              {{- else }}
+              readOnly: true
               {{- end }}
             {{- end }}
       {{- with .Values.nodeSelector }}

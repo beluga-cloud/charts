@@ -46,7 +46,7 @@ jellyfin:
         path: /nas/movies
         server: my-nfs-server.example.com
   - name: musics
-    readOnly: false
+    readOnly: true
     volumeSpec:
       accessModes:
       - ReadWriteOnce
