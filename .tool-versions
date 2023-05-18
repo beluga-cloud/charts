@@ -9,7 +9,7 @@ helm-docs 1.11.0
 jq 1.6
 just 1.13.0
 kind 0.18.0
-kubectl 1.27.1
+kubectl 1.27.2
 regctl 0.4.8
 trivy 0.41.0
 yq 4.33.3
