@@ -7,7 +7,7 @@ require (
 	github.com/invopop/jsonschema v0.7.0
 	github.com/stoewer/go-strcase v1.3.0
 	github.com/urfave/cli/v2 v2.25.3
-	github.com/urfave/cli/v3 v3.0.0-alpha2
+	github.com/urfave/cli/v3 v3.0.0-alpha3
 	go.uber.org/zap v1.24.0
 	gopkg.in/yaml.v3 v3.0.1
 )
