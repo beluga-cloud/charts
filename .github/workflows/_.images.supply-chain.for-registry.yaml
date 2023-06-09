@@ -30,7 +30,7 @@ jobs:
           format: cyclonedx
           output: sbom.cyclonedx.json
 
-      - uses: sigstore/cosign-installer@204a51a57a74d190b284a0ce69b44bc37201f343 # v3.0.3
+      - uses: sigstore/cosign-installer@dd6b2e2b610a11fd73dd187a43d57cc1394e35f9 # v3.0.5
       - name: Attest SBOM to ${{ inputs.image-ref }}
         run: cosign attest --yes --replace --predicate sbom.cyclonedx.json --type cyclonedx "${{ inputs.image-ref }}"
 
@@ -59,7 +59,7 @@ jobs:
           format: cosign-vuln
           output: vulnerabilities.cosign-vuln.json
 
-      - uses: sigstore/cosign-installer@204a51a57a74d190b284a0ce69b44bc37201f343 # v3.0.3
+      - uses: sigstore/cosign-installer@dd6b2e2b610a11fd73dd187a43d57cc1394e35f9 # v3.0.5
       - name: Attest vulnerability report to ${{ inputs.image-ref }}
         run: cosign attest --yes --replace --predicate vulnerabilities.cosign-vuln.json --type vuln "${{ inputs.image-ref }}"
 
