@@ -14,6 +14,6 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: JasonEtco/is-sponsor-label-action@39d88e461a53ecb1b3c0a13673e6252f9976f2f5 # v1.2.0
+      - uses: JasonEtco/is-sponsor-label-action@565f3cb67b3518a8aae36c3f0bce9e8513430e84 # v2.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
