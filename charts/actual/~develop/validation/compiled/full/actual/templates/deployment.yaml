@@ -8,7 +8,7 @@ metadata:
     podAnnotations: enabled
   labels:
     app.kubernetes.io/name: actual
-    helm.sh/chart: actual-1.3.0
+    helm.sh/chart: actual-1.4.0
     app.kubernetes.io/instance: actual
     app.kubernetes.io/managed-by: Helm
     commonLabels01: enabled
@@ -54,7 +54,7 @@ spec:
             runAsGroup: 65534
             runAsNonRoot: true
             runAsUser: 65534
-          image: ghcr.io/beluga-cloud/actual/actualserver:23.5.0
+          image: ghcr.io/beluga-cloud/actual/actualserver:23.7.2
           imagePullPolicy: IfNotPresent
           ports:
             - name: web
