@@ -1,7 +1,7 @@
-FROM docker.io/library/golang:1.20.4 as builder
+FROM docker.io/library/golang:1.20.5 as builder
 
 # renovate: datasource=docker depName=komodorio/helm-dashboard versioning=semver
-ARG HELM_DASHBOARD_VERSION=1.3.1
+ARG HELM_DASHBOARD_VERSION=1.3.3
 
 WORKDIR /build
 RUN git clone https://github.com/komodorio/helm-dashboard --branch v${HELM_DASHBOARD_VERSION}
@@ -11,14 +11,14 @@ RUN CGO_ENABLED=0 go build \
     -ldflags "-X main.version=${HELM_DASHBOARD_VERSION} -X main.date=$(date --iso-8601=ns) -X main.commit=$(git rev-parse HEAD)" \
     -o ../dashboard .
 
-FROM docker.io/alpine/helm:3.12.0 as helm_packager
-FROM docker.io/bitnami/kubectl:1.27.2 as kubectl_packager
-FROM docker.io/aquasec/trivy:0.41.0 as trivy_packager
+FROM docker.io/alpine/helm:3.12.1 as helm_packager
+FROM docker.io/bitnami/kubectl:1.27.3 as kubectl_packager
+FROM docker.io/aquasec/trivy:0.43.1 as trivy_packager
 
-FROM docker.io/alpine:3.18.0
+FROM docker.io/alpine:3.18.2
 
 # renovate: datasource=docker depName=komodorio/helm-dashboard versioning=semver
-ARG HELM_DASHBOARD_VERSION=1.3.1
+ARG HELM_DASHBOARD_VERSION=1.3.3
 
 RUN apk upgrade --no-cache
 COPY --from=builder /build/dashboard /bin/helm-dashboard
