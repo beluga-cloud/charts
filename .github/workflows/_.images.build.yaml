@@ -47,7 +47,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 1
 
@@ -122,20 +122,20 @@ jobs:
       matrix:
         platform: ${{ fromJson(needs.metadata.outputs.build-platforms) }}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 1
 
-      - uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # v2.1.0
-      - uses: docker/setup-buildx-action@4b4e9c3e2d4531116a6f8ba8e71fc6e2cb6e6c8c # v2.5.0
-      - uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+      - uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # v2.2.0
+      - uses: docker/setup-buildx-action@2a1a44ac4aa01993040736bd95bb470da1a38365 # v2.9.0
+      - uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - id: metadata
-        uses: docker/metadata-action@c4ee3adeed93b1fa6a762f209fb01608c1a22f1e # v4.4.0
+        uses: docker/metadata-action@818d4b7b91585d195f67373fd9cb0332e31a7175 # v4.6.0
         with:
           images: ghcr.io/${{ github.repository_owner }}/${{ needs.metadata.outputs.image-name }}
           flavor: |
@@ -146,7 +146,7 @@ jobs:
             com.github.beluga-cloud.ci.workflow.url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/blob/${{ github.sha }}/${{ inputs.containerfile }}
 
-      - uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # v4.0.0
+      - uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825 # v4.1.1
         id: build
         with:
           context: ${{ needs.metadata.outputs.build-context }}
@@ -163,7 +163,7 @@ jobs:
           DIGEST: ${{ steps.build.outputs.digest }}
 
       # NOTE: on production mode, all images are signed
-      - uses: sigstore/cosign-installer@dd6b2e2b610a11fd73dd187a43d57cc1394e35f9 # v3.0.5
+      - uses: sigstore/cosign-installer@6e04d228eb30da1757ee4e1dd75a0ec73a653e06 # v3.1.1
         if: ${{ !inputs.dry-run }}
       - name: Sign 'ghcr.io/${{ github.repository_owner }}/${{ needs.metadata.outputs.image-name }}@${{ steps.build.outputs.digest }}' with GitHub OIDC Token
         if: ${{ !inputs.dry-run }}
@@ -179,7 +179,7 @@ jobs:
           name: oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
           path: oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
 
-      - uses: cloudposse/github-action-matrix-outputs-write@47bfd07b833c59443a15353094aa2802a7613501 # 0.4.1
+      - uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # 0.4.2
         if: ${{ !inputs.dry-run }}
         with:
           matrix-step-name: build-${{ needs.metadata.outputs.image-slug }} # unique key for this called workflow
@@ -189,7 +189,7 @@ jobs:
             version: ${{ needs.metadata.outputs.image-version }}
             artifact: ghcr.io/${{ github.repository_owner }}/${{ needs.metadata.outputs.image-name }}
             digest: ${{ steps.format-digest.outputs.digest }}
-      - uses: cloudposse/github-action-matrix-outputs-write@47bfd07b833c59443a15353094aa2802a7613501 # 0.4.1
+      - uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # 0.4.2
         if: ${{ inputs.dry-run }}
         with:
           matrix-step-name: build-${{ needs.metadata.outputs.image-slug }} # unique key for this called workflow
@@ -208,8 +208,8 @@ jobs:
       security-events: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
-      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - uses: aquasecurity/trivy-action@41f05d9ecffa2ed3f1580af306000f734b733e54 # 0.11.2
         with:
           exit-code: '1'
           format: sarif
@@ -255,7 +255,7 @@ jobs:
 
       # NOTE: if this reusable workflow is called from another workflow using matrix strategy, we need
       #       to store somewhere the matrix outputs, so we can use it later in the caller workflow
-      - uses: cloudposse/github-action-matrix-outputs-write@47bfd07b833c59443a15353094aa2802a7613501 # 0.4.1
+      - uses: cloudposse/github-action-matrix-outputs-write@928e2a2d3d6ae4eb94010827489805c17c81181f # 0.4.2
         with:
           matrix-step-name: _.images.build
           matrix-key: ${{ inputs.containerfile }}
