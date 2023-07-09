@@ -16,7 +16,7 @@
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "versioning": "semver",
+      "versioning": "semver"
     }
   ],
   "regexManagers": [
