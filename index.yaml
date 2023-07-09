@@ -246,6 +246,32 @@ entries:
     version: 1.0.0
   helm-dashboard:
   - apiVersion: v2
+    appVersion: 1.3.3
+    created: "2023-07-09T20:45:35.622472645Z"
+    dependencies:
+    - name: common
+      repository: https://beluga-cloud.github.io/charts
+      version: 1.0.0
+    description: A GUI Dashboard for Helm by Komodor
+    digest: cf7fa81bdd73e2a87def3f57c5e780ad0a8fc02c9717376aae19b2aef9543013
+    home: https://github.com/komodorio/helm-dashboard
+    icon: https://raw.githubusercontent.com/komodorio/helm-dashboard/main/pkg/dashboard/static/logo.svg
+    keywords:
+    - dashboard
+    - helm
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: helm-dashboard
+    sources:
+    - https://github.com/komodorio/helm-dashboard
+    - https://github.com/beluga-cloud/charts/tree/main/charts/helm-dashboard
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/helm-dashboard-2.4.0/helm-dashboard-2.4.0.tgz
+    version: 2.4.0
+  - apiVersion: v2
     appVersion: 1.3.1
     created: "2023-05-06T14:28:44.386359287Z"
     dependencies:
@@ -677,4 +703,4 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/sonarr-1.0.0/sonarr-1.0.0.tgz
     version: 1.0.0
-generated: "2023-07-09T20:36:49.848906234Z"
+generated: "2023-07-09T20:45:35.622511245Z"
