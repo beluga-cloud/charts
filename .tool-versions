@@ -1,5 +1,4 @@
 cosign 2.0.1
-glow 1.5.0
 golang 1.20.5
 gum 0.10.0
 hadolint 2.12.0
