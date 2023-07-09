@@ -21,7 +21,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 1
 
@@ -30,7 +30,7 @@ jobs:
         with:
           name: ${{ inputs.artifact-ref }}
 
-      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
+      - uses: aquasecurity/trivy-action@41f05d9ecffa2ed3f1580af306000f734b733e54 # 0.11.2
         with:
           input: ${{ inputs.artifact-ref }}
           format: cyclonedx
@@ -50,7 +50,7 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           fetch-depth: 1
 
@@ -59,7 +59,7 @@ jobs:
         with:
           name: ${{ inputs.artifact-ref }}
 
-      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
+      - uses: aquasecurity/trivy-action@41f05d9ecffa2ed3f1580af306000f734b733e54 # 0.11.2
         with:
           input: ${{ inputs.artifact-ref }}
           format: cosign-vuln
@@ -70,7 +70,7 @@ jobs:
           path: vulnerabilities.cosign-vuln.json
 
       # Upload SARIF report for GitHub CodeQL at the same time
-      - uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
+      - uses: aquasecurity/trivy-action@41f05d9ecffa2ed3f1580af306000f734b733e54 # 0.11.2
         with:
           input: ${{ inputs.artifact-ref }}
           format: sarif
