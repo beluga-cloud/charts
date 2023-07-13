@@ -3,7 +3,7 @@ module dsl2jsonschema
 go 1.20
 
 require (
-	github.com/iancoleman/orderedmap v0.2.0
+	github.com/iancoleman/orderedmap v0.3.0
 	github.com/invopop/jsonschema v0.7.0
 	github.com/stoewer/go-strcase v1.3.0
 	github.com/urfave/cli/v2 v2.25.7
