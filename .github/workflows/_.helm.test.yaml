@@ -33,12 +33,12 @@ jobs:
         with:
           skip_install: ${{ steps.restore-asdf.outputs.cache-hit == 'true' }}
 
-      - uses: actions/setup-python@bd6b4b6205c4dbad673328db7b31b7fab9e241c0 # v4.6.1
+      - uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
         with:
           python-version: '3.9'
           check-latest: true
       - uses: helm/chart-testing-action@e8788873172cb653a90ca2e819d79d65a66d4e76 # v2.4.0
-      - uses: helm/kind-action@fa81e57adff234b2908110485695db0f181f3c67 # v1.7.0
+      - uses: helm/kind-action@dda0770415bac9fc20092cacbc54aa298604d140 # v1.8.0
         with:
           cluster_name: kind
           wait: 30s
