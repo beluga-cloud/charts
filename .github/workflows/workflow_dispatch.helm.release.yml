@@ -101,7 +101,7 @@ jobs:
           output: trivy-results.sarif
           scan-ref: ${{ matrix.chart }}
           scan-type: config
-      - uses: github/codeql-action/upload-sarif@1f63aba6538de592cd34d1d957c965c1167673c2 # codeql-bundle-20230418
+      - uses: github/codeql-action/upload-sarif@3078f51bf03237db53a1108696ead176f4e0ce59 # codeql-bundle-20230418
         if: always()
         with:
           category: trivy-helm-syntax
