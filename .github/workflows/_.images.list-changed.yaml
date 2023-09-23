@@ -23,11 +23,11 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           fetch-depth: 10
 
-      - uses: tj-actions/changed-files@85c8b8252fc9893e00b3633a16670e53040e6d71 # v37.5.2
+      - uses: tj-actions/changed-files@a0585ff9904b77d046192a7846e59783d6ea287b # v37.6.1
         id: changed-images
         with:
           files: ${{ inputs.pattern }}

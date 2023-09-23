@@ -47,7 +47,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           fetch-depth: 1
 
@@ -122,12 +122,12 @@ jobs:
       matrix:
         platform: ${{ fromJson(needs.metadata.outputs.build-platforms) }}
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           fetch-depth: 1
 
       - uses: docker/setup-qemu-action@2b82ce82d56a2a04d2637cd93a637ae1b359c0a7 # v2.2.0
-      - uses: docker/setup-buildx-action@4c0219f9ac95b02789c1075625400b2acbff50b1 # v2.9.1
+      - uses: docker/setup-buildx-action@885d1462b80bc1c1c7f0b00334ad271f09369c55 # v2.10.0
       - uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
         with:
           registry: ghcr.io
@@ -146,7 +146,7 @@ jobs:
             com.github.beluga-cloud.ci.workflow.url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/blob/${{ github.sha }}/${{ inputs.containerfile }}
 
-      - uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825 # v4.1.1
+      - uses: docker/build-push-action@0a97817b6ade9f46837855d676c4cca3a2471fc9 # v4.2.1
         id: build
         with:
           context: ${{ needs.metadata.outputs.build-context }}
@@ -163,7 +163,7 @@ jobs:
           DIGEST: ${{ steps.build.outputs.digest }}
 
       # NOTE: on production mode, all images are signed
-      - uses: sigstore/cosign-installer@6e04d228eb30da1757ee4e1dd75a0ec73a653e06 # v3.1.1
+      - uses: sigstore/cosign-installer@11086d25041f77fe8fe7b9ea4e48e3b9192b8f19 # v3.1.2
         if: ${{ !inputs.dry-run }}
       - name: Sign 'ghcr.io/${{ github.repository_owner }}/${{ needs.metadata.outputs.image-name }}@${{ steps.build.outputs.digest }}' with GitHub OIDC Token
         if: ${{ !inputs.dry-run }}
@@ -173,7 +173,7 @@ jobs:
       - name: Rename OCI image artifact before upload
         if: ${{ inputs.dry-run }}
         run: mv ${{ needs.metadata.outputs.image-slug }}.tar oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
-      - uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
+      - uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3.1.3
         if: ${{ inputs.dry-run }}
         with:
           name: oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
@@ -208,8 +208,8 @@ jobs:
       security-events: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-      - uses: aquasecurity/trivy-action@41f05d9ecffa2ed3f1580af306000f734b733e54 # 0.11.2
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+      - uses: aquasecurity/trivy-action@fbd16365eb88e12433951383f5e99bd901fc618f # 0.12.0
         with:
           exit-code: '1'
           format: sarif
