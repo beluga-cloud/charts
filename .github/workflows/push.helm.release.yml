@@ -22,7 +22,7 @@ jobs:
       pages: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
         with:
           fetch-depth: 0
       - uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3.5
@@ -84,7 +84,7 @@ jobs:
       matrix:
         chart: ${{ fromJson(needs.list-changed-charts.outputs.charts) }}
     steps:
-      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+      - uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
       - uses: aquasecurity/trivy-action@fbd16365eb88e12433951383f5e99bd901fc618f # 0.12.0
         with:
           exit-code: '1'
