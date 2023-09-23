@@ -69,7 +69,7 @@ jobs:
           image-ref: ${{ inputs.image-ref }}
           format: sarif
           output: vulnerabilities.sarif
-      - uses: github/codeql-action/upload-sarif@1f63aba6538de592cd34d1d957c965c1167673c2 # codeql-bundle-20230418
+      - uses: github/codeql-action/upload-sarif@3078f51bf03237db53a1108696ead176f4e0ce59 # codeql-bundle-20230418
         with:
           category: trivy-container
           sarif_file: vulnerabilities.sarif
