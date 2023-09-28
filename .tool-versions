@@ -2,7 +2,7 @@ cosign 2.0.1
 golang 1.21.1
 gum 0.10.0
 hadolint 2.12.0
-helm 3.12.3
+helm 3.13.0
 helm-ct 3.8.0
 helm-docs 1.11.0
 jq 1.6
