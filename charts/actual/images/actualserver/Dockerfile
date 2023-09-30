@@ -1,7 +1,7 @@
-FROM docker.io/library/alpine:3.18.2 as builder
+FROM docker.io/library/alpine:3.18.4 as builder
 
 # renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver extractVersion=^v(?<version>\S+)$
-ARG ACTUAL_VERSION=23.8.0
+ARG ACTUAL_VERSION=23.9.0
 
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
@@ -18,10 +18,10 @@ RUN set -x \
     && npm_config_yes=true npx yarn-audit-fix \
     && yarn install
 
-FROM docker.io/library/alpine:3.18.2
+FROM docker.io/library/alpine:3.18.4
 
 # renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver extractVersion=^v(?<version>\S+)$
-ARG ACTUAL_VERSION=23.8.0
+ARG ACTUAL_VERSION=23.9.0
 
 # hadolint ignore=DL3018
 RUN adduser actual -u 64087 -g 64087 -s /bin/false -D -H \
