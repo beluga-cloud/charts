@@ -30,19 +30,21 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/iancoleman/orderedmap"
-	"github.com/invopop/jsonschema"
-	"github.com/stoewer/go-strcase"
-	"github.com/urfave/cli/v3"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/yaml.v3"
 	"os"
 	"regexp"
 	"strings"
 	"text/template"
+
+	"github.com/invopop/jsonschema"
+	"github.com/stoewer/go-strcase"
+	"github.com/urfave/cli/v3"
+	orderedmap "github.com/wk8/go-ordered-map/v2"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/yaml.v3"
 )
 
 var (
@@ -56,7 +58,7 @@ var (
 )
 
 func main() {
-	app := &cli.App{
+	app := &cli.Command{
 		Name:  "dsl2jsonschema",
 		Usage: "convert BelugApps JsonSchema DSL to valid JsonSchema",
 		Flags: []cli.Flag{
@@ -86,11 +88,10 @@ func main() {
 
 			// convert DSL to JsonSchema
 			schema := ToJsonSchema(node.Content[0])
-			if schema == nil || len(schema.Properties.Keys()) == 0 {
+			if schema == nil || schema.Properties.Len() == 0 {
 				return fmt.Errorf("no schema found")
 			}
-			property, _ := schema.Properties.Get(schema.Properties.Keys()[0])
-			schema = property.(*jsonschema.Schema)
+			schema = schema.Properties.Newest().Value
 
 			// convert JsonSchema to raw JSON
 			var buff bytes.Buffer
@@ -127,7 +128,7 @@ func main() {
 		},
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	if err := app.Run(context.TODO(), os.Args); err != nil {
 		log.Error(err)
 		os.Exit(1)
 	}
@@ -338,7 +339,7 @@ func toObjectSchema(node *yaml.Node, schema *jsonschema.Schema, path []string) {
 		return
 	}
 
-	properties := orderedmap.New()
+	properties := orderedmap.New[string, *jsonschema.Schema]()
 	for i := 0; i+1 < len(node.Content); i += 2 {
 		if node.Content[i+1].Tag == string("!!"+JsonschemaToken) {
 			applyJsonSchemaTags(node.Content[i+1], schema, append(path, node.Content[i].Value))
@@ -349,7 +350,7 @@ func toObjectSchema(node *yaml.Node, schema *jsonschema.Schema, path []string) {
 		properties.Set(node.Content[i].Value, property)
 	}
 
-	if len(properties.Keys()) > 0 {
+	if properties.Len() > 0 {
 		schema.Type = "object"
 		schema.Properties = properties
 	}
