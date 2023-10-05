@@ -2,6 +2,34 @@ apiVersion: v1
 entries:
   actual:
   - apiVersion: v2
+    appVersion: 23.10.0
+    created: "2023-10-05T18:50:25.629435725Z"
+    dependencies:
+    - name: common
+      repository: https://beluga-cloud.github.io/charts
+      version: 1.0.0
+    description: Enjoy managing your finances
+    digest: d8edddaf8003384f99149ca55517fed69d3cd0e0058570488032f8813af747d2
+    home: https://actualbudget.com/
+    icon: https://github.com/actualbudget/docs/raw/master/static/img/favicon.png
+    keywords:
+    - actualserver
+    - finance
+    - ynab
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: actual
+    sources:
+    - https://github.com/actualbudget/actual
+    - https://github.com/actualbudget/actual-server
+    - https://github.com/beluga-cloud/charts/tree/main/charts/actual
+    type: application
+    urls:
+    - actual-1.7.0.tgz
+    version: 1.7.0
+  - apiVersion: v2
     appVersion: 23.9.0
     created: "2023-10-01T10:20:56.522725341Z"
     dependencies:
@@ -759,4 +787,4 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/sonarr-1.0.0/sonarr-1.0.0.tgz
     version: 1.0.0
-generated: "2023-10-01T10:20:56.727822469Z"
+generated: "2023-10-05T18:50:25.818876386Z"
