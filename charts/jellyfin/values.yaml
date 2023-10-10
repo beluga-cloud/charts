@@ -105,6 +105,7 @@ podSecurityContext:
   runAsGroup: 64710
   runAsNonRoot: true
   runAsUser: 64710
+  fsGroup: 64710
   seccompProfile:
     type: RuntimeDefault
 
