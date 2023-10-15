@@ -1,4 +1,4 @@
-FROM docker.io/library/ubuntu:kinetic
+FROM docker.io/library/ubuntu:jammy
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility"

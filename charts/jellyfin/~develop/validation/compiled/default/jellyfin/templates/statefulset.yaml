@@ -6,7 +6,7 @@ metadata:
   name: jellyfin
   labels:
     app.kubernetes.io/name: jellyfin
-    helm.sh/chart: jellyfin-2.0.2
+    helm.sh/chart: jellyfin-2.0.3
     app.kubernetes.io/instance: jellyfin
     app.kubernetes.io/managed-by: Helm
 spec:
@@ -23,6 +23,7 @@ spec:
         app.kubernetes.io/instance: jellyfin
     spec:
       securityContext:
+        fsGroup: 64710
         runAsGroup: 64710
         runAsNonRoot: true
         runAsUser: 64710
