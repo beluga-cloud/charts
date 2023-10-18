@@ -1,4 +1,4 @@
-FROM docker.io/library/golang:1.21.1 as builder
+FROM docker.io/library/golang:1.21.3 as builder
 
 # renovate: datasource=docker depName=komodorio/helm-dashboard versioning=semver
 ARG HELM_DASHBOARD_VERSION=1.3.3
@@ -11,9 +11,9 @@ RUN CGO_ENABLED=0 go build \
     -ldflags "-X main.version=${HELM_DASHBOARD_VERSION} -X main.date=$(date --iso-8601=ns) -X main.commit=$(git rev-parse HEAD)" \
     -o ../dashboard .
 
-FROM docker.io/alpine/helm:3.13.0 as helm_packager
+FROM docker.io/alpine/helm:3.13.1 as helm_packager
 FROM docker.io/bitnami/kubectl:1.28.2 as kubectl_packager
-FROM docker.io/aquasec/trivy:0.45.1 as trivy_packager
+FROM docker.io/aquasec/trivy:0.46.0 as trivy_packager
 
 FROM docker.io/alpine:3.18.4
 
