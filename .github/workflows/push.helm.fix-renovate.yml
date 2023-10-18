@@ -54,7 +54,7 @@ jobs:
         with:
           path: ${{ env.ASDF_DIR }}
           key: asdf-vm-${{ hashFiles('.tool-versions') }}
-      - uses: asdf-vm/actions/install@6a442392015fbbdd8b48696d41e0051b2698b2e4 # v2.2.0
+      - uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6 # v3.0.2
         with:
           skip_install: ${{ steps.restore-asdf.outputs.cache-hit == 'true' }}
 
