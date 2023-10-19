@@ -18,8 +18,8 @@
   ](LICENSE)
   <br/>
   ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat)
-  ![Version: 2.0.2](https://img.shields.io/badge/Version-2.0.2-informational?style=flat)
-  ![AppVersion: 10.8.10](https://img.shields.io/badge/AppVersion-10.8.10-informational?style=flat)
+  ![Version: 2.1.0](https://img.shields.io/badge/Version-2.1.0-informational?style=flat)
+  ![AppVersion: 10.8.11](https://img.shields.io/badge/AppVersion-10.8.11-informational?style=flat)
 
 </div>
 
@@ -121,7 +121,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | Key | Description | Default |
 |-----|-------------|---------|
 | `containerSecurityContext` | Security context for the jellyfin container    ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":64710,"runAsNonRoot":true,"runAsUser":64710}` |
-| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"runAsGroup":64710,"runAsNonRoot":true,"runAsUser":64710,"seccompProfile":{"type":"RuntimeDefault"}}` |
+| `podSecurityContext` | Security context for the pod ([kubernetes.io/docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)) | `{"fsGroup":64710,"runAsGroup":64710,"runAsNonRoot":true,"runAsUser":64710,"seccompProfile":{"type":"RuntimeDefault"}}` |
 
 ### Deployment/Statefulset parameters
 
