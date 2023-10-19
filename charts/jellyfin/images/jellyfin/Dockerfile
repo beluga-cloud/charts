@@ -1,10 +1,20 @@
-FROM docker.io/library/ubuntu:kinetic
+# NOTE: this short builder is made to enable the use of the `add-apt-repository` command
+#       without having to install the `software-properties-common` package in the final image
+#       (too much overhead for a single command)
+FROM docker.io/library/ubuntu:jammy as enable_universe
 
-ARG DEBIAN_FRONTEND="noninteractive"
-ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility"
+# hadolint ignore=DL3008
+RUN apt-get update \
+    && apt-get install software-properties-common --assume-yes --no-install-recommends \
+    && add-apt-repository universe
+
+
+FROM docker.io/library/ubuntu:jammy
 
 # renovate: datasource=github-releases depName=jellyfin/jellyfin versioning=semver extractVersion=^v(?<version>\S+)
 ARG JELLYFIN_VERSION=10.8.10
+
+ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility"
 
 # hadolint ignore=DL3008
 RUN apt-get update \
@@ -12,6 +22,7 @@ RUN apt-get update \
     && apt-get install --assume-yes --no-install-recommends ca-certificates \
     && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
+COPY --from=enable_universe /etc/apt/sources.list /etc/apt/sources.list
 COPY jellyfin_team.gpg /etc/apt/keyrings/jellyfin_team.gpg
 COPY jellyfin.sources /etc/apt/sources.list.d/jellyfin.sources
 
