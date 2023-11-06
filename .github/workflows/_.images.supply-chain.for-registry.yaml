@@ -24,7 +24,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: aquasecurity/trivy-action@fbd16365eb88e12433951383f5e99bd901fc618f # 0.12.0
+      - uses: aquasecurity/trivy-action@f78e9ecf42a1271402d4f484518b9313235990e1 # 0.13.1
         with:
           image-ref: ${{ inputs.image-ref }}
           format: cyclonedx
@@ -53,7 +53,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: aquasecurity/trivy-action@fbd16365eb88e12433951383f5e99bd901fc618f # 0.12.0
+      - uses: aquasecurity/trivy-action@f78e9ecf42a1271402d4f484518b9313235990e1 # 0.13.1
         with:
           image-ref: ${{ inputs.image-ref }}
           format: cosign-vuln
@@ -64,7 +64,7 @@ jobs:
         run: cosign attest --yes --replace --predicate vulnerabilities.cosign-vuln.json --type vuln "${{ inputs.image-ref }}"
 
       # Upload SARIF report for GitHub CodeQL at the same time
-      - uses: aquasecurity/trivy-action@fbd16365eb88e12433951383f5e99bd901fc618f # 0.12.0
+      - uses: aquasecurity/trivy-action@f78e9ecf42a1271402d4f484518b9313235990e1 # 0.13.1
         with:
           image-ref: ${{ inputs.image-ref }}
           format: sarif
