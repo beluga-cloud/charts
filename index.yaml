@@ -463,6 +463,33 @@ entries:
     version: 2.3.0
   jellyfin:
   - apiVersion: v2
+    appVersion: 10.8.12
+    created: "2023-11-06T08:49:34.678658597Z"
+    dependencies:
+    - name: common
+      repository: https://beluga-cloud.github.io/charts
+      version: 1.0.0
+    description: Your media, your server, your way
+    digest: 4d6f3bd8ba145bfcbe59fba0d1c40687536b928855bdcb04318aa9e98647a650
+    home: https://jellyfin.org/
+    icon: https://raw.githubusercontent.com/jellyfin/jellyfin-ux/master/branding/SVG/icon-transparent.svg
+    keywords:
+    - jellyfin
+    - media-server
+    - plex
+    kubeVersion: '>=1.20'
+    maintainers:
+    - name: xunleii
+      url: https://github.com/beluga-cloud
+    name: jellyfin
+    sources:
+    - https://github.com/jellyfin/jellyfin
+    - https://github.com/beluga-cloud/charts/tree/main/charts/jellyfin
+    type: application
+    urls:
+    - https://github.com/beluga-cloud/charts/releases/download/jellyfin-2.2.0/jellyfin-2.2.0.tgz
+    version: 2.2.0
+  - apiVersion: v2
     appVersion: 10.8.11
     created: "2023-10-19T09:14:18.821854675Z"
     dependencies:
@@ -842,4 +869,4 @@ entries:
     urls:
     - https://github.com/beluga-cloud/charts/releases/download/sonarr-1.0.0/sonarr-1.0.0.tgz
     version: 1.0.0
-generated: "2023-11-06T08:47:40.496940942Z"
+generated: "2023-11-06T08:49:34.6787975Z"
