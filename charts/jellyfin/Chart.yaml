@@ -2,7 +2,7 @@ apiVersion: v2
 type: application
 name: jellyfin
 description: Your media, your server, your way
-version: 2.1.0
+version: 2.2.0
 # renovate: datasource=docker depName=ghcr.io/beluga-cloud/jellyfin/jellyfin
 appVersion: 10.8.12
 kubeVersion: '>=1.20'
