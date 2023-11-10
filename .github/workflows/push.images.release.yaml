@@ -121,6 +121,6 @@ jobs:
             ${{ steps.manifest-options.outputs.images }}
           docker manifest push ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }}
 
-      - uses: sigstore/cosign-installer@11086d25041f77fe8fe7b9ea4e48e3b9192b8f19 # v3.1.2
+      - uses: sigstore/cosign-installer@1fc5bd396d372bee37d608f955b336615edf79c8 # v3.2.0
       - name: Sign manifest 'ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }}'
         run: cosign sign --yes ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }}
