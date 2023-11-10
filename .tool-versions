@@ -1,12 +1,12 @@
 cosign 2.2.0
-golang 1.21.3
+golang 1.21.4
 gum 0.11.0
 hadolint 2.12.0
-helm 3.13.1
+helm 3.13.2
 helm-ct 3.10.1
 helm-docs 1.11.3
 jq 1.6
-just 1.15.0
+just 1.16.0
 kind 0.20.0
 kubectl 1.28.3
 regctl 0.5.3
