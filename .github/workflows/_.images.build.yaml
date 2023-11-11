@@ -163,7 +163,7 @@ jobs:
           DIGEST: ${{ steps.build.outputs.digest }}
 
       # NOTE: on production mode, all images are signed
-      - uses: sigstore/cosign-installer@11086d25041f77fe8fe7b9ea4e48e3b9192b8f19 # v3.1.2
+      - uses: sigstore/cosign-installer@1fc5bd396d372bee37d608f955b336615edf79c8 # v3.2.0
         if: ${{ !inputs.dry-run }}
       - name: Sign 'ghcr.io/${{ github.repository_owner }}/${{ needs.metadata.outputs.image-name }}@${{ steps.build.outputs.digest }}' with GitHub OIDC Token
         if: ${{ !inputs.dry-run }}
@@ -209,7 +209,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: aquasecurity/trivy-action@f78e9ecf42a1271402d4f484518b9313235990e1 # 0.13.1
+      - uses: aquasecurity/trivy-action@2b6a709cf9c4025c5438138008beaddbb02086f0 # 0.14.0
         with:
           exit-code: '1'
           format: sarif
