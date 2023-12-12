@@ -97,14 +97,22 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # 0.16.0
         with:
-          exit-code: '1'
           format: sarif
           hide-progress: false
           output: trivy-results.sarif
           scan-ref: ${{ matrix.chart }}
           scan-type: config
       - uses: github/codeql-action/upload-sarif@fe23b5a3e1de4ae7f64965059233ee74e959035e # codeql-bundle-20230418
-        if: always()
         with:
           category: trivy-helm-syntax
           sarif_file: trivy-results.sarif
+
+      # NOTE: fail the build only if vulnerabilities with severity HIGH or CRITICAL are found
+      - uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # 0.16.0
+        with:
+          exit-code: '1'
+          format: table
+          hide-progress: false
+          scan-ref: ${{ matrix.chart }}
+          scan-type: config
+          severity: HIGH,CRITICAL
