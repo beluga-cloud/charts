@@ -1,5 +1,5 @@
 cosign 2.2.0
-golang 1.21.4
+golang 1.21.5
 gum 0.11.0
 hadolint 2.12.0
 helm 3.13.2
@@ -8,7 +8,7 @@ helm-docs 1.11.3
 jq 1.6
 just 1.16.0
 kind 0.20.0
-kubectl 1.28.3
+kubectl 1.28.4
 regctl 0.5.3
-trivy 0.47.0
+trivy 0.48.0
 yq 4.35.2
