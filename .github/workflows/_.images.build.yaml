@@ -217,7 +217,7 @@ jobs:
           output: trivy-results.sarif
           scan-ref: ${{ inputs.containerfile }}
           scan-type: config
-      - uses: github/codeql-action/upload-sarif@137a1e070d9fce60979b4ba596a335a285a6266b # codeql-bundle-20230418
+      - uses: github/codeql-action/upload-sarif@fe23b5a3e1de4ae7f64965059233ee74e959035e # codeql-bundle-20230418
         if: always()
         with:
           category: trivy-container-syntax
