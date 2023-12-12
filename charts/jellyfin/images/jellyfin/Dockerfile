@@ -12,7 +12,10 @@ RUN apt-get update \
 FROM docker.io/library/ubuntu:jammy
 
 # renovate: datasource=github-releases depName=jellyfin/jellyfin versioning=semver extractVersion=^v(?<version>\S+)
-ARG JELLYFIN_VERSION=10.8.12
+ARG JELLYFIN_VERSION=10.8.13
+
+# Add build arguments for specific architectures
+ARG TARGETPLATFORM
 
 ENV NVIDIA_DRIVER_CAPABILITIES="compute,video,utility"
 
@@ -39,6 +42,9 @@ RUN groupadd jellyfin --gid 64710 \
     && apt-get install --assume-yes --no-install-recommends \
       jellyfin="${JELLYFIN_VERSION}*" \
       mesa-va-drivers \
+    && if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
+      apt-get install --assume-yes --no-install-recommends intel-opencl-icd \
+    ; fi \
     && ln -s /usr/share/jellyfin-ffmpeg/ff* /usr/bin \
     && ln -s /usr/share/jellyfin-ffmpeg/vainfo /usr/bin \
     && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* \
