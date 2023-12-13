@@ -53,10 +53,13 @@ spec:
           resources: {{- toYaml .Values.resources.actualserver | nindent 12 }}
           volumeMounts:
             - name: data
-              mountPath: /opt/actual/user-files
+              mountPath: /data
+              subPath: persistent-files
+            - name: data
+              mountPath: /data/user-files
               subPath: user-files
             - name: data
-              mountPath: /opt/actual/server-files
+              mountPath: /data/server-files
               subPath: server-files
       {{- with .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}

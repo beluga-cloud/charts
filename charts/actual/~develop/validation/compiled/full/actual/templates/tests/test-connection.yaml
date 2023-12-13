@@ -6,7 +6,7 @@ metadata:
   name: "actual-test-connection"
   labels:
     app.kubernetes.io/name: actual
-    helm.sh/chart: actual-1.8.0
+    helm.sh/chart: actual-2.0.0
     app.kubernetes.io/instance: actual
     app.kubernetes.io/managed-by: Helm
   annotations:
