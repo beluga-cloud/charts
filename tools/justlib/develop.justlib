@@ -39,7 +39,7 @@ setup CHART_NAME:
   # install metrics-server missing by default inside kind clusters and patch it to work with self-signed certificates
   {{ exec }} kubectl --context "kind-{{ CHART_NAME }}-dev" apply --filename https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
   kubectl --context "kind-{{ CHART_NAME }}-dev" patch --namespace kube-system deployment/metrics-server --type json --patch '[{"op":"add","path":"/spec/template/spec/containers/0/args/5","value":"--kubelet-insecure-tls"}]'
-  kubectl --context "kind-{{ CHART_NAME }}-dev" wait --namespace kube-system deployment/metrics-server --for=condition=Available
+  kubectl --context "kind-{{ CHART_NAME }}-dev" wait --namespace kube-system deployment/metrics-server --for=condition=Available --timeout=-1s
 
   # install contour and cert-manager to provide ingress and TLS certificate
   {{ exec }} helm --kube-context "kind-{{ CHART_NAME }}-dev" upgrade --install contour bitnami/contour --namespace projectcontour --create-namespace

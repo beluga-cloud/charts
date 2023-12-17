@@ -87,8 +87,6 @@ develop +OPTS="": develop-setup && develop-prepare (develop-install OPTS)
 
 @develop-prepare:
   {{ develop }} prepare "{{ chart_name }}"
-  {{ exec }} helm --kube-context "kind-{{ chart_name }}-dev" repo update
-  {{ exec }} helm --kube-context "kind-{{ chart_name }}-dev" upgrade --install cert-manager jetstack/cert-manager --create-namespace --namespace cert-manager-system --set installCRDs=true
 
 # install the application on the local environment
 @develop-install +OPTS="":

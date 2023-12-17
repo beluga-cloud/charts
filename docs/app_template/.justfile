@@ -51,12 +51,10 @@ build-validation-files:
 lint: lint-images lint-chart
 
 # lint one or multiple images (use relative path from current directory)
-[no-exit-message]
 lint-images +IMAGES="all":
   {{ image }} lint {{ IMAGES }}
 
 # runs a series of tests to verify that the chart is well-formed
-[no-exit-message]
 @lint-chart:
   {{ helm }} lint
 
@@ -82,7 +80,6 @@ lint-images +IMAGES="all":
 
 
 # prepare a local environment to develop and/or debug the application
-[no-exit-message]
 develop +OPTS="": develop-setup && develop-prepare (develop-install OPTS)
 
 @develop-setup:
@@ -91,45 +88,38 @@ develop +OPTS="": develop-setup && develop-prepare (develop-install OPTS)
 @develop-prepare:
   {{ develop }} prepare "{{ chart_name }}"
 
+
 # install the application on the local environment
-[no-exit-message]
 @develop-install +OPTS="":
   {{ develop }} install "{{ chart_name }}" {{ OPTS }}
 
 # reinstall the application on the local environment
-[no-exit-message]
 @develop-reinstall +OPTS="":
   {{ develop }} reinstall "{{ chart_name }}" {{ OPTS }}
 
 # stop the local environment
-[no-exit-message]
 @develop-teardown:
   {{ develop }} teardown "{{ chart_name }}"
 
 
 # scan images and chart for missconfiguration or security issues
-[no-exit-message]
 security-scan OPTS="": (security-scan-images OPTS) (security-scan-chart OPTS)
 
 # scan one or multiple images for missconfiguration or security issues
-[no-exit-message]
 @security-scan-images OPTS="" +IMAGES="all":
   {{ security }} scan-images "{{ chart_name }}" "{{ container_registry }}" "{{ OPTS }}" {{ IMAGES }}
 
 # scan current chart for missconfiguration or security issues
-[no-exit-message]
 @security-scan-chart OPTS="":
   {{ security }} scan-chart "{{ OPTS }}"
 
 
 # automatically bump the chart version if something changes (used by Renovate).
-[no-exit-message]
 @renovate-update-chart +BASE_BRANCH="main":
   {{ renovate }} update-chart "{{ chart_name }}" "{{ BASE_BRANCH }}"
 
 # rebuild all "external" files (or files used for CI validation and packaging)
 # and commit them automatically.
-[no-exit-message]
 git-commit-package: build-external
   git add ~develop/validation/ README.md values.schema.json
   git commit --message ":package: (apps/{{ chart_name }}): rebuild all packaging files"
