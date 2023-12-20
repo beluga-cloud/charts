@@ -6,9 +6,9 @@ helm 3.13.3
 helm-ct 3.10.1
 helm-docs 1.11.3
 jq 1.6
-just 1.16.0
+just 1.17.0
 kind 0.20.0
 kubectl 1.29.0
 regctl 0.5.3
-trivy 0.48.0
+trivy 0.48.1
 yq 4.35.2
