@@ -1,0 +1,21 @@
+apiVersion: v2
+type: application
+name: yaldap
+description: Yet another LDAP server
+version: 0.0.0
+# renovate: datasource=docker depName=ghcr.io/beluga-cloud/yaldap/yaldap
+appVersion: v0.1.1
+kubeVersion: '>=1.20'
+home: {{ url }}
+icon: 
+keywords: []
+sources:
+  - {{ url }}
+  - https://github.com/beluga-cloud/charts/tree/main/charts/yaldap
+maintainers:
+  - name: xunleii
+    url: https://github.com/beluga-cloud
+dependencies:
+  - name: common
+    repository: https://beluga-cloud.github.io/charts
+    version: 1.0.0
