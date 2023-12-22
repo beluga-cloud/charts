@@ -42,7 +42,7 @@ setup CHART_NAME:
   kubectl --context "kind-{{ CHART_NAME }}-dev" wait --namespace kube-system deployment/metrics-server --for=condition=Available --timeout=-1s
 
   # install contour and cert-manager to provide ingress and TLS certificate
-  {{ exec }} helm --kube-context "kind-{{ CHART_NAME }}-dev" upgrade --install contour bitnami/contour --namespace projectcontour --create-namespace
+  {{ exec }} helm --kube-context "kind-{{ CHART_NAME }}-dev" upgrade --install traefik traefik/traefik --namespace traefik --create-namespace
   {{ exec }} helm --kube-context "kind-{{ CHART_NAME }}-dev" upgrade --install cert-manager cert-manager/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
   {{ exec }} kubectl --context "kind-{{ CHART_NAME }}-dev" --namespace default apply --filename ~develop/environment/selfsigned-issuer.yaml
 
