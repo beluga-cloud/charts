@@ -138,4 +138,4 @@ bootstrap_app name description version url icon_url:
 
 # generate the UID to use for a specific application
 @tools-chart-uid APP:
-  echo "UID to use for {{ APP }}: 64$(echo {{ APP }} | sha1hmac | tr --delete '[:alpha:][:space:]-' | head --bytes=3)"
+  echo "UID to use for {{ APP }}: 64$(echo {{ APP }} | sha1sum | tr --delete '[:alpha:][:space:]-' | head --bytes=3)"
