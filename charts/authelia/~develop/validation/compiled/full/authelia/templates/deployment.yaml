@@ -1,0 +1,135 @@
+---
+# Source: authelia/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authelia
+  annotations:
+    podAnnotations: enabled
+  labels:
+    app.kubernetes.io/name: authelia
+    helm.sh/chart: authelia-0.0.0
+    app.kubernetes.io/instance: authelia
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: authelia
+    commonLabels01: enabled
+    commonLabels02: enabled
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: authelia
+      app.kubernetes.io/instance: authelia
+      app.kubernetes.io/component: authelia
+      podLabels: enabled
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations: 
+        podAnnotations: enabled
+        checksum/config: 9fcdf7234647966cb7d75324c6ea161152f8f301aea17dc44b9ca3628c33b564
+      labels:
+        app.kubernetes.io/name: authelia
+        app.kubernetes.io/instance: authelia
+        app.kubernetes.io/component: authelia
+        podLabels: enabled
+    spec:
+      imagePullSecrets:
+        - name: image-pull-secret
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: Unconfined
+      enableServiceLinks: false
+      containers:
+        - name: authelia
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: false
+            runAsGroup: 65534
+            runAsNonRoot: true
+            runAsUser: 65534
+          image: ghcr.io/beluga-cloud/authelia/authelia:v4.38.0-beta3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 9091
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: web
+              path: /
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              port: web
+              path: /
+            periodSeconds: 10
+            timeoutSeconds: 10
+          startupProbe:
+            failureThreshold: 6
+            httpGet:
+              port: web
+              path: /
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 1
+              memory: 1.25Gi
+            requests:
+              cpu: 250m
+              memory: 1.25Gi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/authelia
+            - name: configuration
+              mountPath: /opt/authelia/config/configuration.yaml
+              subPath: configuration.yaml
+              readOnly: true
+            - name: authentication-backend-file
+              mountPath: /opt/authelia/config/users_database.yaml
+              subPath: users_database.yaml
+              readOnly: true
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: another-node-label-key
+                operator: In
+                values:
+                - another-node-label-value
+            weight: 1
+      tolerations:
+        - effect: NoSchedule
+          key: foo.bar.com/role
+          operator: Equal
+          value: master
+      volumes:
+        - name: data
+          emptyDir: { }
+        - name: configuration
+          secret:
+            secretName: authelia-authelia-configuration
+            items:
+              - key: configuration.yaml
+                path: configuration.yaml
+        - name: authentication-backend-file
+          secret:
+            secretName: authelia-authelia-user-backend
+            items:
+              - key: users_database.yaml
+                path: users_database.yaml

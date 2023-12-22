@@ -1,0 +1,6 @@
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned
+  enabled: true
+  hostname: authelia.7f000001.nip.io
+  tls: true

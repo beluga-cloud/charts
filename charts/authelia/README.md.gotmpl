@@ -1,0 +1,326 @@
+{{- define "chart.title" }}{{ .Name | replace "-" " " | title }}{{- end }}
+{{/*{{- define "chart.icon" }}{{ fail "Icon URL not configured" }}{{- end }}*/}}
+{{- define "chart.icon" }}https://www.authelia.com/images/authelia-title.png{{- end }}
+{{- define "parameter.description" }}{{ regexReplaceAll "(https?://)([^/]+(?:/[^/]+)?)([^\\s]+)" (.Description | default .AutoDescription) "[$2]($1$2$3)" }}{{- end }}
+
+<!-- markdownlint-disable MD033 -->
+
+<h1 align="center">
+  <a href="{{ template "chart.homepage" . }}">
+    <img src="{{ template "chart.icon" . }}" alt="Logo" style="max-height: 150px">
+  </a>
+</h1>
+
+<h4 align="center">{{ template "chart.title" . }} - {{ template "chart.description" . }}</h4>
+
+<div align="center">
+  <br/>
+
+  [
+    ![License](https://img.shields.io/github/license/beluga-cloud/charts?logo=git&logoColor=white&logoWidth=20)
+  ](LICENSE)
+  <br/>
+  {{ template "chart.typeBadge" . }}
+  {{ template "chart.versionBadge" . }}
+  {{ template "chart.appVersionBadge" . }}
+
+</div>
+
+---
+
+## [{{ template "chart.title" . }}]({{ template "chart.homepage" . }})
+
+> _Disclaimer: This application has been developed by **[Authelia](www.authelia.com)**._
+
+**Authelia** is an open-source authentication and authorization server providing two-factor authentication and single
+sign-on (SSO) for your applications via a web portal. It acts as a companion for [reverse proxies](#proxy-support) by
+allowing, denying, or redirecting requests.
+
+Documentation is available at [https://www.authelia.com/](https://www.authelia.com/).
+
+
+### Features summary
+
+This is a list of the key features of Authelia:
+
+* Several second factor methods:
+  * **[Security Keys](https://www.authelia.com/overview/authentication/security-key/)** that support
+    [FIDO2]&nbsp;[WebAuthn] with devices like a [YubiKey].
+  * **[Time-based One-Time password](https://www.authelia.com/overview/authentication/one-time-password/)**
+    with compatible authenticator applications.
+  * **[Mobile Push Notifications](https://www.authelia.com/overview/authentication/push-notification/)**
+    with [Duo](https://duo.com/).
+* Password reset with identity verification using email confirmation.
+* Access restriction after too many invalid authentication attempts.
+* Fine-grained access control using rules which match criteria like subdomain, user, user group membership, request uri,
+ request method, and network.
+* Choice between one-factor and two-factor policies per-rule.
+* Support of basic authentication for endpoints protected by the one-factor policy.
+* Highly available using a remote database and Redis as a highly available KV store.
+* Compatible with [Traefik](https://doc.traefik.io/traefik) out of the box using the
+  [ForwardAuth](https://doc.traefik.io/traefik/middlewares/http/forwardauth/) middleware.
+* Curated configuration from [LinuxServer](https://www.linuxserver.io/) via their
+  [Swag](https://docs.linuxserver.io/general/swag) container as well as a
+  [guide](https://blog.linuxserver.io/2020/08/26/setting-up-authelia/).
+* Compatible with [Caddy] using the [forward_auth](https://caddyserver.com/docs/caddyfile/directives/forward_auth)
+  directive.
+* Kubernetes Support:
+  * Compatible with several Kubernetes ingress controllers:
+    * [ingress-nginx](https://www.authelia.com/integration/kubernetes/nginx-ingress/)
+    * [Traefik Kubernetes CRD](https://www.authelia.com/integration/kubernetes/traefik-ingress/#ingressroute)
+    * [Traefik Kubernetes Ingress](https://www.authelia.com/integration/kubernetes/traefik-ingress/#ingress)
+    * [Istio](https://www.authelia.com/integration/kubernetes/istio/)
+  * Beta support for installing via Helm using our [Charts](https://charts.authelia.com).
+* Beta support for [OpenID Connect](https://www.authelia.com/roadmap/active/openid-connect/).
+
+For more details take a look at the [Overview](https://www.authelia.com/overview/prologue/introduction/).
+
+If you want to know more about the roadmap, follow [Roadmap](https://www.authelia.com/roadmap).
+
+### Proxy support
+
+Authelia works in combination with [nginx](https://www.authelia.com/integration/proxies/nginx/), [Traefik](https://www.authelia.com/integration/proxies/traefik/), [Caddy](https://www.authelia.com/integration/proxies/caddy/), [Skipper](https://www.authelia.com/integration/proxies/skipper/), [Envoy](https://www.authelia.com/integration/proxies/envoy/), or [HAProxy](https://www.authelia.com/integration/proxies/haproxy/).
+
+<p align="center">
+  <img src="https://www.authelia.com/images/logos/nginx.png" height="50"/>
+  <img src="https://www.authelia.com/images/logos/traefik.png" height="50"/>
+  <img src="https://www.authelia.com/images/logos/caddy.png" height="50"/>
+  <img src="https://www.authelia.com/images/logos/envoy.png" height="50"/>
+  <img src="https://www.authelia.com/images/logos/haproxy.png" height="50"/>
+</p>
+
+## TL;DR
+
+```shell
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/{{ template "chart.name" . }}
+```
+
+## Introduction
+
+This chart bootstraps a {{ template "chart.title" . }} deployment on a [Kubernetes](kubernetes.io) cluster using the [Helm](helm.sh) package manager.
+
+## Prerequisites
+
+- Kubernetes {{ template "chart.kubeVersion" . }}
+- Helm 3+
+
+## Installing the Chart
+
+To install the chart with the release name `my-release`:
+
+```shell
+helm repo add beluga-cloud https://beluga-cloud.github.io/charts
+helm install my-release beluga-cloud/{{ template "chart.name" . }}
+```
+
+These commands deploy {{ template "chart.name" . }} on the Kubernetes cluster in the default configuration.
+The Parameters section lists the parameters that can be configured during installation.
+
+> **Tip:** List all releases using `helm list`
+
+## Uninstalling the Chart
+
+To uninstall/delete the `my-release` deployment:
+
+```shell
+helm delete my-release
+```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+## Parameters
+{{- $params := list }}
+
+### Global parameters
+
+| Key | Description | Default |
+|-----|-------------|---------|
+{{- range .Values }}
+    {{- if hasPrefix "global." .Key }}
+        {{- $params = append $params .Key }}
+| `{{ .Key }}` |  {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+    {{- end }}
+{{- end }}
+
+### Common parameters
+
+| Key | Description | Default |
+|-----|-------------|---------|
+{{- range .Values }}
+    {{- if and
+      (not (has .Key $params))
+      (or
+        (hasPrefix "commonAnnotations" .Key)
+        (hasPrefix "commonLabels" .Key)
+        (hasPrefix "fullnameOverride" .Key)
+        (hasPrefix "nameOverride" .Key)
+      )
+    }}
+        {{- $params = append $params .Key }}
+| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+    {{- end }}
+{{- end }}
+
+### {{ template "chart.title" . }} parameters
+
+| Key | Description | Default |
+|-----|-------------|---------|
+{{- range .Values }}
+    {{- if and
+      (not (has .Key $params))
+      (or
+        (hasPrefix "image" .Key)
+        (hasPrefix ($.Name | snakecase) .Key)
+      )
+    }}
+        {{- $params = append $params .Key }}
+| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+    {{- end }}
+{{- end }}
+
+### Security parameters
+
+| Key | Description | Default |
+|-----|-------------|---------|
+{{- range .Values }}
+    {{- if and
+      (not (has .Key $params))
+      (or
+        (hasPrefix "podSecurityContext" .Key)
+        (hasPrefix "containerSecurityContext" .Key)
+      )
+    }}
+        {{- $params = append $params .Key }}
+| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+    {{- end }}
+{{- end }}
+
+### Deployment/Statefulset parameters
+
+| Key | Description | Default |
+|-----|-------------|---------|
+{{- range .Values }}
+    {{- if and
+      (not (has .Key $params))
+      (or
+        (hasPrefix "affinity" .Key)
+        (hasPrefix "container" .Key)
+        (hasPrefix "deployment" .Key)
+        (hasPrefix "nodeSelector" .Key)
+        (hasPrefix "pod" .Key)
+        (hasPrefix "priorityClassName" .Key)
+        (hasPrefix "provisioning" .Key)
+        (hasPrefix "replicaCount" .Key)
+        (hasPrefix "resources" .Key)
+        (hasPrefix "statefulset" .Key)
+        (hasPrefix "strategy" .Key)
+        (hasPrefix "tolerations" .Key)
+        (hasPrefix "topologySpreadConstraints" .Key)
+      )
+    }}
+        {{- $params = append $params .Key }}
+| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+    {{- end }}
+{{- end }}
+
+### Network parameters
+
+| Key | Description | Default |
+|-----|-------------|---------|
+{{- range .Values }}
+    {{- if and
+      (not (has .Key $params))
+      (or
+        (hasPrefix "service" .Key)
+        (hasPrefix "ingress" .Key)
+        (hasPrefix "networkPolicy" .Key)
+      )
+    }}
+        {{- $params = append $params .Key }}
+| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+    {{- end }}
+{{- end }}
+
+### Persistence parameters
+
+| Key | Description | Default |
+|-----|-------------|---------|
+{{- range .Values }}
+    {{- if and
+      (not (has .Key $params))
+      (or
+        (hasPrefix "persistence" .Key)
+      )
+    }}
+        {{- $params = append $params .Key }}
+| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+    {{- end }}
+{{- end }}
+
+{{- if not (eq (len .Values) (len $params)) }}
+### Other parameters
+
+| Key | Description | Default |
+|-----|-------------|---------|
+{{- range .Values }}
+    {{- if not (has .Key $params) }}
+| `{{ .Key }}` | {{ template "parameter.description" . }} | {{ if .Default }}{{ .Default }}{{ else }}{{ .AutoDefault }}{{ end }} |
+    {{- end }}
+{{- end }}
+{{- end }}
+
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+
+```shell
+helm install my-release --set fullnameOverride=my-{{ template "chart.name" . }} beluga-cloud/{{ template "chart.name" . }}
+```
+
+Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
+
+```shell
+helm install my-release -f values.yaml my-repo/{{ template "chart.name" . }}
+```
+
+> **Tip:** You can use the default values.yaml
+
+## Managing Authelia configuration secrets using this Helm Chart
+
+Securing sensitive information, such as encryption keys, is critical for a robust Authelia deployment. Authelia provides
+a dedicated method for managing secrets through their [`Secrets configuration layer`](https://www.authelia.com/configuration/methods/secrets/),
+and this Helm charts offers a straightforward way to implement this through `authelia.configuration_secrets`.
+
+Here's an example:
+
+```yaml
+authelia:
+  configuration_secrets:
+    storage:
+      encryption_key:
+        secretRefName:
+          name: authelia-secret
+          key: encryption_key
+```
+
+Explanation of the fields:
+- `authelia.configuration_secrets`: The field where all secret configurations are defined
+- `storage.encryption_key`: The Authelia configuration that need to configured with the secret
+- `secretRefName`: The reference of the secret to mount inside Authelia
+
+This configuration ensures that sensitive information is stored securely in a Kubernetes Secret named `authelia-secret`, 
+with the encryption key accessible under the key encryption_key.
+
+## License
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+the License. You may obtain a copy of the License at
+
+```
+http://www.apache.org/licenses/LICENSE-2.0
+```
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific
+language governing permissions and limitations under the License.
+
+{{ template "helm-docs.versionFooter" . }}

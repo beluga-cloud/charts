@@ -1,0 +1,127 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.names.fullname" . }}
+  {{- with .Values.podAnnotations }}
+  annotations: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: authelia
+    {{- with .Values.global.commonLabels }}{{ toYaml . | nindent 4 }}{{ end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+    {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: authelia
+    {{- with .Values.podLabels }}{{ toYaml . | nindent 6 }}{{ end }}
+  {{- with .Values.strategy }}
+  strategy: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      annotations: {{ with .Values.podAnnotations }}{{- toYaml . | nindent 8 }}{{ end }}
+        checksum/config: {{ (include (print $.Template.BasePath "/secrets.yaml") .) | sha256sum }}
+      labels:
+        {{- include "common.labels.matchLabels" . | nindent 8 }}
+        app.kubernetes.io/component: authelia
+        {{- with .Values.podLabels }}{{ toYaml . | nindent 8 }}{{ end }}
+    spec:
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      enableServiceLinks: false
+      containers:
+        - name: authelia
+          securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          image: {{ include "common.images.image" (dict "image" .Values.images.authelia "context" $) }}
+          imagePullPolicy: {{ .Values.images.authelia.pullPolicy }}
+          {{- with .Values.authelia.configuration_secrets }}
+          env: {{- include "authelia.configuration_secrets.environments" (list . (list)) | indent 12 }}
+          {{- end }}
+          ports:
+            - name: web
+              containerPort: 9091
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              port: web
+              path: /
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              port: web
+              path: /
+            periodSeconds: 10
+            timeoutSeconds: 10
+          startupProbe:
+            failureThreshold: 6
+            httpGet:
+              port: web
+              path: /
+            periodSeconds: 10
+          resources: {{- toYaml .Values.resources.authelia | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/authelia
+            - name: configuration
+              mountPath: /opt/authelia/config/configuration.yaml
+              subPath: configuration.yaml
+              readOnly: true
+            {{- if .Values.authelia.configuration.authentication_backend }}
+            - name: authentication-backend-file
+              mountPath: {{ .Values.authelia.configuration.authentication_backend.file.path }}
+              subPath: {{ base .Values.authelia.configuration.authentication_backend.file.path }}
+              readOnly: true
+            {{- end }}
+            {{- with .Values.authelia.configuration_secrets -}}
+            {{- include "authelia.configuration_secrets.volumeMounts" (list . (list)) | indent 12 }}
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: data
+          {{- if (index .Values.persistence "authelia-data").enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "common.names.fullname" . }}-authelia-data
+          {{- else }}
+          emptyDir: { }
+          {{- end }}
+        - name: configuration
+          secret:
+            secretName: {{ include "common.names.fullname" . }}-authelia-configuration
+            items:
+              - key: configuration.yaml
+                path: configuration.yaml
+        {{- if .Values.authelia.configuration.authentication_backend -}}
+        {{- if (and .Values.authelia.authentication_backend_file.secret.name .Values.authelia.authentication_backend_file.secret.key) }}
+        - name: authentication-backend-file
+          secret:
+            secretName: {{ .Values.authelia.authentication_backend_file.secret.name }}
+            items:
+              - key: {{ .Values.authelia.authentication_backend_file.secret.key }}
+                path: {{ base .Values.authelia.configuration.authentication_backend.file.path }}
+        {{- else if .Values.authelia.authentication_backend_file.raw }}
+        - name: authentication-backend-file
+          secret:
+            secretName: {{ include "common.names.fullname" . }}-authelia-user-backend
+            items:
+              - key: users_database.yaml
+                path: {{ base .Values.authelia.configuration.authentication_backend.file.path }}
+        {{- else }}
+          {{ fail "You must provide either a secret name and key or raw content for the authentication backend file" }}
+        {{- end }}
+        {{- end }}
+        {{- with .Values.authelia.configuration_secrets -}}
+        {{- include "authelia.configuration_secrets.volumes" (list . (list)) | indent 8 }}
+        {{- end }}

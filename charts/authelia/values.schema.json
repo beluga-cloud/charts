@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
+    {
+      "$ref": "https://raw.githubusercontent.com/beluga-cloud/charts/main/tools/jsonschema/helm-values/_definitions.json#/$defs/io.belugacloud.v1.HelmValues"
+    }
+  ]
+}
