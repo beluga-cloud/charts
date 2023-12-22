@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: authelia-secret
+stringData:
+  jwt_secret: a_very_important_secret
+  session_secret: unsecure_session_secret
+  storage_encryption_key: you_must_generate_a_random_string_of_more_than_twenty_chars_and_configure_this

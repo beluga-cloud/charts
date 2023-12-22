@@ -4,16 +4,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: authelia
-  annotations:
-    podAnnotations: enabled
   labels:
     app.kubernetes.io/name: authelia
     helm.sh/chart: authelia-0.0.0
     app.kubernetes.io/instance: authelia
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: authelia
-    commonLabels01: enabled
-    commonLabels02: enabled
 spec:
   replicas: 1
   selector:
@@ -21,32 +17,22 @@ spec:
       app.kubernetes.io/name: authelia
       app.kubernetes.io/instance: authelia
       app.kubernetes.io/component: authelia
-      podLabels: enabled
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
   template:
     metadata:
       annotations: 
-        podAnnotations: enabled
-        checksum/config: 1b4a96415dfc82070bdd504c377513737f4c8898b209ea98990238dbc17909af
+        checksum/config: 6babaf89a82010ffdbdf2b3aad7f910254a60a15a7f046aeff9df5be2212507e
       labels:
         app.kubernetes.io/name: authelia
         app.kubernetes.io/instance: authelia
         app.kubernetes.io/component: authelia
-        podLabels: enabled
     spec:
-      imagePullSecrets:
-        - name: image-pull-secret
       securityContext:
-        fsGroup: 65534
-        runAsGroup: 65534
+        fsGroup: 65463
+        runAsGroup: 65463
         runAsNonRoot: true
-        runAsUser: 65534
+        runAsUser: 65463
         seccompProfile:
-          type: Unconfined
+          type: RuntimeDefault
       enableServiceLinks: false
       containers:
         - name: authelia
@@ -55,12 +41,19 @@ spec:
             capabilities:
               drop:
               - ALL
-            readOnlyRootFilesystem: false
-            runAsGroup: 65534
+            readOnlyRootFilesystem: true
+            runAsGroup: 65463
             runAsNonRoot: true
-            runAsUser: 65534
+            runAsUser: 65463
           image: ghcr.io/beluga-cloud/authelia/authelia:v4.38.0-beta3
           imagePullPolicy: IfNotPresent
+          env:            
+            - name: AUTHELIA_JWT_SECRET_FILE
+              value: /run/secrets/authelia.com/jwt_secret
+            - name: AUTHELIA_SESSION_SECRET_FILE
+              value: /run/secrets/authelia.com/session_secret
+            - name: AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE
+              value: /run/secrets/authelia.com/storage_encryption_key
           ports:
             - name: web
               containerPort: 9091
@@ -95,26 +88,15 @@ spec:
               mountPath: /opt/authelia/config/users_database.yaml
               subPath: users_database.yaml
               readOnly: true
+            - name: authelia-secrets
+              mountPath: /run/secrets/authelia.com
+              readOnly: true
       nodeSelector:
         kubernetes.io/os: linux
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: another-node-label-key
-                operator: In
-                values:
-                - another-node-label-value
-            weight: 1
-      tolerations:
-        - effect: NoSchedule
-          key: foo.bar.com/role
-          operator: Equal
-          value: master
       volumes:
         - name: data
-          emptyDir: { }
+          persistentVolumeClaim:
+            claimName: authelia-data
         - name: configuration
           secret:
             secretName: authelia-authelia-configuration
@@ -127,3 +109,22 @@ spec:
             items:
               - key: users_database.yaml
                 path: users_database.yaml
+        - name: authelia-secrets
+          projected:
+            defaultMode: 0600
+            sources:              
+              - secret:
+                  name: authelia-secret
+                  items:
+                    - key: jwt_secret
+                      path: jwt_secret
+              - secret:
+                  name: authelia-secret
+                  items:
+                    - key: session_secret
+                      path: session_secret
+              - secret:
+                  name: authelia-secret
+                  items:
+                    - key: storage_encryption_key
+                      path: storage_encryption_key

@@ -134,7 +134,7 @@ containerSecurityContext:
   runAsNonRoot: true
 
 persistence:
-  authelia:
+  data:
     # -- Enable data persistence using `PVC`. If false, use emptyDir
     enabled: true
     # -- Claims that pods are allowed to reference (see
@@ -233,8 +233,6 @@ authelia:
           policy: one_factor
         - domain: secure.example.com
           policy: two_factor
-        - domain: nip.io
-          policy: bypass
 
     session:
       secret: unsecure_session_secret
@@ -243,14 +241,6 @@ authelia:
         - domain: 'example.com'
           authelia_url: 'https://auth.example.com'
           default_redirection_url: 'https://www.example.com'
-          name: 'authelia_session'
-          same_site: 'lax'
-          inactivity: '5m'
-          expiration: '1h'
-          remember_me: '1d'
-        - domain: 'nip.io'
-          authelia_url: 'https://authelia.1f000001.nip.io'
-          default_redirection_url: 'https://actual.1f000001.nip.io'
           name: 'authelia_session'
           same_site: 'lax'
           inactivity: '5m'

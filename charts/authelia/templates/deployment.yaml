@@ -39,7 +39,9 @@ spec:
           image: {{ include "common.images.image" (dict "image" .Values.images.authelia "context" $) }}
           imagePullPolicy: {{ .Values.images.authelia.pullPolicy }}
           {{- with .Values.authelia.configuration_secrets }}
-          env: {{- include "authelia.configuration_secrets.environments" (list . (list)) | indent 12 }}
+          {{- $env := include "authelia.configuration_secrets.environments" (list . (list)) -}}
+          {{- if not $env }}{{ fail "You must provide at least one valid configuration secret for Authelia" }}{{ end }}
+          env: {{- $env | indent 12 }}
           {{- end }}
           ports:
             - name: web
@@ -57,12 +59,6 @@ spec:
               path: /
             periodSeconds: 10
             timeoutSeconds: 10
-          startupProbe:
-            failureThreshold: 6
-            httpGet:
-              port: web
-              path: /
-            periodSeconds: 10
           resources: {{- toYaml .Values.resources.authelia | nindent 12 }}
           volumeMounts:
             - name: data
@@ -77,8 +73,10 @@ spec:
               subPath: {{ base .Values.authelia.configuration.authentication_backend.file.path }}
               readOnly: true
             {{- end }}
-            {{- with .Values.authelia.configuration_secrets -}}
-            {{- include "authelia.configuration_secrets.volumeMounts" (list . (list)) | indent 12 }}
+            {{- with .Values.authelia.configuration_secrets }}
+            - name: authelia-secrets
+              mountPath: /run/secrets/authelia.com
+              readOnly: true
             {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
@@ -91,9 +89,9 @@ spec:
       {{- end }}
       volumes:
         - name: data
-          {{- if (index .Values.persistence "authelia-data").enabled }}
+          {{- if (index .Values.persistence.data).enabled }}
           persistentVolumeClaim:
-            claimName: {{ include "common.names.fullname" . }}-authelia-data
+            claimName: {{ include "common.names.fullname" . }}-data
           {{- else }}
           emptyDir: { }
           {{- end }}
@@ -122,6 +120,10 @@ spec:
           {{ fail "You must provide either a secret name and key or raw content for the authentication backend file" }}
         {{- end }}
         {{- end }}
-        {{- with .Values.authelia.configuration_secrets -}}
-        {{- include "authelia.configuration_secrets.volumes" (list . (list)) | indent 8 }}
+        {{- with .Values.authelia.configuration_secrets }}
+        - name: authelia-secrets
+          projected:
+            defaultMode: 0600
+            sources:
+              {{- include "authelia.configuration_secrets.volumes" (list . (list)) | indent 14 }}
         {{- end }}

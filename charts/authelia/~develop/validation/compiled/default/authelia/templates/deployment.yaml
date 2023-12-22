@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       annotations: 
-        checksum/config: fc71701501f94d057ae5701755e8b9a132d1087e900b7e8d3d6f643998b5bf3a
+        checksum/config: 2d2e1d864c643fead9fe3722d190fdc6a674a576bb12d9a928e732aaa2bd3115
       labels:
         app.kubernetes.io/name: authelia
         app.kubernetes.io/instance: authelia
@@ -63,12 +63,6 @@ spec:
               path: /
             periodSeconds: 10
             timeoutSeconds: 10
-          startupProbe:
-            failureThreshold: 6
-            httpGet:
-              port: web
-              path: /
-            periodSeconds: 10
           resources:
             limits:
               cpu: 1
@@ -91,7 +85,8 @@ spec:
         kubernetes.io/os: linux
       volumes:
         - name: data
-          emptyDir: { }
+          persistentVolumeClaim:
+            claimName: authelia-data
         - name: configuration
           secret:
             secretName: authelia-authelia-configuration
