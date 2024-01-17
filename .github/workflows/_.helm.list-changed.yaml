@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 10
 
-      - uses: tj-actions/changed-files@56284d80811fb5963a972b438f2870f175e5b7c8 # v40.2.3
+      - uses: tj-actions/changed-files@cbda684547adc8c052d50711417fa61b428a9f88 # v41.1.2
         id: changed-images
         with:
           dir_names: true
