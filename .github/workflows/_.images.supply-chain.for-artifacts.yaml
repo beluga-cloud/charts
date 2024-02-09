@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4.1.2
         id: download-oci
         with:
           name: ${{ inputs.artifact-ref }}
@@ -33,13 +33,13 @@ jobs:
       - name: Extract OCI-Archive for Trivy
         run: "skopeo copy oci-archive:${{ inputs.artifact-ref }} oci:${{ github.workspace }}/trivy-${{ github.run_id }}"
 
-      - uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # 0.16.0
+      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
         with:
           input: trivy-${{ github.run_id }}
           format: cyclonedx
           output: sbom.cyclonedx.json
 
-      - uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
+      - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
           name: sbom-cyclonedx.${{ inputs.name }}.json
           path: sbom.cyclonedx.json
@@ -57,7 +57,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4.1.2
         id: download-oci
         with:
           name: ${{ inputs.artifact-ref }}
@@ -65,18 +65,18 @@ jobs:
       - name: Extract OCI-Archive for Trivy
         run: skopeo copy oci-archive:${{ inputs.artifact-ref }} oci:${{ github.workspace }}/trivy-${{ github.run_id }}
 
-      - uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # 0.16.0
+      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
         with:
           input: trivy-${{ github.run_id }}
           format: cosign-vuln
           output: vulnerabilities.cosign-vuln.json
-      - uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
+      - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
         with:
           name: cosign-vuln.${{ inputs.name }}.json
           path: vulnerabilities.cosign-vuln.json
 
       # Upload SARIF report for GitHub CodeQL at the same time
-      - uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # 0.16.0
+      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
         with:
           input: trivy-${{ github.run_id }}
           format: sarif

@@ -45,7 +45,7 @@ jobs:
     permissions: {}
     runs-on: ubuntu-latest
     steps:
-      - uses: cloudposse/github-action-matrix-outputs-read@ea1c28d66c34b8400391ed74d510f66abc392d5e # 0.1.1
+      - uses: cloudposse/github-action-matrix-outputs-read@e0de318159d7139fb9e5f1d59e7f43f91d1d0904 # 0.1.2
         id: matrix-outputs
         with:
           matrix-step-name: _.images.build
@@ -121,6 +121,6 @@ jobs:
             ${{ steps.manifest-options.outputs.images }}
           docker manifest push ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }}
 
-      - uses: sigstore/cosign-installer@9614fae9e5c5eddabb09f90a270fcb487c9f7149 # v3.3.0
+      - uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4 # v3.4.0
       - name: Sign manifest 'ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }}'
         run: cosign sign --yes ghcr.io/${{ github.repository_owner }}/${{ matrix.artifact.name }}:${{ matrix.artifact.version }}

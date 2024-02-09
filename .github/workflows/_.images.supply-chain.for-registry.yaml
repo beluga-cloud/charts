@@ -24,13 +24,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # 0.16.0
+      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
         with:
           image-ref: ${{ inputs.image-ref }}
           format: cyclonedx
           output: sbom.cyclonedx.json
 
-      - uses: sigstore/cosign-installer@9614fae9e5c5eddabb09f90a270fcb487c9f7149 # v3.3.0
+      - uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4 # v3.4.0
       - name: Attest SBOM to ${{ inputs.image-ref }}
         run: cosign attest --yes --replace --predicate sbom.cyclonedx.json --type cyclonedx "${{ inputs.image-ref }}"
 
@@ -53,18 +53,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # 0.16.0
+      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
         with:
           image-ref: ${{ inputs.image-ref }}
           format: cosign-vuln
           output: vulnerabilities.cosign-vuln.json
 
-      - uses: sigstore/cosign-installer@9614fae9e5c5eddabb09f90a270fcb487c9f7149 # v3.3.0
+      - uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4 # v3.4.0
       - name: Attest vulnerability report to ${{ inputs.image-ref }}
         run: cosign attest --yes --replace --predicate vulnerabilities.cosign-vuln.json --type vuln "${{ inputs.image-ref }}"
 
       # Upload SARIF report for GitHub CodeQL at the same time
-      - uses: aquasecurity/trivy-action@91713af97dc80187565512baba96e4364e983601 # 0.16.0
+      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
         with:
           image-ref: ${{ inputs.image-ref }}
           format: sarif
