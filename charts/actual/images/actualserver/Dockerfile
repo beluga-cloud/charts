@@ -1,7 +1,7 @@
 FROM docker.io/library/alpine:3.19.0 as builder
 
 # renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver
-ARG ACTUAL_VERSION=v23.12.1
+ARG ACTUAL_VERSION=v24.3.0
 
 # renovate: datasource=repology depName=alpine_3_19/nodejs versioning=semver
 ARG NODEJS_VERSION=20.10.0-r1
@@ -40,7 +40,7 @@ COPY --from=builder /build/src /src
 FROM docker.io/library/alpine:3.19.0
 
 # renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver extractVersion=^v(?<version>\S+)$
-ARG ACTUAL_VERSION=23.12.1
+ARG ACTUAL_VERSION=24.3.0
 
 # renovate: datasource=repology depName=alpine_3_19/nodejs versioning=semver
 ARG NODEJS_VERSION=20.10.0-r1
