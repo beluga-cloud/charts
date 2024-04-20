@@ -95,7 +95,7 @@ jobs:
         chart: ${{ fromJson(needs.list-all-charts.outputs.charts) }}
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
+      - uses: aquasecurity/trivy-action@d710430a6722f083d3b36b8339ff66b32f22ee55 # 0.19.0
         with:
           format: sarif
           hide-progress: false
@@ -108,7 +108,7 @@ jobs:
           sarif_file: trivy-results.sarif
 
       # NOTE: fail the build only if vulnerabilities with severity HIGH or CRITICAL are found
-      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
+      - uses: aquasecurity/trivy-action@d710430a6722f083d3b36b8339ff66b32f22ee55 # 0.19.0
         with:
           exit-code: '1'
           format: table

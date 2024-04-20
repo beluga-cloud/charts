@@ -24,7 +24,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/cache/restore@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+      - uses: actions/cache/restore@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         id: restore-asdf
         with:
           path: ${{ env.ASDF_DIR }}
@@ -33,12 +33,12 @@ jobs:
         with:
           skip_install: ${{ steps.restore-asdf.outputs.cache-hit == 'true' }}
 
-      - uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
         with:
           python-version: '3.9'
           check-latest: true
       - uses: helm/chart-testing-action@e6669bcd63d7cb57cb4380c33043eebe5d111992 # v2.6.1
-      - uses: helm/kind-action@dda0770415bac9fc20092cacbc54aa298604d140 # v1.8.0
+      - uses: helm/kind-action@99576bfa6ddf9a8e612d83b513da5a75875caced # v1.9.0
         with:
           cluster_name: kind
           wait: 30s
