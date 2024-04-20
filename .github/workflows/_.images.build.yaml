@@ -127,8 +127,8 @@ jobs:
           fetch-depth: 1
 
       - uses: docker/setup-qemu-action@68827325e0b33c7199eb31dd4e31fbe9023e06e3 # v3.0.0
-      - uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
-      - uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+      - uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3.3.0
+      - uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -146,7 +146,7 @@ jobs:
             com.github.beluga-cloud.ci.workflow.url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/blob/${{ github.sha }}/${{ inputs.containerfile }}
 
-      - uses: docker/build-push-action@4a13e500e55cf31b7a5d59a38ab2040ab0f42f56 # v5.1.0
+      - uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0 # v5.3.0
         id: build
         with:
           context: ${{ needs.metadata.outputs.build-context }}
@@ -163,7 +163,7 @@ jobs:
           DIGEST: ${{ steps.build.outputs.digest }}
 
       # NOTE: on production mode, all images are signed
-      - uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4 # v3.4.0
+      - uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 # v3.5.0
         if: ${{ !inputs.dry-run }}
       - name: Sign 'ghcr.io/${{ github.repository_owner }}/${{ needs.metadata.outputs.image-name }}@${{ steps.build.outputs.digest }}' with GitHub OIDC Token
         if: ${{ !inputs.dry-run }}
@@ -173,7 +173,7 @@ jobs:
       - name: Rename OCI image artifact before upload
         if: ${{ inputs.dry-run }}
         run: mv ${{ needs.metadata.outputs.image-slug }}.tar oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
-      - uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+      - uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # v4.3.2
         if: ${{ inputs.dry-run }}
         with:
           name: oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
@@ -209,7 +209,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
+      - uses: aquasecurity/trivy-action@d710430a6722f083d3b36b8339ff66b32f22ee55 # 0.19.0
         with:
           format: sarif
           hide-progress: false
@@ -222,7 +222,7 @@ jobs:
           sarif_file: trivy-results.sarif
 
       # NOTE: fail the build only if vulnerabilities with severity HIGH or CRITICAL are found
-      - uses: aquasecurity/trivy-action@84384bd6e777ef152729993b8145ea352e9dd3ef # 0.17.0
+      - uses: aquasecurity/trivy-action@d710430a6722f083d3b36b8339ff66b32f22ee55 # 0.19.0
         with:
           exit-code: '1'
           format: table
