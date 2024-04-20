@@ -2,7 +2,7 @@ apiVersion: v2
 type: application
 name: actual
 description: Enjoy managing your finances
-version: 2.0.0
+version: 2.1.0
 # renovate: datasource=docker depName=ghcr.io/beluga-cloud/actual/actualserver
 appVersion: 24.4.0
 kubeVersion: '>=1.20'
