@@ -1,4 +1,4 @@
-FROM docker.io/library/alpine:3.19.0 as builder
+FROM docker.io/library/alpine:3.19.1 as builder
 
 # renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver
 ARG ACTUAL_VERSION=v23.12.1
@@ -37,7 +37,7 @@ COPY --from=builder /build/node_modules /node_modules
 COPY --from=builder /build/src /src
 
 
-FROM docker.io/library/alpine:3.19.0
+FROM docker.io/library/alpine:3.19.1
 
 # renovate: datasource=github-tags depName=actualbudget/actual-server versioning=semver extractVersion=^v(?<version>\S+)$
 ARG ACTUAL_VERSION=23.12.1
@@ -45,7 +45,7 @@ ARG ACTUAL_VERSION=23.12.1
 # renovate: datasource=repology depName=alpine_3_19/nodejs versioning=semver
 ARG NODEJS_VERSION=20.10.0-r1
 # renovate: datasource=repology depName=alpine_3_19/openssl versioning=semver
-ARG OPENSSL_VERSION=3.1.4-r2
+ARG OPENSSL_VERSION=3.1.4-r6
 # renovate: datasource=repology depName=alpine_3_19/tini versioning=semver
 ARG TINI_VERSION=0.19.0-r2
 
