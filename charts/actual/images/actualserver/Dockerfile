@@ -4,7 +4,7 @@ FROM docker.io/library/alpine:3.19.1 as builder
 ARG ACTUAL_VERSION=v23.12.1
 
 # renovate: datasource=repology depName=alpine_3_19/nodejs versioning=semver
-ARG NODEJS_VERSION=20.10.0-r1
+ARG NODEJS_VERSION=20.12.1-r0
 # renovate: datasource=repology depName=alpine_3_19/yarn versioning=semver
 ARG YARN_VERSION=1.22.19-r0
 # renovate: datasource=repology depName=alpine_3_19/npm versioning=semver
@@ -43,7 +43,7 @@ FROM docker.io/library/alpine:3.19.1
 ARG ACTUAL_VERSION=23.12.1
 
 # renovate: datasource=repology depName=alpine_3_19/nodejs versioning=semver
-ARG NODEJS_VERSION=20.10.0-r1
+ARG NODEJS_VERSION=20.12.1-r0
 # renovate: datasource=repology depName=alpine_3_19/openssl versioning=semver
 ARG OPENSSL_VERSION=3.1.4-r6
 # renovate: datasource=repology depName=alpine_3_19/tini versioning=semver
