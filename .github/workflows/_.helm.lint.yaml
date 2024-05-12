@@ -58,7 +58,7 @@ jobs:
         run: just build-external
         working-directory: ${{ github.workspace }}/${{ inputs.chart }}
 
-      - uses: tj-actions/verify-changed-files@d774a4c7ebe335445d79c7b44138f56a76058ba0 # v19
+      - uses: tj-actions/verify-changed-files@6ed7632824d235029086612d4330d659005af687 # v20
         id: get-diff-values
         continue-on-error: true
         with:
@@ -70,7 +70,7 @@ jobs:
           # shellcheck disable=SC2016
           echo '::error file=${{ inputs.chart }}/values.yaml,line=1,title=values.yml not up-to-date::${{ inputs.chart }}/values.yaml must be updated. Please run `just build-external` to update it.'
 
-      - uses: tj-actions/verify-changed-files@d774a4c7ebe335445d79c7b44138f56a76058ba0 # v19
+      - uses: tj-actions/verify-changed-files@6ed7632824d235029086612d4330d659005af687 # v20
         id: get-diff-readme
         continue-on-error: true
         with:
@@ -82,7 +82,7 @@ jobs:
           # shellcheck disable=SC2016
           echo '::error file=${{ inputs.chart }}/README.md,line=1,title=README.md not up-to-date::${{ inputs.chart }}/README.md must be updated. Please run `just build-external` to update it.'
 
-      - uses: tj-actions/verify-changed-files@d774a4c7ebe335445d79c7b44138f56a76058ba0 # v19
+      - uses: tj-actions/verify-changed-files@6ed7632824d235029086612d4330d659005af687 # v20
         id: get-diff-validation
         continue-on-error: true
         with:
