@@ -12,7 +12,7 @@ RUN apt-get update \
 FROM docker.io/library/ubuntu:jammy
 
 # renovate: datasource=github-releases depName=jellyfin/jellyfin versioning=semver extractVersion=^v(?<version>\S+)
-ARG JELLYFIN_VERSION=10.8.13
+ARG JELLYFIN_VERSION=10.9.7
 
 # Add build arguments for specific architectures
 ARG TARGETPLATFORM
