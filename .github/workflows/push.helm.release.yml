@@ -54,7 +54,7 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-      - uses: helm/chart-releaser-action@09492f4b9670bf76e60f140461e72714e3a3a26d
+      - uses: helm/chart-releaser-action@d1e09fd16821c091b45aa754f65bae4dd675d425
         env:
           CR_GENERATE_RELEASE_NOTES: 'false'
           CR_KEY: ${{ steps.import-gpg.outputs.name }}
