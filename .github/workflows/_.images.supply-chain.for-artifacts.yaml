@@ -33,7 +33,7 @@ jobs:
       - name: Extract OCI-Archive for Trivy
         run: "skopeo copy oci-archive:${{ inputs.artifact-ref }} oci:${{ github.workspace }}/trivy-${{ github.run_id }}"
 
-      - uses: aquasecurity/trivy-action@d710430a6722f083d3b36b8339ff66b32f22ee55 # 0.19.0
+      - uses: aquasecurity/trivy-action@38623bf26706d51c45647909dcfb669825442804 # 0.19.0
         with:
           input: trivy-${{ github.run_id }}
           format: cyclonedx
@@ -65,7 +65,7 @@ jobs:
       - name: Extract OCI-Archive for Trivy
         run: skopeo copy oci-archive:${{ inputs.artifact-ref }} oci:${{ github.workspace }}/trivy-${{ github.run_id }}
 
-      - uses: aquasecurity/trivy-action@d710430a6722f083d3b36b8339ff66b32f22ee55 # 0.19.0
+      - uses: aquasecurity/trivy-action@38623bf26706d51c45647909dcfb669825442804 # 0.19.0
         with:
           input: trivy-${{ github.run_id }}
           format: cosign-vuln
@@ -76,7 +76,7 @@ jobs:
           path: vulnerabilities.cosign-vuln.json
 
       # Upload SARIF report for GitHub CodeQL at the same time
-      - uses: aquasecurity/trivy-action@d710430a6722f083d3b36b8339ff66b32f22ee55 # 0.19.0
+      - uses: aquasecurity/trivy-action@38623bf26706d51c45647909dcfb669825442804 # 0.19.0
         with:
           input: trivy-${{ github.run_id }}
           format: sarif
