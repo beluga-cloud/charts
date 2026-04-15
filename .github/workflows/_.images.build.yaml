@@ -173,7 +173,7 @@ jobs:
       - name: Rename OCI image artifact before upload
         if: ${{ inputs.dry-run }}
         run: mv ${{ needs.metadata.outputs.image-slug }}.tar oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
-      - uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # v4.3.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ inputs.dry-run }}
         with:
           name: oci.${{ needs.metadata.outputs.image-slug }}-${{ matrix.platform.arch }}-${{ matrix.platform.os }}.tar
