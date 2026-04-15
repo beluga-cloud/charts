@@ -39,7 +39,7 @@ jobs:
           format: cyclonedx
           output: sbom.cyclonedx.json
 
-      - uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # v4.3.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: sbom-cyclonedx.${{ inputs.name }}.json
           path: sbom.cyclonedx.json
@@ -70,7 +70,7 @@ jobs:
           input: trivy-${{ github.run_id }}
           format: cosign-vuln
           output: vulnerabilities.cosign-vuln.json
-      - uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # v4.3.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: cosign-vuln.${{ inputs.name }}.json
           path: vulnerabilities.cosign-vuln.json
