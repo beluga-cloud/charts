@@ -163,7 +163,7 @@ jobs:
           DIGEST: ${{ steps.build.outputs.digest }}
 
       # NOTE: on production mode, all images are signed
-      - uses: sigstore/cosign-installer@59acb6260d9c0ba8f4a2f9d9b48431a222b68e20 # v3.5.0
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         if: ${{ !inputs.dry-run }}
       - name: Sign 'ghcr.io/${{ github.repository_owner }}/${{ needs.metadata.outputs.image-name }}@${{ steps.build.outputs.digest }}' with GitHub OIDC Token
         if: ${{ !inputs.dry-run }}
