@@ -109,7 +109,7 @@ jobs:
             | jq --raw-output '.artifacts | map("\(.artifact)@sha256:\(.digest) ") | add'
           ) | tee --append "${GITHUB_OUTPUT}"
 
-      - uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
